@@ -10,13 +10,16 @@ namespace GameName1
 {
     class Player : GameObject
     {
-        static float VELOCITY = 12.0F;
+        static float VELOCITY = 10.0F;
+        private int SIGHT_RANGE = 120;
+        private float FIRE_RATE = 1.0f;
+
         public Vector2 m_MoveToward = new Vector2();
         public int Life = 0;
-		private Shotgun testWeapon;
-        private int weaponLength = 200;
-        private Zombie nearestZombie = null;
+		private Weapon testWeapon;
         private bool m_Moving = false;
+        bool shotHappened = false;
+
         public Player() : base()
         {
 			
@@ -32,6 +35,7 @@ namespace GameName1
             bool deleteThisBoolLater = false;
             bool weaponHit;
             float nearestLength = float.MaxValue;
+            shotHappened = false;
             foreach (GameObject ob in exists)
             {
                 //TODO: seriously need to refactor this later
@@ -41,7 +45,6 @@ namespace GameName1
                 if (temp < nearestLength && ob is Zombie)
                 {
                     nearestLength = temp;
-                    nearestZombie = (Zombie)ob;
                     RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
                 }
                 if (ob == null)
@@ -51,12 +54,16 @@ namespace GameName1
                 weaponHit = testWeapon.CheckCollision(ob);
                 if (weaponHit)
                 {
-                    if (ob is Zombie)
+                    if (testWeapon.CanFire() || shotHappened)
                     {
-                        toRemove.Add(ob);
+                        shotHappened = true;
+                        if (ob is Zombie)
+                        {
+                            toRemove.Add(ob);
+                        }
+                        //continue here in case ob overlaps with weapon and player
+                        continue;
                     }
-                    //continue here in case ob overlaps with weapon and player
-                    continue;
                 }
                 if (ob.Bounds.Intersects(this.Bounds))
                 {
@@ -108,7 +115,7 @@ namespace GameName1
             //Position.X = (float)Math.Floor(Position.X);
             //Position.Y = (float)Math.Floor(Position.Y);
             Position.X = MathHelper.Clamp(Position.X, Width/2, Game1.GameWidth - (Width / 2));
-            Position.Y = MathHelper.Clamp(Position.Y, Height/2, Game1.GameHeight - (Height / 2));
+            Position.Y = MathHelper.Clamp(Position.Y, Height/2, Game1.GameHeight - (Height / 2) - UI.OFFSET);
 
             Bounds.X = (int)Position.X - Width / 2;
             Bounds.Y = (int)Position.Y - Height / 2;
@@ -133,15 +140,19 @@ namespace GameName1
             }
         }
 
-        public override void Update()
+        public void Update(float elapsedTime)
         {
-            testWeapon.Update(Position, RotationAngle, 10, weaponLength);
+            testWeapon.Update(elapsedTime, Position, RotationAngle, 10, SIGHT_RANGE);
         }
 
         public override void Draw(SpriteBatch _spriteBatch)
         {
             base.Draw(_spriteBatch);
-            testWeapon.Draw(_spriteBatch);
+
+            if (shotHappened || testWeapon.Firing)
+            {
+                testWeapon.DrawBlast(_spriteBatch, Position, RotationAngle);
+            }
         }
     }
 }

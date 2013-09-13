@@ -18,6 +18,7 @@ namespace GameName1
         public static int GameWidth;
         public static int GameHeight;
         
+        
         Player m_Player;
         List<Zombie> m_Zombies = new List<Zombie>();
         List<GameObject> m_AllObjects = new List<GameObject>();
@@ -29,7 +30,9 @@ namespace GameName1
         private double ZombieSpawnTimer = 6;
         public static bool itemMade = false;
         public static Random ZombieRandom = new Random(424242);
-
+        private UI UserInterface = new UI();
+        public int FrameCounter = 0;
+        public double elapsedTime = 0;
         Line testLine = new Line(new Vector2(4, 0), new Vector2(0, 4));
         public Game1()
         {
@@ -63,6 +66,7 @@ namespace GameName1
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             m_Player.LoadContent(Content);
+            UserInterface.LoadContent(Content, GameWidth, GameHeight);
             // TODO: use this.Content to load your game content here
         }
 
@@ -95,6 +99,14 @@ namespace GameName1
             GameTimer += gameTime.ElapsedGameTime.TotalSeconds;
             ZombieTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
+            elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
+            ++FrameCounter;
+            if (elapsedTime > 1)
+            {
+                UserInterface.Update(m_Player, FrameCounter);
+                FrameCounter = 0;
+                elapsedTime = 0;
+            }
             //check if a game reset or zombie hit and save state and do the action here,
             //so that the game will draw the zombie intersecting the player
             List<GameObject> toRemove = new List<GameObject>();
@@ -131,8 +143,8 @@ namespace GameName1
             }
             Vector2 vec = new Vector2();
             Input.ProcessTouchInput(out vec);
-            m_Player.ProcessInput(vec);
-            m_Player.Update();
+            UserInterface.ProcessInput(vec, m_Player);
+            m_Player.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             Vector2 playerPos = new Vector2(m_Player.Position.X, m_Player.Position.Y);
             foreach (Zombie z in m_Zombies)
             {
@@ -153,14 +165,15 @@ namespace GameName1
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             m_Player.Draw(_spriteBatch);
-            foreach (Zombie z in m_Zombies)
-            {
-                z.Draw(_spriteBatch);
-            }
+            //foreach (Zombie z in m_Zombies)
+            //{
+            //    z.Draw(_spriteBatch);
+            //}
             foreach (GameObject g in m_AllObjects)
             {
                 g.Draw(_spriteBatch);
             }
+            UserInterface.Draw(_spriteBatch);
             _spriteBatch.End();
             
             base.Draw(gameTime);
@@ -174,8 +187,8 @@ namespace GameName1
             while (nearPlayer)
             {
                 
-                x = ZombieRandom.Next(720);
-                y = ZombieRandom.Next(1280);
+                x = ZombieRandom.Next(GameWidth);
+                y = ZombieRandom.Next(GameHeight);
 
                 //don't spawn near player
                 Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);

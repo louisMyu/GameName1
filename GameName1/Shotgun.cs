@@ -10,52 +10,41 @@ namespace GameName1
 {
     class Shotgun : Weapon
     {
-        //spread of the bullets
-        public float Spread
-        {
-            get;
-            set;
-        }
-        public int NumberOfBullets
-        {
-            get;
-            set;
-        }
+        private Texture2D blast;
 
         private List<Line> m_BulletLines = new List<Line>();
-        public Shotgun(Microsoft.Xna.Framework.Content.ContentManager device)
+        private ShotInfo m_SavedShotInfo;
+        private ShotInfo m_CurrentShotInfo;
+        public Shotgun(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             Spread = (float)Math.PI / 6;
             NumberOfBullets = 3;
             for (int i = 0; i < NumberOfBullets; ++i)
             {
-                m_BulletLines.Add(new Line(device));
+                m_BulletLines.Add(new Line(content));
             }
+            FireRate = 4.0f;
+            blast = content.Load<Texture2D>("Shotgun-Blast-1");
         }
         
-        public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
-        {
-            Texture = content.Load<Texture2D>("Shotgun");
-            base.LoadContent(content);
-
-        }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
-        public void Update(Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength)
+        public override void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength)
         {
-            float accuracyInRadians = RANDOM_GENERATOR.Next(0, accuracy) * ((float)Math.PI / 180);
+            base.Update(elapsedTime, playerCenter, rotationAngle, accuracy, weaponLength);
+            float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
             //TODO: add a random so its either plus or minus accuracy
             float centerVector = rotationAngle - accuracyInRadians;
 
             float leftAngle = centerVector - (Spread / (NumberOfBullets - 1));
             foreach (Line line in m_BulletLines)
-            {
-                line.UpdateFromRotation(playerCenter, leftAngle,weaponLength);
-                line.Update();
+            {  
+                line.Update(playerCenter, leftAngle, weaponLength);
                 leftAngle += (float)(Spread / (NumberOfBullets - 1));
             }
+            m_CurrentShotInfo = new ShotInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle, 5);
         }
-        public bool CheckCollision(GameObject ob)
+        public override bool CheckCollision(GameObject ob)
         {
             base.CheckCollision(ob);
             foreach (Line line in m_BulletLines)
@@ -68,11 +57,31 @@ namespace GameName1
             }
             return false;
         }
-        public override void Draw(SpriteBatch _spriteBatch)
+        public override void DrawWeapon(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
-            foreach (Line line in m_BulletLines)
+
+        }
+
+        public override void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
+        {
+            //firing a shot, save the state
+            if (!Firing)
             {
-                line.Draw(_spriteBatch);
+                Firing = true;
+                m_SavedShotInfo = m_CurrentShotInfo;
+            }
+            if (m_SavedShotInfo.NumFrames > 0)
+            {
+                //foreach (Line line in m_BulletLines)
+                //{
+                //    line.Draw(_spriteBatch);
+                //}
+                _spriteBatch.Draw(blast, m_SavedShotInfo.Position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0,blast.Height/2), 1.0f, SpriteEffects.None, 0f);
+                --m_SavedShotInfo.NumFrames;
+            }
+            if (Firing && m_SavedShotInfo.NumFrames == 0)
+            {
+                Firing = false;
             }
         }
     }

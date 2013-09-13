@@ -27,8 +27,7 @@ namespace GameName1
             point2.X = p2.X;
             point2.Y = p2.Y;
         }
-        //i have no idea why i have to make a new texture every draw, but if i dont then
-        //the line disappears if i need to hit the windows button to fix the lag bug with touch inputs
+
         public void DrawLine(SpriteBatch batch,
                 float width, Color color)
         {

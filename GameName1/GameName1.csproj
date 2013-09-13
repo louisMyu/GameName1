@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="Shotgun.cs" />
     <Compile Include="Triangle.cs" />
+    <Compile Include="UI.cs" />
     <Compile Include="Weapon.cs" />
     <Compile Include="Zombie.cs" />
   </ItemGroup>
@@ -105,10 +106,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Player.xnb" />
     <Content Include="Content\Powerup.xnb" />
     <Content Include="Content\ZombieFace.xnb" />
     <Content Include="Content\Line.xnb" />
+    <Content Include="Content\kevinZombie.xnb" />
+    <Content Include="Content\Retrofont.xnb" />
+    <Content Include="Content\Shotgun-Blast-1.xnb" />
+    <Content Include="Content\Player.xnb" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>

@@ -26,7 +26,7 @@ namespace GameName1
         {
             if (GLOBAL_TEXTURE == null)
             {
-                GLOBAL_TEXTURE = Content.Load<Texture2D>("ZombieFace");
+                GLOBAL_TEXTURE = Content.Load<Texture2D>("kevinZombie");
             }
             m_State = State.Wandering;
             RotationAngle = (float)GameObject.RANDOM_GENERATOR.NextDouble();
@@ -52,7 +52,7 @@ namespace GameName1
         {
             //get a normalized direction toward the point that was passed in, probably the player
             Vector2 vec = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
-            if (vec.LengthSquared() <= (150.0f*150.0f))
+            if (vec.LengthSquared() <= (275.0f*275.0f))
             {
                 m_State = State.Locked;
             }
@@ -82,7 +82,7 @@ namespace GameName1
 
             //Later on, remove the clamp to the edge and despawn when too far out of the screen.
             Position.X = MathHelper.Clamp(Position.X, Width, Game1.GameWidth - (Width / 2));
-            Position.Y = MathHelper.Clamp(Position.Y, Height, Game1.GameHeight - (Height / 2));
+            Position.Y = MathHelper.Clamp(Position.Y, Height, Game1.GameHeight - (Height / 2) - UI.OFFSET);
             Bounds.X = (int)Position.X - Width / 2;
             Bounds.Y = (int)Position.Y - Height / 2;
         }

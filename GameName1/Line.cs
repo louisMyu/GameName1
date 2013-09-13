@@ -28,8 +28,9 @@ namespace GameName1
             P2 = two;
         }
 
-        public void Update()
+        public void Update(Vector2 playerCenter, float leftAngle, int weaponLength)
         {
+            UpdateFromRotation(playerCenter, leftAngle, weaponLength);
             m_WeaponLine.Update(P1, P2);
         }
 
