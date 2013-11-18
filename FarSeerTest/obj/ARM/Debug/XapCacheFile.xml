@@ -1,0 +1,29 @@
+﻿<xapCache source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\bin\WindowsPhone\ARM\Debug\FarSeerTest_Debug_ARM.xap" wasSigned="False" wasTritonized="False" certificateThumbprint="" TimeStampUrl="" signKeyFile="" signKeyPassword="" lastWriteTime="11/17/2013 2:23:17 AM">
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\obj\ARM\Debug\FarSeerTest.dll" archivePath="FarSeerTest.dll" lastWriteTime="11/17/2013 2:23:15 AM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\Content\CircleSprite.xnb" archivePath="Content\CircleSprite.xnb" lastWriteTime="11/16/2013 12:32:07 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\Content\Font.xnb" archivePath="Content\Font.xnb" lastWriteTime="11/16/2013 12:32:07 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\Content\GroundSprite.xnb" archivePath="Content\GroundSprite.xnb" lastWriteTime="11/16/2013 12:32:07 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\Assets\AlignmentGrid.png" archivePath="Assets\AlignmentGrid.png" lastWriteTime="6/22/2013 1:59:12 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\Assets\Tiles\FlipCycleTileLarge.png" archivePath="Assets\Tiles\FlipCycleTileLarge.png" lastWriteTime="6/22/2013 1:59:12 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\Assets\Tiles\FlipCycleTileSmall.png" archivePath="Assets\Tiles\FlipCycleTileSmall.png" lastWriteTime="6/22/2013 1:59:12 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\Assets\Tiles\IconicTileMediumLarge.png" archivePath="Assets\Tiles\IconicTileMediumLarge.png" lastWriteTime="6/22/2013 1:59:12 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\Assets\Tiles\IconicTileSmall.png" archivePath="Assets\Tiles\IconicTileSmall.png" lastWriteTime="6/22/2013 1:59:12 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\bin\WindowsPhone\ARM\Debug\AppManifest.xaml" archivePath="AppManifest.xaml" lastWriteTime="11/16/2013 12:34:06 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\bin\WindowsPhone\ARM\Debug\Assets\ApplicationIcon.png" archivePath="Assets\ApplicationIcon.png" lastWriteTime="6/22/2013 1:59:12 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\bin\WindowsPhone\ARM\Debug\Assets\Tiles\FlipCycleTileMedium.png" archivePath="Assets\Tiles\FlipCycleTileMedium.png" lastWriteTime="6/22/2013 1:59:12 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Debug\FarSeerPort.dll" archivePath="FarSeerPort.dll" lastWriteTime="11/16/2013 1:17:23 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\MonoGame.Framework.dll" archivePath="MonoGame.Framework.dll" lastWriteTime="11/16/2013 12:33:01 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.dll" archivePath="SharpDX.dll" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.Direct3D11.dll" archivePath="SharpDX.Direct3D11.dll" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.XAudio2.dll" archivePath="SharpDX.XAudio2.dll" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.DXGI.dll" archivePath="SharpDX.DXGI.dll" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.WP8.winmd" archivePath="SharpDX.WP8.winmd" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.xml" archivePath="SharpDX.xml" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.Direct3D11.xml" archivePath="SharpDX.Direct3D11.xml" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.XAudio2.xml" archivePath="SharpDX.XAudio2.xml" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.DXGI.xml" archivePath="SharpDX.DXGI.xml" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Debug\SharpDX.WP8.dll" archivePath="SharpDX.WP8.dll" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonoGame\ThirdParty\Libs\SharpDX\Windows Phone\ARM\SharpDX.MediaFoundation.dll" archivePath="SharpDX.MediaFoundation.dll" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="Z:\GIT\MonoGame\ThirdParty\Libs\SharpDX\Windows Phone\ARM\SharpDX.MediaFoundation.xml" archivePath="SharpDX.MediaFoundation.xml" lastWriteTime="6/22/2013 2:22:08 PM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerTest\bin\WindowsPhone\ARM\Debug\Properties\WMAppManifest.xml" archivePath="WMAppManifest.xml" lastWriteTime="11/16/2013 12:34:06 PM" />
+</xapCache>

@@ -11,6 +11,9 @@ namespace GameName1
     class Shotgun : Weapon
     {
         private Texture2D blast;
+        private Texture2D blast2;
+        private Texture2D blast3;
+        private Texture2D blast4;
 
         private List<Line> m_BulletLines = new List<Line>();
         private ShotInfo m_SavedShotInfo;
@@ -23,8 +26,12 @@ namespace GameName1
             {
                 m_BulletLines.Add(new Line(content));
             }
-            FireRate = 4.0f;
+            FireRate = 15;
             blast = content.Load<Texture2D>("Shotgun-Blast-1");
+            blast2 = content.Load<Texture2D>("Shotgun-Blast-2");
+            blast3 = content.Load<Texture2D>("Shotgun-Blast-3");
+            blast4 = content.Load<Texture2D>("Shotgun-Blast-4");
+            Knockback = 10f;
         }
         
         //foreach line of the shotgun i need to update the lines based on the player center,
@@ -32,34 +39,35 @@ namespace GameName1
         public override void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength)
         {
             base.Update(elapsedTime, playerCenter, rotationAngle, accuracy, weaponLength);
-            float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
-            //TODO: add a random so its either plus or minus accuracy
-            float centerVector = rotationAngle - accuracyInRadians;
+            if (!Firing)
+            {
+                float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
+                //TODO: add a random so its either plus or minus accuracy
+                float centerVector = rotationAngle - accuracyInRadians;
 
-            float leftAngle = centerVector - (Spread / (NumberOfBullets - 1));
-            foreach (Line line in m_BulletLines)
-            {  
-                line.Update(playerCenter, leftAngle, weaponLength);
-                leftAngle += (float)(Spread / (NumberOfBullets - 1));
+                float leftAngle = centerVector - (Spread / (NumberOfBullets - 1));
+                LeftAngle = leftAngle;
+                SightRange = weaponLength;
+                m_CurrentShotInfo = new ShotInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle, 10);
             }
-            m_CurrentShotInfo = new ShotInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle, 5);
         }
-        public override bool CheckCollision(GameObject ob)
+        public override bool CheckCollision(GameObject ob, out Vector2 intersectingAngle)
         {
-            base.CheckCollision(ob);
             foreach (Line line in m_BulletLines)
             {
                 Vector2 check = line.Intersects(ob.Bounds);
                 if (check.X != -1)
                 {
+                    intersectingAngle = new Vector2(line.P2.X - line.P1.X, line.P2.Y - line.P1.Y); ;
                     return true;
                 }
             }
+            intersectingAngle = new Vector2(0, 0);
             return false;
         }
         public override void DrawWeapon(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
-
+            
         }
 
         public override void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
@@ -72,16 +80,38 @@ namespace GameName1
             }
             if (m_SavedShotInfo.NumFrames > 0)
             {
+                float leftAngle = LeftAngle;
+                foreach (Line line in m_BulletLines)
+                {
+                    line.Update(position, leftAngle, SightRange);
+                    leftAngle += (float)(Spread / (NumberOfBullets - 1));
+                }
                 //foreach (Line line in m_BulletLines)
                 //{
                 //    line.Draw(_spriteBatch);
                 //}
-                _spriteBatch.Draw(blast, m_SavedShotInfo.Position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0,blast.Height/2), 1.0f, SpriteEffects.None, 0f);
+                if (m_SavedShotInfo.NumFrames > 7)
+                {
+                    _spriteBatch.Draw(blast, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
+                }
+                else if (m_SavedShotInfo.NumFrames > 5)
+                {
+                    _spriteBatch.Draw(blast2, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
+                }
+                else if (m_SavedShotInfo.NumFrames > 2)
+                {
+                    _spriteBatch.Draw(blast3, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
+                }
+                else if (m_SavedShotInfo.NumFrames > 0)
+                {
+                    _spriteBatch.Draw(blast4, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
+                }
                 --m_SavedShotInfo.NumFrames;
             }
-            if (Firing && m_SavedShotInfo.NumFrames == 0)
+            else if (Firing)
             {
                 Firing = false;
+                m_ElapsedFrames = FireRate;
             }
         }
     }

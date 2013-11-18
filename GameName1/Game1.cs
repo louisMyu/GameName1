@@ -5,6 +5,10 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 
+using FarseerPhysics.Dynamics;
+using FarseerPhysics;
+using FarseerPhysics.Factories;
+
 namespace GameName1
 {
     /// <summary>
@@ -17,11 +21,15 @@ namespace GameName1
 
         public static int GameWidth;
         public static int GameHeight;
-        
+
+        private World m_World;
         
         Player m_Player;
-        List<Zombie> m_Zombies = new List<Zombie>();
-        List<GameObject> m_AllObjects = new List<GameObject>();
+        private List<Zombie> m_Zombies = new List<Zombie>();
+
+        private List<GameObject> m_AllObjects = new List<GameObject>();
+
+
         public static bool ZombiesSpawned = false;
         private PowerUp m_PowerUp;
         
@@ -54,6 +62,7 @@ namespace GameName1
             GameHeight = GraphicsDevice.Viewport.Height;
             Vector2 playerPosition = new Vector2(GameWidth / 2, GameHeight / 2);
             m_Player.Init(Content, playerPosition);
+            m_World = new World(new Vector2(0, 0));
             base.Initialize();
         }
 
@@ -67,6 +76,9 @@ namespace GameName1
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             m_Player.LoadContent(Content);
             UserInterface.LoadContent(Content, GameWidth, GameHeight);
+            Magic.TextureInit(Content);
+
+            ConvertUnits.SetDisplayUnitToSimUnitRatio(10);
             // TODO: use this.Content to load your game content here
         }
 
@@ -107,21 +119,16 @@ namespace GameName1
                 FrameCounter = 0;
                 elapsedTime = 0;
             }
+            List<Vector2> vec = new List<Vector2>();
+            Input.ProcessTouchInput(out vec);
+            UserInterface.ProcessInput(vec, m_Player, m_AllObjects, m_Zombies);
+
             //check if a game reset or zombie hit and save state and do the action here,
             //so that the game will draw the zombie intersecting the player
-            List<GameObject> toRemove = new List<GameObject>();
             bool b = false;
-            m_Player.CheckCollisions(m_AllObjects, toRemove, out b);
+            m_Player.CheckCollisions(m_AllObjects, m_Zombies, out b);
             if (b) ResetGame();
-            foreach (GameObject g in toRemove)
-            {
-                if (g is Zombie && g != null)
-                {
-                    m_Zombies.Remove((Zombie)g);
-                }
-            }
-            //may need to do stuff with removed items before clearing it here
-            toRemove.Clear();
+
 
             if (ZombieTimer >= ZombieSpawnTimer)
             {
@@ -141,16 +148,13 @@ namespace GameName1
                 MakeItem();
                 itemMade = true;
             }
-            Vector2 vec = new Vector2();
-            Input.ProcessTouchInput(out vec);
-            UserInterface.ProcessInput(vec, m_Player);
             m_Player.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             Vector2 playerPos = new Vector2(m_Player.Position.X, m_Player.Position.Y);
             foreach (Zombie z in m_Zombies)
             {
-                z.Move(playerPos);
+                z.Update(playerPos);
             }
-            
+            m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             base.Update(gameTime);
         }
 
@@ -164,6 +168,7 @@ namespace GameName1
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
+            UserInterface.DrawBackground(_spriteBatch);
             m_Player.Draw(_spriteBatch);
             //foreach (Zombie z in m_Zombies)
             //{
@@ -173,7 +178,7 @@ namespace GameName1
             {
                 g.Draw(_spriteBatch);
             }
-            UserInterface.Draw(_spriteBatch);
+            UserInterface.Draw(_spriteBatch, m_Player);
             _spriteBatch.End();
             
             base.Draw(gameTime);
@@ -200,7 +205,7 @@ namespace GameName1
             Zombie z = new Zombie();
             z.Position.X = x;
             z.Position.Y = y;
-            z.LoadContent(Content);
+            z.LoadContent(Content, m_World);
             m_Zombies.Add(z);
             m_AllObjects.Add(z);
         }
@@ -212,7 +217,6 @@ namespace GameName1
             int y = 0;
             while (nearPlayer)
             {
-
                 x = ZombieRandom.Next(720);
                 y = ZombieRandom.Next(1280);
 
@@ -239,5 +243,6 @@ namespace GameName1
             ZombieTimer = 0;
             itemMade = false;
         }
+
     }
 }

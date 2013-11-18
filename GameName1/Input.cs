@@ -7,29 +7,42 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
+using Microsoft.Devices.Sensors;
+
 namespace GameName1
 {
     static class Input
     {
-        private static bool isHolding = false;
-        public static List<GestureSample> Gestures;
         
+        //public static List<GestureSample> Gestures;
+        public static Accelerometer accelerometer;
+
         static Input()
         {
-            Gestures = new List<GestureSample>();
+            //Gestures = new List<GestureSample>();
+            if (Accelerometer.IsSupported)
+            {
+                accelerometer = new Accelerometer();
+                accelerometer.TimeBetweenUpdates = TimeSpan.FromMilliseconds(20);
+            }
         }
 
-        public static void ProcessTouchInput(out Vector2 position) 
+        public static TouchLocationState CurrentState
         {
-            position.X = -1;
-            position.Y = -1;
+            get;
+            set;
+        }
+        public static void ProcessTouchInput(out List<Vector2> touches) 
+        {
+            touches = new List<Vector2>();
             TouchCollection col = TouchPanel.GetState();
-
             foreach (TouchLocation loc in col)
             {
-                if (loc.State == TouchLocationState.Pressed)
+                if (loc.State == TouchLocationState.Pressed || loc.State == TouchLocationState.Moved)
                 {
-                    position = loc.Position;
+                    Vector2 touch = new Vector2(loc.Position.X, loc.Position.Y);
+                    touches.Add(touch);
+                    CurrentState = loc.State;
                 }
             }
         }

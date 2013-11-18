@@ -30,3 +30,5 @@ C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\GameName1\obj\ARM
 C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\GameName1\obj\ARM\Release\GameName1.dll
 C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\GameName1\obj\ARM\Release\GameName1.pdb
 C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\GameName1\obj\ARM\Release\XapCacheFile.xml
+C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\bin\WindowsPhone\ARM\Release\FarSeerPort.dll
+C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\bin\WindowsPhone\ARM\Release\FarSeerPort.pdb

@@ -27,7 +27,13 @@ namespace GameName1
                 NumFrames = frames;
             }
         }
-
+        public float Knockback;
+        protected int SightRange { get; set; }
+        protected float LeftAngle
+        {
+            get;
+            set;
+        }
         public bool Firing
         {
             get;
@@ -56,14 +62,14 @@ namespace GameName1
             set;
         }
 
-        //per second
-        public float FireRate
+        //number of frames to wait between the end of one animation to the next
+        public int FireRate
         {
             get;
             set;
         }
         protected static Random WEAPON_RANDOM = new Random();
-        protected float m_ElapsedTime = 0.0f;
+        protected int m_ElapsedFrames = 0;
         public Weapon() 
         {
         }
@@ -71,12 +77,16 @@ namespace GameName1
         //this should be called every update if it exists for the player
         public virtual void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength)
         {
-            //elapsed time since last update
-            m_ElapsedTime += elapsedTime;
+            //decrement unless its ready to fire
+            if (m_ElapsedFrames > 0)
+            {
+                m_ElapsedFrames -= 1;
+            }
         }
 
-        public virtual bool CheckCollision(GameObject ob)
+        public virtual bool CheckCollision(GameObject ob, out Vector2 angle)
         {
+            angle = new Vector2();
             return false;
         }
 
@@ -90,9 +100,8 @@ namespace GameName1
 
         public virtual bool CanFire()
         {
-            if (m_ElapsedTime >= 1.0 / FireRate)
+            if (m_ElapsedFrames == 0)
             {
-                m_ElapsedTime = 0;
                 return true;
             }
             return false;
