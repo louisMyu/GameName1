@@ -1,0 +1,17 @@
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\FarSeerPort.dll
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\FarSeerPort.pdb
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\MonoGame.Framework.dll
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.dll
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.Direct3D11.dll
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.XAudio2.dll
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.DXGI.dll
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.WP8.winmd
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\MonoGame.Framework.pdb
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.xml
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.Direct3D11.xml
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.XAudio2.xml
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.DXGI.xml
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\SharpDX.WP8.dll
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\obj\ARM\Release\FarSeerPort.csprojResolveAssemblyReference.cache
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\obj\ARM\Release\FarSeerPort.dll
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\PhoneClassLibrary1\obj\ARM\Release\FarSeerPort.pdb

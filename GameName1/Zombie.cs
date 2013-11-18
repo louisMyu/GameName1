@@ -126,5 +126,10 @@ namespace GameName1
             Vector2 impulse = Vector2.Normalize(angle) * amount;
             _circleBody.ApplyLinearImpulse(impulse);
         }
+
+        public void CleanBody()
+        {
+            _circleBody.Dispose();
+        }
     }
 }
