@@ -40,8 +40,8 @@ namespace FarSeerTest
 
         
 #if !XBOX360
-        const string Text = "Press A or D to rotate the ball\n" +
-                            "Press Space to jump\n";
+        const string Text = "Press Left or Right to rotate the ball\n" +
+                            "Press anywhere else to jump\n";
 #endif
         public Game1()
         {
@@ -179,9 +179,14 @@ namespace FarSeerTest
         {
             _circleBody.ApplyTorque(20);
         }
-        public void JumpButton()
+        public void ResetButton()
         {
-            _circleBody.ApplyLinearImpulse(new Vector2(0, -10));
+            /* We need XNA to draw the ground and circle at the center of the shapes */
+            Vector2 circlePosition = ConvertUnits.ToSimUnits(_screenCenter) + new Vector2(0, -1.5f);
+            _circleBody.Position = circlePosition;
+            
+            _circleBody.AngularVelocity = 0f;
+            _circleBody.LinearVelocity = new Vector2(0,0);
         }
         //void accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         //{

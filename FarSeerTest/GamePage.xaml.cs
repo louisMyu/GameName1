@@ -36,9 +36,9 @@ namespace FarSeerTest
         {
             _game.RightButton();
         }
-        private void JumpButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void ResetButton_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            _game.JumpButton();
+            _game.ResetButton();
         }
 
         // Sample code for building a localized ApplicationBar

@@ -16,9 +16,9 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <DrawingSurfaceBackgroundGrid x:Name="XnaSurface" Background="Transparent">
         <MediaElement x:Name="XnaMediaElement" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button Content="Left" HorizontalAlignment="Left" Margin="10,666,0,0" VerticalAlignment="Top" Width="123" Tap="LeftButton_Tap"/>
-        <Button Content="Jump" HorizontalAlignment="Left" Margin="167,666,0,0" VerticalAlignment="Top" Width="139" Tap="JumpButton_Tap"/>
-        <Button Content="Right" HorizontalAlignment="Left" Margin="352,666,0,0" VerticalAlignment="Top" Width="128" Tap="RightButton_Tap"/>
+        <Button Content="Left" HorizontalAlignment="Left" Margin="10,666,0,0" VerticalAlignment="Top" Width="123" Tap="LeftButton_Tap" ClickMode="Press"/>
+        <Button Content="Reset" HorizontalAlignment="Left" Margin="172,718,0,0" VerticalAlignment="Top" Width="139" Tap="ResetButton_Tap" ClickMode="Press"/>
+        <Button Content="Right" HorizontalAlignment="Left" Margin="352,666,0,0" VerticalAlignment="Top" Width="128" Tap="RightButton_Tap" ClickMode="Press"/>
 
         <!-- LOCALIZATION NOTE:
             To localize the displayed strings copy their values to appropriately named

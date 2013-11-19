@@ -17,7 +17,7 @@ namespace GameName1
         private static Texture2D GLOBAL_TEXTURE = null;
         private float SPEED = 0.5f;
 
-        private Body _circleBody;
+        public Body _circleBody;
 
         private enum State
         {
@@ -129,7 +129,11 @@ namespace GameName1
 
         public void CleanBody()
         {
-            _circleBody.Dispose();
+            if (_circleBody != null)
+            {
+                Game1.m_World.RemoveBody(_circleBody);
+                _circleBody.Dispose();
+            }
         }
     }
 }

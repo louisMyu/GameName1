@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Collision;
+using FarseerPhysics.Dynamics;
 
 namespace GameName1
 {
@@ -43,7 +44,7 @@ namespace GameName1
             isFireButtonDown = false;
             LifeTotal = 100;
         }
-        public void CheckCollisions(List<GameObject> exists, List<Zombie> zombies, out bool reset)
+        public void CheckCollisions(List<GameObject> exists, List<Zombie> zombies, out bool reset, World _world)
         {
             List<GameObject> removedAtEnd = new List<GameObject>();
             bool weaponHit = false;
@@ -75,6 +76,7 @@ namespace GameName1
                     {
                         removedAtEnd.Add(ob);
                         zombies.Remove((Zombie)ob);
+                        ((Zombie)ob).CleanBody();
                         LifeTotal -= 5;
                         if (LifeTotal <= 0)
                         {
@@ -118,6 +120,7 @@ namespace GameName1
                             temp.LifeTotal -= 5;
                             if (temp.LifeTotal <= 0)
                             {
+                                temp.CleanBody();
                                 zombies.Remove((Zombie)ob);
                                 removedAtEnd.Add(ob);
                             }

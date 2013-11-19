@@ -335,25 +335,25 @@ namespace FarseerPhysics.Dynamics
             {
                 foreach (Body body in _bodyRemoveList)
                 {
-                    Debug.Assert(BodyList.Count > 0);
+                    //Debug.Assert(BodyList.Count > 0);
 
-                    // You tried to remove a body that is not contained in the BodyList.
-                    // Are you removing the body more than once?
-                    Debug.Assert(BodyList.Contains(body));
+                    //// You tried to remove a body that is not contained in the BodyList.
+                    //// Are you removing the body more than once?
+                    //Debug.Assert(BodyList.Contains(body));
 
 #if USE_AWAKE_BODY_SET
                     Debug.Assert(!AwakeBodySet.Contains(body));
 #endif
-                    // Delete the attached joints.
-                    JointEdge je = body.JointList;
-                    while (je != null)
-                    {
-                        JointEdge je0 = je;
-                        je = je.Next;
+                    //// Delete the attached joints.
+                    //JointEdge je = body.JointList;
+                    //while (je != null)
+                    //{
+                    //    JointEdge je0 = je;
+                    //    je = je.Next;
 
-                        RemoveJoint(je0.Joint, false);
-                    }
-                    body.JointList = null;
+                    //    RemoveJoint(je0.Joint, false);
+                    //}
+                    //body.JointList = null;
 
                     // Delete the attached contacts.
                     ContactEdge ce = body.ContactList;
@@ -365,14 +365,14 @@ namespace FarseerPhysics.Dynamics
                     }
                     body.ContactList = null;
 
-                    // Delete the attached fixtures. This destroys broad-phase proxies.
-                    for (int i = 0; i < body.FixtureList.Count; i++)
-                    {
-                        body.FixtureList[i].DestroyProxies(ContactManager.BroadPhase);
-                        body.FixtureList[i].Destroy();
-                    }
+                    //// Delete the attached fixtures. This destroys broad-phase proxies.
+                    //for (int i = 0; i < body.FixtureList.Count; i++)
+                    //{
+                    //    body.FixtureList[i].DestroyProxies(ContactManager.BroadPhase);
+                    //    body.FixtureList[i].Destroy();
+                    //}
 
-                    body.FixtureList = null;
+                    //body.FixtureList = null;
 
                     // Remove world body list.
                     BodyList.Remove(body);
@@ -1128,8 +1128,8 @@ namespace FarseerPhysics.Dynamics
         /// <param name="body">The body.</param>
         public void RemoveBody(Body body)
         {
-            Debug.Assert(!_bodyRemoveList.Contains(body),
-                         "The body is already marked for removal. You are removing the body more than once.");
+            //Debug.Assert(!_bodyRemoveList.Contains(body),
+            //             "The body is already marked for removal. You are removing the body more than once.");
 
             if (!_bodyRemoveList.Contains(body))
                 _bodyRemoveList.Add(body);
@@ -1182,10 +1182,10 @@ namespace FarseerPhysics.Dynamics
         public void ProcessChanges()
         {
             ProcessAddedBodies();
-            ProcessAddedJoints();
+            //ProcessAddedJoints();
 
             ProcessRemovedBodies();
-            ProcessRemovedJoints();
+            //ProcessRemovedJoints();
 #if DEBUG && USE_AWAKE_BODY_SET
             foreach (var b in AwakeBodySet)
             {

@@ -1,5 +1,5 @@
-﻿<xapCache source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\bin\WindowsPhone\ARM\Release\GameName1_Release_ARM.xap" wasSigned="False" wasTritonized="False" certificateThumbprint="" TimeStampUrl="" signKeyFile="" signKeyPassword="" lastWriteTime="11/18/2013 1:13:44 AM">
-  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\obj\ARM\Release\GameName1.dll" archivePath="GameName1.dll" lastWriteTime="11/18/2013 1:13:42 AM" />
+﻿<xapCache source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\bin\WindowsPhone\ARM\Release\GameName1_Release_ARM.xap" wasSigned="False" wasTritonized="False" certificateThumbprint="" TimeStampUrl="" signKeyFile="" signKeyPassword="" lastWriteTime="11/18/2013 2:30:05 AM">
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\obj\ARM\Release\GameName1.dll" archivePath="GameName1.dll" lastWriteTime="11/18/2013 2:30:03 AM" />
   <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\Content\Powerup.xnb" archivePath="Content\Powerup.xnb" lastWriteTime="7/22/2013 8:58:03 PM" />
   <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\Content\ZombieFace.xnb" archivePath="Content\ZombieFace.xnb" lastWriteTime="7/28/2013 1:39:29 PM" />
   <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\Content\Line.xnb" archivePath="Content\Line.xnb" lastWriteTime="8/29/2013 12:00:37 AM" />
@@ -21,7 +21,7 @@
   <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\bin\WindowsPhone\ARM\Release\AppManifest.xaml" archivePath="AppManifest.xaml" lastWriteTime="11/18/2013 1:11:28 AM" />
   <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\bin\WindowsPhone\ARM\Release\Assets\ApplicationIcon.png" archivePath="Assets\ApplicationIcon.png" lastWriteTime="6/22/2013 1:59:12 PM" />
   <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\bin\WindowsPhone\ARM\Release\Assets\Tiles\FlipCycleTileMedium.png" archivePath="Assets\Tiles\FlipCycleTileMedium.png" lastWriteTime="6/22/2013 1:59:12 PM" />
-  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\PhoneClassLibrary1\Bin\ARM\Release\FarSeerPort.dll" archivePath="FarSeerPort.dll" lastWriteTime="11/18/2013 1:11:27 AM" />
+  <file source="C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\FarSeerPort\Bin\ARM\Release\FarSeerPort.dll" archivePath="FarSeerPort.dll" lastWriteTime="11/18/2013 2:04:10 AM" />
   <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Release\MonoGame.Framework.dll" archivePath="MonoGame.Framework.dll" lastWriteTime="11/18/2013 1:11:26 AM" />
   <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Release\SharpDX.dll" archivePath="SharpDX.dll" lastWriteTime="6/22/2013 2:22:08 PM" />
   <file source="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\bin\WindowsPhone\ARM\Release\SharpDX.Direct3D11.dll" archivePath="SharpDX.Direct3D11.dll" lastWriteTime="6/22/2013 2:22:08 PM" />

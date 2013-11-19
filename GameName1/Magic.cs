@@ -61,6 +61,7 @@ namespace GameName1
             {
                 if (g is Zombie)
                 {
+                    ((Zombie)g).CleanBody();
                     zombies.Remove((Zombie)g);
                     removedAtEnd.Add(g);
                 }

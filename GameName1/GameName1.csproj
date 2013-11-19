@@ -155,6 +155,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FarSeerPort\FarSeerPort.csproj">
+      <Project>{38C6014A-7647-44B1-AD8C-EDFB75AC5F18}</Project>
+      <Name>FarSeerPort</Name>
+    </ProjectReference>
     <ProjectReference Include="Z:\GIT\MonogameHead\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsPhone.csproj">
       <Project>{BAA9A6E4-7690-4DE0-9531-DE0EAEEC9739}</Project>
       <Name>MonoGame.Framework.WindowsPhone</Name>

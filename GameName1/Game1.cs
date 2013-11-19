@@ -22,7 +22,7 @@ namespace GameName1
         public static int GameWidth;
         public static int GameHeight;
 
-        private World m_World;
+        public static World m_World;
         
         Player m_Player;
         private List<Zombie> m_Zombies = new List<Zombie>();
@@ -126,7 +126,7 @@ namespace GameName1
             //check if a game reset or zombie hit and save state and do the action here,
             //so that the game will draw the zombie intersecting the player
             bool b = false;
-            m_Player.CheckCollisions(m_AllObjects, m_Zombies, out b);
+            m_Player.CheckCollisions(m_AllObjects, m_Zombies, out b, m_World);
             if (b) ResetGame();
 
 
@@ -237,12 +237,15 @@ namespace GameName1
         private void ResetGame()
         {
             m_AllObjects.Clear();
+            foreach (Zombie z in m_Zombies)
+            {
+                z.CleanBody();
+            }
             m_Zombies.Clear();
             GameTimer = 0;
             ZombieSpawnTimer = 6;
             ZombieTimer = 0;
             itemMade = false;
         }
-
     }
 }
