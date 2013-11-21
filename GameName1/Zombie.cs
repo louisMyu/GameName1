@@ -60,7 +60,7 @@ namespace GameName1
             }
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
-            _circleBody.Mass = 0.5f;
+            _circleBody.Mass = 0.2f;
             _circleBody.LinearDamping = 2f;
         }
 
@@ -140,6 +140,7 @@ namespace GameName1
             if (_circleBody != null)
             {
                 Game1.m_World.RemoveBody(_circleBody);
+                
             }
         }
     }

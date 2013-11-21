@@ -117,7 +117,7 @@ namespace GameName1
                         if (ob is Zombie)
                         {
                             Zombie temp = (Zombie)ob;
-                            temp.LifeTotal -= 5;
+                            temp.LifeTotal -= 10;
                             if (temp.LifeTotal <= 0)
                             {
                                 temp.CleanBody();

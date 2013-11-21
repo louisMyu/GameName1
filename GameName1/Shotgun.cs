@@ -31,7 +31,7 @@ namespace GameName1
             blast2 = content.Load<Texture2D>("Shotgun-Blast-2");
             blast3 = content.Load<Texture2D>("Shotgun-Blast-3");
             blast4 = content.Load<Texture2D>("Shotgun-Blast-4");
-            Knockback = 10f;
+            Knockback = 250f;
         }
         
         //foreach line of the shotgun i need to update the lines based on the player center,

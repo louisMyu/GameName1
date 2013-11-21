@@ -130,7 +130,7 @@ namespace GameName1
             if (b) ResetGame();
 
 
-            if (ZombieTimer >= ZombieSpawnTimer && m_Zombies.Count < 10)
+            if (ZombieTimer >= ZombieSpawnTimer)
             {
                 SpawnZombie();
                 ZombieTimer = 0;
@@ -154,7 +154,7 @@ namespace GameName1
             {
                 z.Update(playerPos);
             }
-            m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.006f);
+            m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
             base.Update(gameTime);
         }
 

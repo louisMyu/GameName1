@@ -344,16 +344,16 @@ namespace FarseerPhysics.Dynamics
 #if USE_AWAKE_BODY_SET
                     Debug.Assert(!AwakeBodySet.Contains(body));
 #endif
-                    //// Delete the attached joints.
-                    //JointEdge je = body.JointList;
-                    //while (je != null)
-                    //{
-                    //    JointEdge je0 = je;
-                    //    je = je.Next;
+                    // Delete the attached joints.
+                    JointEdge je = body.JointList;
+                    while (je != null)
+                    {
+                        JointEdge je0 = je;
+                        je = je.Next;
 
-                    //    RemoveJoint(je0.Joint, false);
-                    //}
-                    //body.JointList = null;
+                        RemoveJoint(je0.Joint, false);
+                    }
+                    body.JointList = null;
 
                     // Delete the attached contacts.
                     ContactEdge ce = body.ContactList;
@@ -365,14 +365,14 @@ namespace FarseerPhysics.Dynamics
                     }
                     body.ContactList = null;
 
-                    //// Delete the attached fixtures. This destroys broad-phase proxies.
-                    //for (int i = 0; i < body.FixtureList.Count; i++)
-                    //{
-                    //    body.FixtureList[i].DestroyProxies(ContactManager.BroadPhase);
-                    //    body.FixtureList[i].Destroy();
-                    //}
+                    // Delete the attached fixtures. This destroys broad-phase proxies.
+                    for (int i = 0; i < body.FixtureList.Count; i++)
+                    {
+                        body.FixtureList[i].DestroyProxies(ContactManager.BroadPhase);
+                        body.FixtureList[i].Destroy();
+                    }
 
-                    //body.FixtureList = null;
+                    body.FixtureList = null;
 
                     // Remove world body list.
                     BodyList.Remove(body);
@@ -1182,10 +1182,10 @@ namespace FarseerPhysics.Dynamics
         public void ProcessChanges()
         {
             ProcessAddedBodies();
-            //ProcessAddedJoints();
+            ProcessAddedJoints();
 
             ProcessRemovedBodies();
-            //ProcessRemovedJoints();
+            ProcessRemovedJoints();
 #if DEBUG && USE_AWAKE_BODY_SET
             foreach (var b in AwakeBodySet)
             {
