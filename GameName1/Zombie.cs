@@ -68,7 +68,15 @@ namespace GameName1
         public override void Move(Microsoft.Xna.Framework.Vector2 loc)
         {
             //should really just use the Sim's position for everything instead of converting from one to another
-            this.Position = ConvertUnits.ToDisplayUnits(_circleBody.Position);
+            Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
+            if (float.IsNaN(simPosition.X) || float.IsNaN(simPosition.Y))
+            {
+                return;
+            }
+            else
+            {
+                this.Position = simPosition;
+            }
 
             //get a normalized direction toward the point that was passed in, probably the player
             Vector2 vec = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
@@ -101,8 +109,8 @@ namespace GameName1
             base.Move(amount);
 
             //Later on, remove the clamp to the edge and despawn when too far out of the screen.
-            Position.X = MathHelper.Clamp(Position.X, Width + UI.OFFSET, Game1.GameWidth - (Width / 2));
-            Position.Y = MathHelper.Clamp(Position.Y, Height, Game1.GameHeight - (Height / 2));
+            //Position.X = MathHelper.Clamp(Position.X, Width + UI.OFFSET, Game1.GameWidth - (Width / 2));
+            //Position.Y = MathHelper.Clamp(Position.Y, Height, Game1.GameHeight - (Height / 2));
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
@@ -132,7 +140,6 @@ namespace GameName1
             if (_circleBody != null)
             {
                 Game1.m_World.RemoveBody(_circleBody);
-                _circleBody.Dispose();
             }
         }
     }
