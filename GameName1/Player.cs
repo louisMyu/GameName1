@@ -28,6 +28,7 @@ namespace GameName1
         public Magic WeaponSlot1Magic;
         public Magic WeaponSlot2Magic;
 
+        public int Score = 0;
         public bool isFireButtonDown
         {
             get;
@@ -123,6 +124,7 @@ namespace GameName1
                                 temp.CleanBody();
                                 zombies.Remove((Zombie)ob);
                                 removedAtEnd.Add(ob);
+                                ++Score;
                             }
                             else
                             {

@@ -12,7 +12,7 @@ namespace GameName1
     class UI
     {
         private Texture2D m_StatusBackground;
-        private SpriteFont m_SpriteFont;
+        public static SpriteFont m_SpriteFont;
         private Texture2D m_FireButton;
         private Color m_FireButtonColor = Color.White;
         private Vector2 FireButtonPosition;
@@ -31,7 +31,8 @@ namespace GameName1
         private float GameWidth;
         private float GameHeight;
 
-        
+        private Rectangle m_FireButtonRec;
+        private Vector2 m_FireButtonScale;
         public UI()
         {
         }
@@ -42,14 +43,17 @@ namespace GameName1
             m_SpriteFont = content.Load<SpriteFont>("Retrofont");
             m_FireButton = content.Load<Texture2D>("FireBtn");
             m_StatusBackgroundPosition = new Vector2(0, 0);
-            m_StatusBackGroundScale = new Vector2(OFFSET / m_StatusBackground.Width, height / m_StatusBackground.Height);
+            //m_StatusBackGroundScale = new Vector2(OFFSET / m_StatusBackground.Width, height / m_StatusBackground.Height);
+            m_StatusBackGroundScale = Utilities.GetSpriteScaling(new Vector2(OFFSET, height), new Vector2(m_StatusBackground.Width, m_StatusBackground.Height));
             PlayfieldBottom = OFFSET;
             GameWidth = width;
             GameHeight = height;
             m_Background = content.Load<Texture2D>("Louis-game-background");
-            FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2), GameHeight - m_FireButton.Height - 20);
-            WeaponSlot1Position = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), FireButtonPosition.Y - 800 + (m_FireButton.Height / 2));
+            FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2) + 10, GameHeight - m_FireButton.Height - 150);
+            WeaponSlot1Position = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), FireButtonPosition.Y - 900 + (m_FireButton.Height / 2));
             WeaponSlot2Position = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), WeaponSlot1Position.Y + m_FireButton.Height + 150);
+            m_FireButtonRec = new Rectangle((int)FireButtonPosition.X, (int)FireButtonPosition.Y, m_FireButton.Width, 300);
+            m_FireButtonScale = Utilities.GetSpriteScaling(new Vector2(m_FireButtonRec.Width, m_FireButtonRec.Height), new Vector2(m_FireButton.Width, m_FireButton.Height));
         }
 
         public void Update(Player p, int fps)
@@ -68,15 +72,14 @@ namespace GameName1
                 //the player movement clamping will prevent it going off screen
                 if (vec.X < PlayfieldBottom - 20)
                 {
-                    Rectangle temp = new Rectangle((int)FireButtonPosition.X, (int)FireButtonPosition.Y, m_FireButton.Width, m_FireButton.Height);
                     //in the fire button area
-                    if (Utilities.PointIntersectsRectangle(vec, temp))
+                    if (Utilities.PointIntersectsRectangle(vec, m_FireButtonRec))
                     {
                         m_FireButtonColor = Color.Orange;
                         stopPlayer = false;
                         p.isFireButtonDown = true;
                     }
-                    temp = new Rectangle((int)WeaponSlot1Position.X - (m_FireButton.Width / 2), (int)WeaponSlot1Position.Y - (m_FireButton.Height / 2), m_FireButton.Width, m_FireButton.Height);
+                    Rectangle temp = new Rectangle((int)WeaponSlot1Position.X - (m_FireButton.Width / 2), (int)WeaponSlot1Position.Y - (m_FireButton.Height / 2), m_FireButton.Width, m_FireButton.Height);
                     if (Utilities.PointIntersectsRectangle(vec, temp))
                     {
                         if (p.WeaponSlot1Magic != null)
@@ -106,8 +109,10 @@ namespace GameName1
         public void Draw(SpriteBatch spriteBatch, Player p)
         {
             spriteBatch.Draw(m_StatusBackground, m_StatusBackgroundPosition, null, Color.White, 0.0f, new Vector2(0.0f,0.0f), m_StatusBackGroundScale, SpriteEffects.None, 0.0f);
-            spriteBatch.DrawString(m_SpriteFont, "Life: " + p.LifeTotal, new Vector2(PlayfieldBottom - 50, m_StatusBackgroundPosition.Y + 50), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
-            spriteBatch.Draw(m_FireButton, FireButtonPosition, m_FireButtonColor);
+            //TODO CHANGE THE MAGIC NUMBERS HERE                                                          \/\/\/
+            spriteBatch.DrawString(m_SpriteFont, "Life: " + p.LifeTotal, new Vector2(PlayfieldBottom - 50, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
+            spriteBatch.DrawString(m_SpriteFont, "XP: " + p.Score, new Vector2(PlayfieldBottom - 80, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(m_FireButton, FireButtonPosition, null, m_FireButtonColor, 0.0f, new Vector2(0, 0), m_FireButtonScale, SpriteEffects.None, 0);
 
             Texture2D tempTex = null;
             if (p.WeaponSlot1Magic != null)

@@ -28,20 +28,25 @@ namespace GameName1
         private List<Zombie> m_Zombies = new List<Zombie>();
 
         private List<GameObject> m_AllObjects = new List<GameObject>();
-
+        private Menu m_Menu = new Menu();
 
         public static bool ZombiesSpawned = false;
         private PowerUp m_PowerUp;
         
         public static double GameTimer = 0;
         public static double ZombieTimer = 0;
-        private double ZombieSpawnTimer = 6;
+        private double ZombieSpawnTimer = 50;
+        private int MaxZombies = 50;
+
         public static bool itemMade = false;
         public static Random ZombieRandom = new Random(424242);
         private UI UserInterface = new UI();
         public int FrameCounter = 0;
         public double elapsedTime = 0;
         Line testLine = new Line(new Vector2(4, 0), new Vector2(0, 4));
+
+        GameState CurrentGameState = GameState.Playing;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -77,7 +82,7 @@ namespace GameName1
             m_Player.LoadContent(Content);
             UserInterface.LoadContent(Content, GameWidth, GameHeight);
             Magic.TextureInit(Content);
-
+            m_Menu.LoadContent(Content);
             ConvertUnits.SetDisplayUnitToSimUnitRatio(10);
             // TODO: use this.Content to load your game content here
         }
@@ -99,62 +104,81 @@ namespace GameName1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(0).Buttons.Back == ButtonState.Pressed)
+            if (CurrentGameState == GameState.Playing)
             {
-                m_AllObjects.Clear();
-                this.Exit();
-            }
-
-            // TODO: Add your update logic here
-            GameWidth = GraphicsDevice.Viewport.Width;
-            GameHeight = GraphicsDevice.Viewport.Height;
-            GameTimer += gameTime.ElapsedGameTime.TotalSeconds;
-            ZombieTimer += gameTime.ElapsedGameTime.TotalSeconds;
-
-            elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
-            ++FrameCounter;
-            if (elapsedTime > 1)
-            {
-                UserInterface.Update(m_Player, FrameCounter);
-                FrameCounter = 0;
-                elapsedTime = 0;
+                if (GamePad.GetState(0).Buttons.Back == ButtonState.Pressed)
+                {
+                    //m_AllObjects.Clear();
+                    //this.Exit();
+                    CurrentGameState = GameState.Menu;
+                    m_Menu.State = MenuState.Main;
+                }
             }
             List<Vector2> vec = new List<Vector2>();
             Input.ProcessTouchInput(out vec);
-            UserInterface.ProcessInput(vec, m_Player, m_AllObjects, m_Zombies);
+            switch (CurrentGameState) {
+                case GameState.Playing:
+                    // TODO: Add your update logic here
+                    GameWidth = GraphicsDevice.Viewport.Width;
+                    GameHeight = GraphicsDevice.Viewport.Height;
+                    GameTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                    ++ZombieTimer;
 
-            //check if a game reset or zombie hit and save state and do the action here,
-            //so that the game will draw the zombie intersecting the player
-            bool b = false;
-            m_Player.CheckCollisions(m_AllObjects, m_Zombies, out b, m_World);
-            if (b) ResetGame();
+                    elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
+                    ++FrameCounter;
+                    if (elapsedTime > 1)
+                    {
+                        UserInterface.Update(m_Player, FrameCounter);
+                        FrameCounter = 0;
+                        elapsedTime = 0;
+                    }
+                    UserInterface.ProcessInput(vec, m_Player, m_AllObjects, m_Zombies);
+
+                    //check if a game reset or zombie hit and save state and do the action here,
+                    //so that the game will draw the zombie intersecting the player
+                    bool b = false;
+                    m_Player.CheckCollisions(m_AllObjects, m_Zombies, out b, m_World);
+                    if (b) ResetGame();
 
 
-            if (ZombieTimer >= ZombieSpawnTimer)
-            {
-                SpawnZombie();
-                ZombieTimer = 0;
-                if (ZombieSpawnTimer > 1) 
-                {
-                    ZombieSpawnTimer -= 0.95;
-                }
-                if (ZombieSpawnTimer <= 0)
-                {
-                    ZombieSpawnTimer = 0.4;
-                }
+                    if (ZombieTimer >= ZombieSpawnTimer && m_Zombies.Count < MaxZombies)
+                    {
+                        SpawnZombie();
+                        ZombieTimer = 0;
+                        if (ZombieSpawnTimer > 10) 
+                        {
+                            ZombieSpawnTimer -= 1;
+                        }
+                        if (ZombieSpawnTimer < 10)
+                        {
+                            ZombieSpawnTimer = 10;
+                        }
+                    }
+                    if (GameTimer >= 10 && !itemMade)
+                    {
+                        MakeItem();
+                        itemMade = true;
+                    }
+                    m_Player.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                    Vector2 playerPos = new Vector2(m_Player.Position.X, m_Player.Position.Y);
+                    foreach (Zombie z in m_Zombies)
+                    {
+                        z.Update(playerPos);
+                    }
+                    m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
+                    break;
+                case GameState.Menu:
+                    bool toQuit;
+                    CurrentGameState = m_Menu.Update(vec, out toQuit);
+                    if (toQuit)
+                    {
+                        m_AllObjects.Clear();
+                        this.Exit();
+                    }
+                    break;
             }
-            if (GameTimer >= 10 && !itemMade)
-            {
-                MakeItem();
-                itemMade = true;
-            }
-            m_Player.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            Vector2 playerPos = new Vector2(m_Player.Position.X, m_Player.Position.Y);
-            foreach (Zombie z in m_Zombies)
-            {
-                z.Update(playerPos);
-            }
-            m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
+
+
             base.Update(gameTime);
         }
 
@@ -165,22 +189,29 @@ namespace GameName1
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-            _spriteBatch.Begin();
-            UserInterface.DrawBackground(_spriteBatch);
-            m_Player.Draw(_spriteBatch);
-            //foreach (Zombie z in m_Zombies)
-            //{
-            //    z.Draw(_spriteBatch);
-            //}
-            foreach (GameObject g in m_AllObjects)
-            {
-                g.Draw(_spriteBatch);
+            switch (CurrentGameState) {
+                case GameState.Playing:
+                    // TODO: Add your drawing code here
+                    _spriteBatch.Begin();
+                    UserInterface.DrawBackground(_spriteBatch);
+                    m_Player.Draw(_spriteBatch);
+                    //foreach (Zombie z in m_Zombies)
+                    //{
+                    //    z.Draw(_spriteBatch);
+                    //}
+                    foreach (GameObject g in m_AllObjects)
+                    {
+                        g.Draw(_spriteBatch);
+                    }
+                    UserInterface.Draw(_spriteBatch, m_Player);
+                    _spriteBatch.End();
+                    break;
+                case GameState.Menu:
+                    _spriteBatch.Begin();
+                    m_Menu.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    break;
             }
-            UserInterface.Draw(_spriteBatch, m_Player);
-            _spriteBatch.End();
-            
             base.Draw(gameTime);
         }
 
@@ -246,6 +277,7 @@ namespace GameName1
             ZombieSpawnTimer = 6;
             ZombieTimer = 0;
             itemMade = false;
+            m_Player.Score = 0;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace GameName1
         private State m_State;
         public Zombie() : base()
         {
-            LifeTotal = 50;
+            LifeTotal = 40;
             
         }
         

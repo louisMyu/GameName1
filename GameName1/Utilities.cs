@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,13 @@ namespace GameName1
             return (point.X >= rec.Left && point.Y >= rec.Top && point.X <= rec.Right && point.Y <= rec.Bottom);
         }
 
-        
+        public static Vector2 GetSpriteScaling(Vector2 result, Vector2 baseVec)
+        {
+            Vector2 temp = new Vector2();
+            temp.X = result.X / baseVec.X;
+            temp.Y = result.Y / baseVec.Y;
+            return temp;
+        }
 
     }
 }

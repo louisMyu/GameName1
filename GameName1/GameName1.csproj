@@ -82,6 +82,7 @@
     </Compile>
     <Compile Include="Game1.cs" />
     <Compile Include="Magic.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -122,6 +123,8 @@
     <Content Include="Content\Shotgun-Blast-2.xnb" />
     <Content Include="Content\Shotgun-Blast-3.xnb" />
     <Content Include="Content\Shotgun-Blast-4.xnb" />
+    <Content Include="Content\Menu.xnb" />
+    <Content Include="Content\WhiteTile.xnb" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
