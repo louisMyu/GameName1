@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Input;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics;
 using FarseerPhysics.Factories;
+using System.IO.IsolatedStorage;
+using Microsoft.Xna.Framework.Media;
 
 namespace GameName1
 {
@@ -16,6 +18,7 @@ namespace GameName1
     /// </summary>
     public class Game1 : Game
     {
+        Song m_song;
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
@@ -24,7 +27,8 @@ namespace GameName1
 
         public static World m_World;
         
-        Player m_Player;
+        public Player m_Player;
+        
         private List<Zombie> m_Zombies = new List<Zombie>();
 
         private List<GameObject> m_AllObjects = new List<GameObject>();
@@ -65,9 +69,31 @@ namespace GameName1
             // TODO: Add your initialization logic here
             GameWidth = GraphicsDevice.Viewport.Width;
             GameHeight = GraphicsDevice.Viewport.Height;
-            Vector2 playerPosition = new Vector2(GameWidth / 2, GameHeight / 2);
-            m_Player.Init(Content, playerPosition);
+            
             m_World = new World(new Vector2(0, 0));
+
+            Player p = Player.Load(Content);
+            if (p == null)
+            {
+                Vector2 playerPosition = new Vector2(GameWidth / 2, GameHeight / 2);
+                m_Player.Init(Content, playerPosition);
+            }
+            else
+            {
+                m_Player = p;
+            }
+            m_AllObjects = Storage.Load<List<GameObject>>("GameObjects", "ObjectList.dat");
+            if (m_AllObjects == null)
+            {
+                m_AllObjects = new List<GameObject>();
+            }
+            else
+            {
+                foreach (GameObject g in m_AllObjects)
+                {
+                    g.Load(Content, m_World);
+                }
+            }
             base.Initialize();
         }
 
@@ -84,6 +110,8 @@ namespace GameName1
             Magic.TextureInit(Content);
             m_Menu.LoadContent(Content);
             ConvertUnits.SetDisplayUnitToSimUnitRatio(10);
+
+            m_song = Content.Load<Song>("AuraQualic - DATA (FL Studio Remix)");
             // TODO: use this.Content to load your game content here
         }
 
@@ -96,7 +124,7 @@ namespace GameName1
             // TODO: Unload any non ContentManager content here
             m_AllObjects.Clear();
         }
-
+        bool playing = false;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -104,6 +132,12 @@ namespace GameName1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (!playing)
+            {
+                MediaPlayer.Play(m_song);
+                MediaPlayer.IsRepeating = true;
+                playing = true;
+            }
             if (CurrentGameState == GameState.Playing)
             {
                 if (GamePad.GetState(0).Buttons.Back == ButtonState.Pressed)
@@ -161,9 +195,9 @@ namespace GameName1
                     }
                     m_Player.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
                     Vector2 playerPos = new Vector2(m_Player.Position.X, m_Player.Position.Y);
-                    foreach (Zombie z in m_Zombies)
+                    foreach (GameObject g in m_AllObjects)
                     {
-                        z.Update(playerPos);
+                        g.Update(playerPos);
                     }
                     m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
                     break;
@@ -172,6 +206,8 @@ namespace GameName1
                     CurrentGameState = m_Menu.Update(vec, out toQuit);
                     if (toQuit)
                     {
+                        m_Player.Save();
+                        Storage.Save<List<GameObject>>("GameObjects", "ObjectList.dat", m_AllObjects);
                         m_AllObjects.Clear();
                         this.Exit();
                     }
@@ -208,7 +244,7 @@ namespace GameName1
                     break;
                 case GameState.Menu:
                     _spriteBatch.Begin();
-                    m_Menu.Draw(_spriteBatch);
+                    m_Menu.Draw(_spriteBatch, m_Player);
                     _spriteBatch.End();
                     break;
             }
@@ -234,8 +270,10 @@ namespace GameName1
                 }
             }
             Zombie z = new Zombie();
-            z.Position.X = x;
-            z.Position.Y = y;
+            Vector2 temp = new Vector2();
+            temp.X = x;
+            temp.Y = y;
+            z.Position = temp;
             z.LoadContent(Content, m_World);
             m_Zombies.Add(z);
             m_AllObjects.Add(z);
@@ -259,8 +297,10 @@ namespace GameName1
                 }
             }
             m_PowerUp = new PowerUp();
-            m_PowerUp.Position.X = x;
-            m_PowerUp.Position.Y = y;
+            Vector2 temp = new Vector2();
+            temp.X = x;
+            temp.Y = y;
+            m_PowerUp.Position = temp;
             m_PowerUp.LoadContent(Content);
             m_AllObjects.Add(m_PowerUp);
         }

@@ -3,17 +3,22 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GameName1
 {
-    class Magic
+    [KnownType(typeof(WrathEffect))]
+    [DataContract]
+    public class Magic
     {
-        //have all the textures static, and in the base class, one instance
-        protected static Texture2D WrathTexture;
+        [IgnoreDataMember]
+        protected static Texture2D WrathTexture;  //have all the textures static, and in the base class, one instance
+        [IgnoreDataMember]
         private static bool TexturesLoaded = false;
 
+        [DataMember]
         public string Name { get; set; }
         
         //called once
@@ -44,9 +49,14 @@ namespace GameName1
         {
             return WrathTexture;
         }
+
+        public Magic()
+        {
+        }
     }
 
-    class WrathEffect : Magic
+    [DataContract]
+    public class WrathEffect : Magic
     {
         public WrathEffect()
         {

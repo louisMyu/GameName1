@@ -48,7 +48,7 @@ namespace GameName1
             hitAngle = new Vector2();
             foreach (Line line in m_BulletLines)
             {
-                Vector2 check = line.Intersects(ob.Bounds);
+                Vector2 check = line.Intersects(ob.m_Bounds);
                 if (check.X != -1)
                 {
                     return true;

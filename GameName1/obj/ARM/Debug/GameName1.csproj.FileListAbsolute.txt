@@ -32,3 +32,4 @@ C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\obj\ARM
 C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\obj\ARM\Debug\GameName1.dll
 C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\obj\ARM\Debug\GameName1.pdb
 C:\Users\Louis\documents\visual studio 2012\Projects\GameName1\GameName1\obj\ARM\Debug\XapCacheFile.xml
+C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\GameName1\bin\WindowsPhone\ARM\Debug\Content\AuraQualic - DATA (FL Studio Remix).wma

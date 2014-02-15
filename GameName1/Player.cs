@@ -7,28 +7,53 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Collision;
 using FarseerPhysics.Dynamics;
+using System.Runtime.Serialization;
+using System.IO.IsolatedStorage;
 
 namespace GameName1
 {
-    class Player : GameObject
+    [KnownType(typeof(GameObject))]
+    [KnownType(typeof(Shotgun))]
+    [DataContract]
+    public class Player : GameObject
     {
+        [IgnoreDataMember]
+        public static readonly string playerSaveDir = "playerDir";
+        [IgnoreDataMember]
         static float VELOCITY = 5.0F;
-        private int SIGHT_RANGE = 100;
+        [IgnoreDataMember]
+        private int m_SightRange = 100;
+        [DataMember]
+        public int SightRange { get { return m_SightRange; } set { m_SightRange = value; } }
 
+        [IgnoreDataMember]
         public Vector2 m_MoveToward = new Vector2();
-        Vector3 a;
-        public int Life = 0;
-		private Weapon testWeapon;
+        [DataMember]
+        public Vector2 MoveToward { get { return m_MoveToward; } set { m_MoveToward = value; } }
+        [DataMember]
+        public int Life { get; set; }
+        [IgnoreDataMember]
+        private Weapon m_Weapon {get;set;}
+        [DataMember]
+        public Weapon Weapon { get { return m_Weapon; } set { m_Weapon = value; } }
+        [IgnoreDataMember]
         private bool m_Moving = false;
-        bool shotHappened = false;
+        [DataMember]
+        public bool Moving { get { return m_Moving; } set { m_Moving = value; } }
+        [IgnoreDataMember]
+        private bool shotHappened = false;
+        [DataMember]
+        public bool ShotHappened { get { return shotHappened; } set { shotHappened = value; } }
+        [DataMember]
+        public int LifeTotal { get; set; }
+        [DataMember]
+        public Magic WeaponSlot1Magic { get; set; }
+        [DataMember]
+        public Magic WeaponSlot2Magic { get; set; }
 
-        Texture2D AlphaTexture;
-        public int LifeTotal;
-
-        public Magic WeaponSlot1Magic;
-        public Magic WeaponSlot2Magic;
-
-        public int Score = 0;
+        [DataMember]
+        public int Score { get; set; }
+        [DataMember]
         public bool isFireButtonDown
         {
             get;
@@ -38,9 +63,16 @@ namespace GameName1
         {
 			
         }
+        public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Player player)
+        {
+            m_Weapon = player.m_Weapon;
+            Position = player.Position;
+            isFireButtonDown = player.isFireButtonDown;
+            LifeTotal = player.LifeTotal;
+        }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
-            testWeapon = new Shotgun(content);
+            m_Weapon = new Shotgun(content);
             Position = pos;
             isFireButtonDown = false;
             LifeTotal = 100;
@@ -61,7 +93,7 @@ namespace GameName1
                 if (temp < nearestLength && ob is Zombie)
                 {
                     nearestLength = temp;
-                    if (!testWeapon.Firing)
+                    if (!m_Weapon.Firing)
                     {
                         RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
                     }
@@ -71,7 +103,7 @@ namespace GameName1
                     //need to handle null exeception here
                     return;
                 }
-                if (ob.Bounds.Intersects(this.Bounds))
+                if (ob.m_Bounds.Intersects(this.m_Bounds))
                 {
                     if (ob is Zombie)
                     {
@@ -103,16 +135,16 @@ namespace GameName1
             }
             //TODO: seriously need to refactor this later
             //its good to find the nearest zombie when i run through entire zombie list, but probably not here
-            if ((testWeapon.CanFire() && isFireButtonDown) || testWeapon.Firing)
+            if ((m_Weapon.CanFire() && isFireButtonDown) || m_Weapon.Firing)
             {
-                if (!testWeapon.Firing)
+                if (!m_Weapon.Firing)
                 {
                     shotHappened = true;
                 }
                 foreach (GameObject ob in exists)
                 {
                     Vector2 hitAngle = new Vector2();
-                    weaponHit = testWeapon.CheckCollision(ob, out hitAngle);
+                    weaponHit = m_Weapon.CheckCollision(ob, out hitAngle);
                     if (weaponHit)
                     {
                         if (ob is Zombie)
@@ -128,7 +160,7 @@ namespace GameName1
                             }
                             else
                             {
-                                temp.ApplyLinearForce(hitAngle, testWeapon.Knockback);
+                                temp.ApplyLinearForce(hitAngle, m_Weapon.Knockback);
                             }
                         }
                     }
@@ -143,7 +175,6 @@ namespace GameName1
         public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             Texture = content.Load<Texture2D>("Player");
-            AlphaTexture = content.Load<Texture2D>("TransparentSquare");
             base.LoadContent(content);
         }
 
@@ -158,13 +189,12 @@ namespace GameName1
                 amount *= VELOCITY;
             }
             base.Move(amount);
-            //Position.X = (float)Math.Floor(Position.X);
-            //Position.Y = (float)Math.Floor(Position.Y);
-            Position.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth + Width);
-            Position.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight + Height);
-
-            Bounds.X = (int)Position.X - Width / 2;
-            Bounds.Y = (int)Position.Y - Height / 2;
+            Vector2 temp = new Vector2();
+            temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth + Width);
+            temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight + Height);
+            Position = temp;
+            m_Bounds.X = (int)Position.X - Width / 2;
+            m_Bounds.Y = (int)Position.Y - Height / 2;
         }
 
         internal void ProcessInput(Vector2 vec, bool inPlayField, bool stopPlayer = false)
@@ -184,7 +214,7 @@ namespace GameName1
 
         public void Update(float elapsedTime)
         {
-            testWeapon.Update(elapsedTime, Position, RotationAngle, 10, SIGHT_RANGE);
+            m_Weapon.Update(elapsedTime, Position, RotationAngle, 10, m_SightRange);
             if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
             {
                 m_Moving = false;
@@ -198,11 +228,29 @@ namespace GameName1
         public override void Draw(SpriteBatch _spriteBatch)
         {
             base.Draw(_spriteBatch);
-            _spriteBatch.Draw(AlphaTexture, Position, null, Color.White, RotationAngle, Origin, 1.0f, SpriteEffects.None, 0f);
-            if (shotHappened || testWeapon.Firing)
+
+            if (shotHappened || m_Weapon.Firing)
             {
-                testWeapon.DrawBlast(_spriteBatch, Position, RotationAngle);
+                m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
             }
+        }
+
+        public override void Save()
+        {
+            Storage.Save<Player>(Player.playerSaveDir, "player1", this);
+        }
+        public override void Load(Microsoft.Xna.Framework.Content.ContentManager content, World world)
+        {
+            throw new NotImplementedException();
+        }
+        public static Player Load(Microsoft.Xna.Framework.Content.ContentManager content)
+        {
+            Player p = Storage.Load<Player>(Player.playerSaveDir, "player1");
+            if (p != null)
+            {
+                p.m_Weapon.LoadWeapon(content);
+            }
+            return p;
         }
     }
 }

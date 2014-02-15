@@ -43,16 +43,15 @@ namespace GameName1
             m_SpriteFont = content.Load<SpriteFont>("Retrofont");
             m_FireButton = content.Load<Texture2D>("FireBtn");
             m_StatusBackgroundPosition = new Vector2(0, 0);
-            //m_StatusBackGroundScale = new Vector2(OFFSET / m_StatusBackground.Width, height / m_StatusBackground.Height);
             m_StatusBackGroundScale = Utilities.GetSpriteScaling(new Vector2(OFFSET, height), new Vector2(m_StatusBackground.Width, m_StatusBackground.Height));
             PlayfieldBottom = OFFSET;
             GameWidth = width;
             GameHeight = height;
             m_Background = content.Load<Texture2D>("Louis-game-background");
-            FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2) + 10, GameHeight - m_FireButton.Height - 150);
+            FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2), GameHeight - m_FireButton.Height - 150);
             WeaponSlot1Position = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), FireButtonPosition.Y - 900 + (m_FireButton.Height / 2));
             WeaponSlot2Position = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), WeaponSlot1Position.Y + m_FireButton.Height + 150);
-            m_FireButtonRec = new Rectangle((int)FireButtonPosition.X, (int)FireButtonPosition.Y, m_FireButton.Width, 300);
+            m_FireButtonRec = new Rectangle((int)FireButtonPosition.X, (int)FireButtonPosition.Y, m_FireButton.Width+20, 300);
             m_FireButtonScale = Utilities.GetSpriteScaling(new Vector2(m_FireButtonRec.Width, m_FireButtonRec.Height), new Vector2(m_FireButton.Width, m_FireButton.Height));
         }
 

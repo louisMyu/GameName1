@@ -9,26 +9,41 @@ using System.Threading.Tasks;
 using FarseerPhysics.Factories;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics;
+using System.Runtime.Serialization;
 
 namespace GameName1
 {
-    class Zombie : GameObject
+    [KnownType(typeof(Zombie))]
+    [KnownType(typeof(GameObject))]
+    [DataContract]
+    public class Zombie : GameObject
     {
-        private static Texture2D GLOBAL_TEXTURE = null;
-        private float SPEED = 0.5f;
-
-        public Body _circleBody;
-
-        private enum State
+        public enum MotionState
         {
             Wandering,
             Locked,
             Dead
         }
+        [DataMember]
+        public Vector2 bodyPosition { get; set; }
+        [IgnoreDataMember]
+        static private Texture2D m_Texture = null;
+        [IgnoreDataMember]
+        private float m_Speed = 0.5f;
+        [DataMember]
+        public float Speed { get { return m_Speed; } set { m_Speed = value; } }
 
-        public int LifeTotal;
+        [IgnoreDataMember]
+        public Body _circleBody;
 
-        private State m_State;
+        [DataMember]
+        public int LifeTotal { get; set; }
+
+        private MotionState m_State;
+        [DataMember]
+        public MotionState State { get; set; }
+
+
         public Zombie() : base()
         {
             LifeTotal = 40;
@@ -37,26 +52,26 @@ namespace GameName1
         
         public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager Content, World world)
         {
-            if (GLOBAL_TEXTURE == null)
+            if (m_Texture == null)
             {
-                GLOBAL_TEXTURE = Content.Load<Texture2D>("kevinZombie");
+                m_Texture = TextureBank.GetTexture("kevinZombie", Content);
             }
-            m_State = State.Wandering;
+            m_State = MotionState.Wandering;
             RotationAngle = (float)GameObject.RANDOM_GENERATOR.NextDouble();
-            Direction.X = (float)Math.Cos(RotationAngle);
-            Direction.Y = (float)Math.Sin(RotationAngle);
+            m_Direction.X = (float)Math.Cos(RotationAngle);
+            m_Direction.Y = (float)Math.Sin(RotationAngle);
 
-            Width = GLOBAL_TEXTURE != null ? GLOBAL_TEXTURE.Width : 0;
-            Height = GLOBAL_TEXTURE != null ? GLOBAL_TEXTURE.Height : 0;
+            Width = m_Texture != null ? m_Texture.Width : 0;
+            Height = m_Texture != null ? m_Texture.Height : 0;
 
-            if (GLOBAL_TEXTURE != null)
+            if (m_Texture != null)
             {
-                Bounds.Width = Width;
-                Bounds.Height = Height;
-                Bounds.X = (int)Position.X - Width / 2;
-                Bounds.Y = (int)Position.Y - Height / 2;
-                Origin.X = Width / 2;
-                Origin.Y = Height / 2;
+                m_Bounds.Width = Width;
+                m_Bounds.Height = Height;
+                m_Bounds.X = (int)Position.X - Width / 2;
+                m_Bounds.Y = (int)Position.Y - Height / 2;
+                m_Origin.X = Width / 2;
+                m_Origin.Y = Height / 2;
             }
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
@@ -82,30 +97,30 @@ namespace GameName1
             Vector2 vec = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
             if (vec.LengthSquared() <= (275.0f*275.0f))
             {
-                m_State = State.Locked;
+                m_State = MotionState.Locked;
             }
 
             switch (m_State)
             {
-                case State.Wandering:
+                case MotionState.Wandering:
                     if (RANDOM_GENERATOR.Next(150) % 150 == 1)
                     {
                         RotationAngle = (float)RANDOM_GENERATOR.NextDouble() * MathHelper.Pi * 2;
-                        Direction.X = (float)Math.Cos(RotationAngle);
-                        Direction.Y = (float)Math.Sin(RotationAngle);
+                        m_Direction.X = (float)Math.Cos(RotationAngle);
+                        m_Direction.Y = (float)Math.Sin(RotationAngle);
                     }
                     break;
 
-                case State.Locked:
-                    Direction = vec;
+                case MotionState.Locked:
+                    m_Direction = vec;
                     RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
-                    m_State = State.Locked;
-                    SPEED = 2.0f;
+                    m_State = MotionState.Locked;
+                    m_Speed = 2.0f;
                     break;
             }
 
-            Direction = Vector2.Normalize(Direction);
-            Vector2 amount = Direction * SPEED;
+            m_Direction = Vector2.Normalize(m_Direction);
+            Vector2 amount = m_Direction * m_Speed;
             base.Move(amount);
 
             //Later on, remove the clamp to the edge and despawn when too far out of the screen.
@@ -116,17 +131,18 @@ namespace GameName1
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
             }
 
-            Bounds.X = (int)Position.X - Width / 2;
-            Bounds.Y = (int)Position.Y - Height / 2;
+            m_Bounds.X = (int)Position.X - Width / 2;
+            m_Bounds.Y = (int)Position.Y - Height / 2;
         }
-        public void Update(Vector2 playerPosition)
+        public override void Update(Vector2 playerPosition)
         {
-
             Move(playerPosition);
+            bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(GLOBAL_TEXTURE, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, Origin, 1.0f, SpriteEffects.None, 0f);
+            Vector2 temp = ConvertUnits.ToDisplayUnits(_circleBody.Position);
+            spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
         }
 
         public void ApplyLinearForce(Vector2 angle, float amount)
@@ -142,6 +158,23 @@ namespace GameName1
                 Game1.m_World.RemoveBody(_circleBody);
                 
             }
+        }
+
+        public override void Save()
+        {
+            Storage.Save<Zombie>("", "", this);
+        }
+        public override void Load(Microsoft.Xna.Framework.Content.ContentManager content, World world)
+        {
+            if (m_Texture == null)
+            {
+                m_Texture = TextureBank.GetTexture("kevinZombie", content);
+            }
+            _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
+            _circleBody.BodyType = BodyType.Dynamic;
+            _circleBody.Mass = 0.2f;
+            _circleBody.LinearDamping = 2f;
+            _circleBody.Position = bodyPosition;
         }
     }
 }

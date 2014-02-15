@@ -3,20 +3,27 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GameName1
 {
-    class Weapon
+    [DataContract]
+    public class Weapon
     {
-        protected struct ShotInfo
+        [DataContract]
+        public struct ShotInfo
         {
+            [DataMember]
             public Vector2 Position;
+            [DataMember]
             public float Rotation;
-            int NumberOfBullets;
-            //left most of a spread shot
-            float LeftAngle;
+            [DataMember]
+            public int NumberOfBullets;
+            [DataMember]
+            public float LeftAngle; //left most of a spread shot
+            [DataMember]
             public int NumFrames;
             public ShotInfo(Vector2 pos, float rot, int numBul, float left, int frames)
             {
@@ -27,20 +34,25 @@ namespace GameName1
                 NumFrames = frames;
             }
         }
-        public float Knockback;
-        protected int SightRange { get; set; }
-        protected float LeftAngle
+        [DataMember]
+        public float Knockback { get; set; }
+        [DataMember]
+        public int SightRange { get; set; }
+        [DataMember]
+        public float LeftAngle
         {
             get;
             set;
         }
+        [DataMember]
         public bool Firing
         {
             get;
             set;
         }
-        //spread of the bullets
-        private float m_Spread;
+        [IgnoreDataMember]
+        private float m_Spread;//spread of the bullets
+        [DataMember]
         public float Spread
         {
             get
@@ -56,12 +68,13 @@ namespace GameName1
                 m_Spread = value;
             }
         }
+        [DataMember]
         public int NumberOfBullets
         {
             get;
             set;
         }
-
+        [DataMember]
         //number of frames to wait between the end of one animation to the next
         public int FireRate
         {
@@ -69,7 +82,8 @@ namespace GameName1
             set;
         }
         protected static Random WEAPON_RANDOM = new Random();
-        protected int m_ElapsedFrames = 0;
+        [DataMember]
+        public int m_ElapsedFrames { get; set; }
         public Weapon() 
         {
         }
@@ -105,6 +119,10 @@ namespace GameName1
                 return true;
             }
             return false;
+        }
+
+        public virtual void LoadWeapon(Microsoft.Xna.Framework.Content.ContentManager content)
+        {
         }
     }
 }

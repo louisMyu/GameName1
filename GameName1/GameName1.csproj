@@ -93,6 +93,8 @@
     </Compile>
     <Compile Include="Rifle.cs" />
     <Compile Include="Shotgun.cs" />
+    <Compile Include="Storage.cs" />
+    <Compile Include="TextureBank.cs" />
     <Compile Include="Triangle.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="Utilities.cs" />
@@ -110,6 +112,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\AuraQualic - DATA %28FL Studio Remix%29.wma">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Powerup.xnb" />
     <Content Include="Content\ZombieFace.xnb" />
     <Content Include="Content\Line.xnb" />
@@ -125,6 +130,7 @@
     <Content Include="Content\Shotgun-Blast-4.xnb" />
     <Content Include="Content\Menu.xnb" />
     <Content Include="Content\WhiteTile.xnb" />
+    <Content Include="Content\AuraQualic - DATA %28FL Studio Remix%29.xnb" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
