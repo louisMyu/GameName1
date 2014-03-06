@@ -69,6 +69,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Anubis.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -131,6 +132,7 @@
     <Content Include="Content\Menu.xnb" />
     <Content Include="Content\WhiteTile.xnb" />
     <Content Include="Content\AuraQualic - DATA %28FL Studio Remix%29.xnb" />
+    <None Include="Content\Face.xnb" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>

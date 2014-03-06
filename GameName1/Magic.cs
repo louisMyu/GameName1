@@ -40,7 +40,7 @@ namespace GameName1
             }
             return new WrathEffect();
         }
-        public virtual void GetEffect(List<GameObject>exists, List<Zombie> zombies)
+        public virtual void GetEffect(List<GameObject>exists)
         {
 
         }
@@ -63,7 +63,7 @@ namespace GameName1
             
         }
 
-        public override void GetEffect(List<GameObject> exists, List<Zombie> zombies)
+        public override void GetEffect(List<GameObject> exists)
         {
             //for now hitting the powerup will reset the game
             List<GameObject> removedAtEnd = new List<GameObject>();
@@ -72,7 +72,6 @@ namespace GameName1
                 if (g is Zombie)
                 {
                     ((Zombie)g).CleanBody();
-                    zombies.Remove((Zombie)g);
                     removedAtEnd.Add(g);
                 }
             }

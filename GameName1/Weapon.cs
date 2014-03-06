@@ -84,12 +84,14 @@ namespace GameName1
         protected static Random WEAPON_RANDOM = new Random();
         [DataMember]
         public int m_ElapsedFrames { get; set; }
+        [DataMember]
+        public bool CanDamage { get; set; }
         public Weapon() 
         {
         }
 
         //this should be called every update if it exists for the player
-        public virtual void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength)
+        public virtual void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength, bool isFireDown)
         {
             //decrement unless its ready to fire
             if (m_ElapsedFrames > 0)

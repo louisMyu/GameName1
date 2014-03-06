@@ -63,9 +63,9 @@ namespace GameName1
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
-        public override void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength)
+        public override void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength, bool shotFired)
         {
-            base.Update(elapsedTime, playerCenter, rotationAngle, accuracy, weaponLength);
+            base.Update(elapsedTime, playerCenter, rotationAngle, accuracy, weaponLength, shotFired);
             if (!Firing)
             {
                 float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
@@ -77,9 +77,21 @@ namespace GameName1
                 SightRange = weaponLength;
                 m_CurrentShotInfo = new ShotInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle, 10);
             }
+            //firing a shot, save the state
+            if (!Firing && shotFired && CanFire())
+            {
+                Firing = true;
+                m_SavedShotInfo = m_CurrentShotInfo;
+                CanDamage = true;
+            }
         }
         public override bool CheckCollision(GameObject ob, out Vector2 intersectingAngle)
         {
+            intersectingAngle = new Vector2(0, 0);
+            if (!CanDamage)
+            {
+                return false;
+            }
             foreach (Line line in m_BulletLines)
             {
                 Vector2 check = line.Intersects(ob.m_Bounds);
@@ -89,7 +101,6 @@ namespace GameName1
                     return true;
                 }
             }
-            intersectingAngle = new Vector2(0, 0);
             return false;
         }
         public override void DrawWeapon(SpriteBatch _spriteBatch, Vector2 position, float rot)
@@ -99,12 +110,7 @@ namespace GameName1
 
         public override void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
-            //firing a shot, save the state
-            if (!Firing)
-            {
-                Firing = true;
-                m_SavedShotInfo = m_CurrentShotInfo;
-            }
+            
             if (m_SavedShotInfo.NumFrames > 0)
             {
                 float leftAngle = LeftAngle;
@@ -127,6 +133,7 @@ namespace GameName1
                 }
                 else if (m_SavedShotInfo.NumFrames > 2)
                 {
+                    CanDamage = false;
                     _spriteBatch.Draw(blast3, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
                 }
                 else if (m_SavedShotInfo.NumFrames > 0)

@@ -60,7 +60,7 @@ namespace GameName1
             CurrentFPS = fps;
         }
 
-        public void ProcessInput(List<Vector2> vecList, Player p, List<GameObject> AllItems, List<Zombie>zombies)
+        public void ProcessInput(List<Vector2> vecList, Player p, List<GameObject> AllItems)
         {
             m_FireButtonColor = Color.White;
             Vector2 playerVec = new Vector2(-1, -1);
@@ -83,7 +83,7 @@ namespace GameName1
                     {
                         if (p.WeaponSlot1Magic != null)
                         {
-                            p.WeaponSlot1Magic.GetEffect(AllItems, zombies);
+                            p.WeaponSlot1Magic.GetEffect(AllItems);
                         }
                         p.WeaponSlot1Magic = null;
                     }
@@ -92,7 +92,7 @@ namespace GameName1
                     {
                         if (p.WeaponSlot1Magic != null)
                         {
-                            p.WeaponSlot1Magic.GetEffect(AllItems, zombies);
+                            p.WeaponSlot1Magic.GetEffect(AllItems);
                         }
                     }
                 }
