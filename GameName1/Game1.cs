@@ -38,12 +38,6 @@ namespace GameName1
         private PowerUp m_PowerUp;
         
         public static double GameTimer = 0;
-        public static double ZombieTimer = 0;
-        private double ZombieSpawnTimer = 50;
-        private int MaxZombies = 50;
-
-        public static bool itemMade = false;
-        public static bool face = false;
         
         private UI UserInterface = new UI();
         public int FrameCounter = 0;
@@ -145,7 +139,6 @@ namespace GameName1
                     GameWidth = GraphicsDevice.Viewport.Width;
                     GameHeight = GraphicsDevice.Viewport.Height;
                     GameTimer += gameTime.ElapsedGameTime.TotalSeconds;
-                    ++ZombieTimer;
 
                     elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
                     ++FrameCounter;
@@ -169,30 +162,30 @@ namespace GameName1
                     m_Player.CheckCollisions(ObjectManager.AllGameObjects, out b, m_World);
                     if (b) ResetGame();
 
-
-                    if (ZombieTimer >= ZombieSpawnTimer && NumZombies< MaxZombies)
-                    {
-                        SpawnZombie();
-                        ZombieTimer = 0;
-                        if (ZombieSpawnTimer > 10) 
-                        {
-                            ZombieSpawnTimer -= 1;
-                        }
-                        if (ZombieSpawnTimer < 10)
-                        {
-                            ZombieSpawnTimer = 10;
-                        }
-                    }
-                    if (GameTimer >= 10 && !itemMade)
-                    {
-                        MakeItem();
-                        itemMade = true;
-                    }
-                    if (GameTimer >= 25 && !face)
-                    {
-                        SpawnFace();
-                        face = true;
-                    }
+                    GlobalObjectManager.Update();
+                    //if (ZombieTimer >= ZombieSpawnTimer && NumZombies< MaxZombies)
+                    //{
+                    //    SpawnZombie();
+                    //    ZombieTimer = 0;
+                    //    if (ZombieSpawnTimer > 10) 
+                    //    {
+                    //        ZombieSpawnTimer -= 1;
+                    //    }
+                    //    if (ZombieSpawnTimer < 10)
+                    //    {
+                    //        ZombieSpawnTimer = 10;
+                    //    }
+                    //}
+                    //if (GameTimer >= 10 && !itemMade)
+                    //{
+                    //    MakeItem();
+                    //    itemMade = true;
+                    //}
+                    //if (GameTimer >= 25 && !face)
+                    //{
+                    //    SpawnFace();
+                    //    face = true;
+                    //}
                     m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
                     break;
                 case GameState.Menu:
@@ -223,10 +216,7 @@ namespace GameName1
                     _spriteBatch.Begin();
                     UserInterface.DrawBackground(_spriteBatch);
                     m_Player.Draw(_spriteBatch);
-                    //foreach (Zombie z in m_Zombies)
-                    //{
-                    //    z.Draw(_spriteBatch);
-                    //}
+
                     foreach (GameObject g in ObjectManager.AllGameObjects)
                     {
                         g.Draw(_spriteBatch);
@@ -272,12 +262,8 @@ namespace GameName1
         private void ResetGame()
         {
             ObjectManager.AllGameObjects.Clear();
-            GameTimer = 0;
-            ZombieSpawnTimer = 6;
-            ZombieTimer = 0;
-            itemMade = false;
-            face = false;
-            m_Player.Score = 0;
+            GlobalObjectManager.ResetGame();
+            
         }
         private void SpawnFace()
         {
@@ -286,7 +272,6 @@ namespace GameName1
             int y = 0;
             while (nearPlayer)
             {
-
                 x = ZombieRandom.Next(GameWidth);
                 y = ZombieRandom.Next(GameHeight);
 

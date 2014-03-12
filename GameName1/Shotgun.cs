@@ -75,7 +75,7 @@ namespace GameName1
                 float leftAngle = centerVector - (Spread / (NumberOfBullets - 1));
                 LeftAngle = leftAngle;
                 SightRange = weaponLength;
-                m_CurrentShotInfo = new ShotInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle, 10);
+                m_CurrentShotInfo = new ShotInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle, 15);
             }
             //firing a shot, save the state
             if (!Firing && shotFired && CanFire())
@@ -123,15 +123,15 @@ namespace GameName1
                 //{
                 //    line.Draw(_spriteBatch);
                 //}
-                if (m_SavedShotInfo.NumFrames > 7)
+                if (m_SavedShotInfo.NumFrames > 12)
                 {
                     _spriteBatch.Draw(blast, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
                 }
-                else if (m_SavedShotInfo.NumFrames > 5)
+                else if (m_SavedShotInfo.NumFrames > 7)
                 {
                     _spriteBatch.Draw(blast2, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
                 }
-                else if (m_SavedShotInfo.NumFrames > 2)
+                else if (m_SavedShotInfo.NumFrames > 5)
                 {
                     CanDamage = false;
                     _spriteBatch.Draw(blast3, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);

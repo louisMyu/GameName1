@@ -15,10 +15,13 @@ namespace GameName1
         public static Random ZombieRandom = new Random(424242);
 
         public static long FrameCounter = 0;
+        public static bool itemMade = false;
+        public static bool face = false;
         private Player m_Player;
         private ContentManager m_Content;
         private World m_World;
         private int NumZombies = 0;
+        private int MaxZombies = 50;
         public void Init(Player p, ContentManager content, World world)
         {
             m_Player = p;
@@ -43,7 +46,7 @@ namespace GameName1
         }
         public void Update()
         {
-            if (FrameCounter == 10)
+            if (FrameCounter % 20 == 0)
             {
                 SpawnZombie();
             }
@@ -75,6 +78,14 @@ namespace GameName1
             z.LoadContent(m_Content, m_World);
             AllGameObjects.Add(z);
             ++NumZombies;
+        }
+
+        public void ResetGame()
+        {
+            FrameCounter = 0;
+            itemMade = false;
+            face = false;
+            m_Player.Score = 0;
         }
     }
 }

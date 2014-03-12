@@ -75,9 +75,7 @@ namespace GameName1
                     removedAtEnd.Add(g);
                 }
             }
-            Game1.ZombiesSpawned = false;
-            Game1.GameTimer = 0;
-            Game1.itemMade = false;
+            ObjectManager.itemMade = false;
             foreach (GameObject g in removedAtEnd)
             {
                 exists.Remove(g);
