@@ -39,6 +39,8 @@ namespace GameName1
         public ShotInfo SavedShotInfo { get { return m_SavedShotInfo; } set { m_SavedShotInfo = value; } }
         [DataMember]
         public ShotInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
+
+        private AnimationManager m_FireAnimation;
         public Shotgun(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             Spread = (float)Math.PI / 6;
@@ -75,14 +77,21 @@ namespace GameName1
                 float leftAngle = centerVector - (Spread / (NumberOfBullets - 1));
                 LeftAngle = leftAngle;
                 SightRange = weaponLength;
+                foreach (Line line in m_BulletLines)
+                {
+                    line.Update(playerCenter, LeftAngle, SightRange);
+                    leftAngle += (float)(Spread / (NumberOfBullets - 1));
+                }
                 m_CurrentShotInfo = new ShotInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle, 15);
             }
             //firing a shot, save the state
             if (!Firing && shotFired && CanFire())
             {
                 Firing = true;
-                m_SavedShotInfo = m_CurrentShotInfo;
+                m_FireAnimation.ShotInfo = m_CurrentShotInfo;
                 CanDamage = true;
+                if (m_FireAnimation.CanStartAnimating())
+                    m_FireAnimation.Finished = false;
             }
         }
         public override bool CheckCollision(GameObject ob, out Vector2 intersectingAngle)
@@ -110,37 +119,13 @@ namespace GameName1
 
         public override void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
-            
-            if (m_SavedShotInfo.NumFrames > 0)
+            if (m_FireAnimation.
             {
-                float leftAngle = LeftAngle;
-                foreach (Line line in m_BulletLines)
-                {
-                    line.Update(position, leftAngle, SightRange);
-                    leftAngle += (float)(Spread / (NumberOfBullets - 1));
-                }
-                //foreach (Line line in m_BulletLines)
-                //{
-                //    line.Draw(_spriteBatch);
-                //}
-                if (m_SavedShotInfo.NumFrames > 12)
-                {
-                    _spriteBatch.Draw(blast, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
-                }
-                else if (m_SavedShotInfo.NumFrames > 9)
-                {
-                    _spriteBatch.Draw(blast2, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
-                }
-                else if (m_SavedShotInfo.NumFrames > 5)
+                //if frame is at 5
+                if (m_FireAnimation.CurrentFrame == 5)
                 {
                     CanDamage = false;
-                    _spriteBatch.Draw(blast3, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
                 }
-                else if (m_SavedShotInfo.NumFrames > 0)
-                {
-                    _spriteBatch.Draw(blast4, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
-                }
-                --m_SavedShotInfo.NumFrames;
             }
             else if (Firing)
             {
