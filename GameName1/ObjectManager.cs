@@ -46,11 +46,18 @@ namespace GameName1
         }
         public void Update()
         {
-            if (FrameCounter % 20 == 0)
+            if (FrameCounter % 20 == 0 && NumZombies < MaxZombies)
             {
                 SpawnZombie();
             }
-            ++FrameCounter;
+            if (FrameCounter > 5000)
+            {
+                FrameCounter = 0;
+            }
+            else
+            {
+                ++FrameCounter;
+            }
         }
 
         private void SpawnZombie()

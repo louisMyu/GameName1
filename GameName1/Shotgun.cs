@@ -127,7 +127,7 @@ namespace GameName1
                 {
                     _spriteBatch.Draw(blast, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
                 }
-                else if (m_SavedShotInfo.NumFrames > 7)
+                else if (m_SavedShotInfo.NumFrames > 9)
                 {
                     _spriteBatch.Draw(blast2, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
                 }
