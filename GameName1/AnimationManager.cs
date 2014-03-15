@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.ArrayList;
 using Microsoft.Xna.Framework;
 
 namespace GameName1
@@ -24,7 +23,7 @@ namespace GameName1
     {
         AnimationInfo[] AnimationArray;
         private Weapon.ShotInfo m_ShotInfo;
-        public Weapon.ShotInfo ShotInfo { set { m_ShotInfo = value; } }
+        public Weapon.ShotInfo ShotInfo { set { m_ShotInfo = value; m_CurrentFrame = 0; } }
         public bool Finished { get; set; }
         private int m_CurrentFrame;
         public int CurrentFrame { get { return m_CurrentFrame; } }

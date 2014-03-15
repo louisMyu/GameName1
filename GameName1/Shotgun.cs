@@ -41,27 +41,38 @@ namespace GameName1
         public ShotInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
 
         private AnimationManager m_FireAnimation;
-        public Shotgun(Microsoft.Xna.Framework.Content.ContentManager content)
+        public Shotgun()
         {
             Spread = (float)Math.PI / 6;
             NumberOfBullets = 3;
-            for (int i = 0; i < NumberOfBullets; ++i)
-            {
-                m_BulletLines.Add(new Line(content));
-            }
             FireRate = 15;
             blastString = "Shotgun-Blast-1";
             blast2String = "Shotgun-Blast-2";
             blast3String = "Shotgun-Blast-3";
             blast4String = "Shotgun-Blast-4";
+
+            Knockback = 250f;
+        }
+
+        public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
+        {
             blast = content.Load<Texture2D>(blastString);
             blast2 = content.Load<Texture2D>(blast2String);
             blast3 = content.Load<Texture2D>(blast3String);
             blast4 = content.Load<Texture2D>(blast4String);
-            Knockback = 250f;
-        }
-        public Shotgun()
-        {
+            AnimationInfo[] array = new AnimationInfo[4];
+            array[0].Texture = blast4;
+            array[0].NextFrame = -1;
+            array[1].Texture = blast3;
+            array[1].NextFrame = 12;
+            array[2].Texture = blast2;
+            array[2].NextFrame = 9;
+            array[3].Texture = blast;
+            array[3].NextFrame = 5;
+            for (int i = 0; i < NumberOfBullets; ++i)
+            {
+                m_BulletLines.Add(new Line(content));
+            }
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
@@ -119,8 +130,9 @@ namespace GameName1
 
         public override void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
-            if (m_FireAnimation.
+            if (m_FireAnimation.CanDraw())
             {
+                m_FireAnimation.DrawAnimationFrame(_spriteBatch);
                 //if frame is at 5
                 if (m_FireAnimation.CurrentFrame == 5)
                 {
