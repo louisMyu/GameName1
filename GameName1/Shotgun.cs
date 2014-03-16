@@ -56,10 +56,10 @@ namespace GameName1
 
         public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
         {
-            blast = content.Load<Texture2D>(blastString);
-            blast2 = content.Load<Texture2D>(blast2String);
-            blast3 = content.Load<Texture2D>(blast3String);
-            blast4 = content.Load<Texture2D>(blast4String);
+            blast = TextureBank.GetTexture(blastString, Content);
+            blast2 = TextureBank.GetTexture(blast2String,Content);
+            blast3 = TextureBank.GetTexture(blast3String, Content);
+            blast4 = TextureBank.GetTexture(blast4String, Content);
             AnimationInfo[] array = new AnimationInfo[4];
             array[0].Texture = blast4;
             array[0].NextFrame = -1;
@@ -69,6 +69,7 @@ namespace GameName1
             array[2].NextFrame = 9;
             array[3].Texture = blast;
             array[3].NextFrame = 5;
+			m_FireAnimation = new m_FireAnimation(array, 
             for (int i = 0; i < NumberOfBullets; ++i)
             {
                 m_BulletLines.Add(new Line(content));

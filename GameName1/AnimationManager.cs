@@ -42,7 +42,7 @@ namespace GameName1
             AnimationArray = array;
             m_CurrentFrame = 0;
         }
-
+		public void SetShotInfo
         public void DrawAnimationFrame(SpriteBatch _spriteBatch)
         {
             if (m_ShotInfo.NumFrames > 0)
