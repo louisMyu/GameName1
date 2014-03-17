@@ -31,6 +31,7 @@ namespace GameName1
         [IgnoreDataMember]
         private List<Line> m_BulletLines = new List<Line>();
         [IgnoreDataMember]
+<<<<<<< HEAD
         private SpriteInfo m_SavedShotInfo;
         [IgnoreDataMember]
         private SpriteInfo m_CurrentShotInfo;
@@ -70,10 +71,40 @@ namespace GameName1
             array[3].Texture = blast;
             array[3].NextFrame = 5;
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 15);
+=======
+        private ShotInfo m_SavedShotInfo;
+        [IgnoreDataMember]
+        private ShotInfo m_CurrentShotInfo;
+
+        [DataMember]
+        public ShotInfo SavedShotInfo { get { return m_SavedShotInfo; } set { m_SavedShotInfo = value; } }
+        [DataMember]
+        public ShotInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
+        public Rifle(Microsoft.Xna.Framework.Content.ContentManager content)
+        {
+            Spread = (float)Math.PI / 6;
+            NumberOfBullets = 3;
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
             for (int i = 0; i < NumberOfBullets; ++i)
             {
                 m_BulletLines.Add(new Line(content));
             }
+<<<<<<< HEAD
+=======
+            FireRate = 15;
+            blastString = "Shotgun-Blast-1";
+            blast2String = "Shotgun-Blast-2";
+            blast3String = "Shotgun-Blast-3";
+            blast4String = "Shotgun-Blast-4";
+            blast = content.Load<Texture2D>(blastString);
+            blast2 = content.Load<Texture2D>(blast2String);
+            blast3 = content.Load<Texture2D>(blast3String);
+            blast4 = content.Load<Texture2D>(blast4String);
+            Knockback = 250f;
+        }
+        public Rifle()
+        {
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
@@ -89,21 +120,30 @@ namespace GameName1
                 float leftAngle = centerVector - (Spread / (NumberOfBullets - 1));
                 LeftAngle = leftAngle;
                 SightRange = weaponLength;
+<<<<<<< HEAD
                 foreach (Line line in m_BulletLines)
                 {
                     line.Update(playerCenter, LeftAngle, SightRange);
                     leftAngle += (float)(Spread / (NumberOfBullets - 1));
                 }
                 m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle);
+=======
+                m_CurrentShotInfo = new ShotInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle, 15);
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
             }
             //firing a shot, save the state
             if (!Firing && shotFired && CanFire())
             {
                 Firing = true;
+<<<<<<< HEAD
                 m_FireAnimation.SpriteInfo = m_CurrentShotInfo;
                 CanDamage = true;
                 if (m_FireAnimation.CanStartAnimating())
                     m_FireAnimation.Finished = false;
+=======
+                m_SavedShotInfo = m_CurrentShotInfo;
+                CanDamage = true;
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
             }
         }
         public override bool CheckCollision(GameObject ob, out Vector2 intersectingAngle)
@@ -131,6 +171,7 @@ namespace GameName1
 
         public override void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
+<<<<<<< HEAD
             if (m_FireAnimation.CanDraw())
             {
                 m_FireAnimation.DrawAnimationFrame(_spriteBatch);
@@ -139,6 +180,39 @@ namespace GameName1
                 {
                     CanDamage = false;
                 }
+=======
+
+            if (m_SavedShotInfo.NumFrames > 0)
+            {
+                float leftAngle = LeftAngle;
+                foreach (Line line in m_BulletLines)
+                {
+                    line.Update(position, leftAngle, SightRange);
+                    leftAngle += (float)(Spread / (NumberOfBullets - 1));
+                }
+                //foreach (Line line in m_BulletLines)
+                //{
+                //    line.Draw(_spriteBatch);
+                //}
+                if (m_SavedShotInfo.NumFrames > 12)
+                {
+                    _spriteBatch.Draw(blast, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
+                }
+                else if (m_SavedShotInfo.NumFrames > 9)
+                {
+                    _spriteBatch.Draw(blast2, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
+                }
+                else if (m_SavedShotInfo.NumFrames > 5)
+                {
+                    CanDamage = false;
+                    _spriteBatch.Draw(blast3, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
+                }
+                else if (m_SavedShotInfo.NumFrames > 0)
+                {
+                    _spriteBatch.Draw(blast4, position, null, Color.White, m_SavedShotInfo.Rotation, new Vector2(0, blast.Height / 2), 1.0f, SpriteEffects.None, 0f);
+                }
+                --m_SavedShotInfo.NumFrames;
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
             }
             else if (Firing)
             {

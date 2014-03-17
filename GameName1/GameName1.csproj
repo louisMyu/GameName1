@@ -69,7 +69,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Compile Include="AnimationManager.cs" />
+=======
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
     <Compile Include="Anubis.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -85,6 +88,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Magic.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="ObjectManager.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -134,7 +138,11 @@
     <Content Include="Content\Menu.xnb" />
     <Content Include="Content\WhiteTile.xnb" />
     <Content Include="Content\AuraQualic - DATA %28FL Studio Remix%29.xnb" />
+<<<<<<< HEAD
     <Content Include="Content\Face.xnb" />
+=======
+    <None Include="Content\Face.xnb" />
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>

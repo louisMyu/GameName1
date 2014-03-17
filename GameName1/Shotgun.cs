@@ -38,7 +38,11 @@ namespace GameName1
         [DataMember]
         public SpriteInfo SavedShotInfo { get { return m_SavedShotInfo; } set { m_SavedShotInfo = value; } }
         [DataMember]
+<<<<<<< HEAD
         public SpriteInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
+=======
+        public ShotInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
 
         private AnimationManager m_FireAnimation;
         public Shotgun()
@@ -54,12 +58,21 @@ namespace GameName1
             Knockback = 250f;
         }
 
+<<<<<<< HEAD
         public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             blast = TextureBank.GetTexture(blastString, content);
             blast2 = TextureBank.GetTexture(blast2String, content);
             blast3 = TextureBank.GetTexture(blast3String, content);
             blast4 = TextureBank.GetTexture(blast4String, content);
+=======
+        public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
+        {
+            blast = TextureBank.GetTexture(blastString, Content);
+            blast2 = TextureBank.GetTexture(blast2String,Content);
+            blast3 = TextureBank.GetTexture(blast3String, Content);
+            blast4 = TextureBank.GetTexture(blast4String, Content);
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
             AnimationInfo[] array = new AnimationInfo[4];
             array[0].Texture = blast4;
             array[0].NextFrame = -1;
@@ -69,7 +82,11 @@ namespace GameName1
             array[2].NextFrame = 9;
             array[3].Texture = blast;
             array[3].NextFrame = 5;
+<<<<<<< HEAD
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 15);
+=======
+			m_FireAnimation = new m_FireAnimation(array, 
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
             for (int i = 0; i < NumberOfBullets; ++i)
             {
                 m_BulletLines.Add(new Line(content));
@@ -94,13 +111,21 @@ namespace GameName1
                     line.Update(playerCenter, LeftAngle, SightRange);
                     leftAngle += (float)(Spread / (NumberOfBullets - 1));
                 }
+<<<<<<< HEAD
                 m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle);
+=======
+                m_CurrentShotInfo = new ShotInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle, 15);
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
             }
             //firing a shot, save the state
             if (!Firing && shotFired && CanFire())
             {
                 Firing = true;
+<<<<<<< HEAD
                 m_FireAnimation.SpriteInfo = m_CurrentShotInfo;
+=======
+                m_FireAnimation.ShotInfo = m_CurrentShotInfo;
+>>>>>>> 1818f5996d12bbade7f4a5e8b45e5c942f130014
                 CanDamage = true;
                 if (m_FireAnimation.CanStartAnimating())
                     m_FireAnimation.Finished = false;
