@@ -72,12 +72,12 @@ namespace GameName1
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
-            m_Weapon = new Shotgun(content);
+            m_Weapon = new Shotgun();
             Position = pos;
             isFireButtonDown = false;
             LifeTotal = 100;
         }
-        public void CheckCollisions(List<GameObject> exists, List<Zombie> zombies, out bool reset, World _world)
+        public void CheckCollisions(List<GameObject> exists, out bool reset, World _world)
         {
             List<GameObject> removedAtEnd = new List<GameObject>();
             bool weaponHit = false;
@@ -108,7 +108,6 @@ namespace GameName1
                     if (ob is Zombie)
                     {
                         removedAtEnd.Add(ob);
-                        zombies.Remove((Zombie)ob);
                         ((Zombie)ob).CleanBody();
                         LifeTotal -= 5;
                         if (LifeTotal <= 0)
@@ -117,6 +116,11 @@ namespace GameName1
                             LifeTotal = 100;
                             return;
                         }
+                    }
+                    if (ob is Anubis)
+                    {
+                        removedAtEnd.Add(ob);
+                        ((Anubis)ob).CleanBody();
                     }
                     if (ob is PowerUp)
                     {
@@ -154,7 +158,6 @@ namespace GameName1
                             if (temp.LifeTotal <= 0)
                             {
                                 temp.CleanBody();
-                                zombies.Remove((Zombie)ob);
                                 removedAtEnd.Add(ob);
                                 ++Score;
                             }
@@ -214,7 +217,7 @@ namespace GameName1
 
         public void Update(float elapsedTime)
         {
-            m_Weapon.Update(elapsedTime, Position, RotationAngle, 10, m_SightRange);
+            m_Weapon.Update(elapsedTime, Position, RotationAngle, 10, m_SightRange, isFireButtonDown);
             if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
             {
                 m_Moving = false;

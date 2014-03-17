@@ -12,28 +12,6 @@ namespace GameName1
     [DataContract]
     public class Weapon
     {
-        [DataContract]
-        public struct ShotInfo
-        {
-            [DataMember]
-            public Vector2 Position;
-            [DataMember]
-            public float Rotation;
-            [DataMember]
-            public int NumberOfBullets;
-            [DataMember]
-            public float LeftAngle; //left most of a spread shot
-            [DataMember]
-            public int NumFrames;
-            public ShotInfo(Vector2 pos, float rot, int numBul, float left, int frames)
-            {
-                Position = pos;
-                Rotation = rot;
-                NumberOfBullets = numBul;
-                LeftAngle = left;
-                NumFrames = frames;
-            }
-        }
         [DataMember]
         public float Knockback { get; set; }
         [DataMember]
@@ -84,15 +62,19 @@ namespace GameName1
         protected static Random WEAPON_RANDOM = new Random();
         [DataMember]
         public int m_ElapsedFrames { get; set; }
+        [DataMember]
+        public bool CanDamage { get; set; }
         public Weapon() 
         {
         }
-
-        //this should be called every update if it exists for the player
-        public virtual void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength)
+        public virtual void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
         {
-            //decrement unless its ready to fire
-            if (m_ElapsedFrames > 0)
+        }
+        //this should be called every update if it exists for the player
+        public virtual void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength, bool isFireDown)
+        {
+            //decrement unless its ready to fire or is being fired
+            if (m_ElapsedFrames > 0 && !Firing)
             {
                 m_ElapsedFrames -= 1;
             }

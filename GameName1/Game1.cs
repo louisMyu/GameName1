@@ -28,34 +28,32 @@ namespace GameName1
         public static World m_World;
         
         public Player m_Player;
-        
-        private List<Zombie> m_Zombies = new List<Zombie>();
 
         private List<GameObject> m_AllObjects = new List<GameObject>();
+        public ObjectManager GlobalObjectManager;
+
         private Menu m_Menu = new Menu();
 
         public static bool ZombiesSpawned = false;
         private PowerUp m_PowerUp;
         
         public static double GameTimer = 0;
-        public static double ZombieTimer = 0;
-        private double ZombieSpawnTimer = 50;
-        private int MaxZombies = 50;
-
-        public static bool itemMade = false;
-        public static Random ZombieRandom = new Random(424242);
+        
         private UI UserInterface = new UI();
         public int FrameCounter = 0;
         public double elapsedTime = 0;
         Line testLine = new Line(new Vector2(4, 0), new Vector2(0, 4));
+        public static Random ZombieRandom = new Random(424242);
 
         GameState CurrentGameState = GameState.Playing;
 
+        public int NumZombies = 0;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             m_Player = new Player();
+            GlobalObjectManager = new ObjectManager();
         }
 
         /// <summary>
@@ -82,18 +80,9 @@ namespace GameName1
             {
                 m_Player = p;
             }
-            m_AllObjects = Storage.Load<List<GameObject>>("GameObjects", "ObjectList.dat");
-            if (m_AllObjects == null)
-            {
-                m_AllObjects = new List<GameObject>();
-            }
-            else
-            {
-                foreach (GameObject g in m_AllObjects)
-                {
-                    g.Load(Content, m_World);
-                }
-            }
+            //init object manager and set objects for it
+            GlobalObjectManager.Init(m_Player, Content, m_World);
+
             base.Initialize();
         }
 
@@ -109,6 +98,7 @@ namespace GameName1
             UserInterface.LoadContent(Content, GameWidth, GameHeight);
             Magic.TextureInit(Content);
             m_Menu.LoadContent(Content);
+            GlobalObjectManager.LoadContent();
             ConvertUnits.SetDisplayUnitToSimUnitRatio(10);
 
             m_song = Content.Load<Song>("AuraQualic - DATA (FL Studio Remix)");
@@ -122,9 +112,8 @@ namespace GameName1
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            m_AllObjects.Clear();
+            ObjectManager.AllGameObjects.Clear();
         }
-        bool playing = false;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -132,12 +121,6 @@ namespace GameName1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (!playing)
-            {
-                MediaPlayer.Play(m_song);
-                MediaPlayer.IsRepeating = true;
-                playing = true;
-            }
             if (CurrentGameState == GameState.Playing)
             {
                 if (GamePad.GetState(0).Buttons.Back == ButtonState.Pressed)
@@ -156,7 +139,6 @@ namespace GameName1
                     GameWidth = GraphicsDevice.Viewport.Width;
                     GameHeight = GraphicsDevice.Viewport.Height;
                     GameTimer += gameTime.ElapsedGameTime.TotalSeconds;
-                    ++ZombieTimer;
 
                     elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
                     ++FrameCounter;
@@ -166,39 +148,44 @@ namespace GameName1
                         FrameCounter = 0;
                         elapsedTime = 0;
                     }
-                    UserInterface.ProcessInput(vec, m_Player, m_AllObjects, m_Zombies);
+                    UserInterface.ProcessInput(vec, m_Player, ObjectManager.AllGameObjects);
 
                     //check if a game reset or zombie hit and save state and do the action here,
                     //so that the game will draw the zombie intersecting the player
-                    bool b = false;
-                    m_Player.CheckCollisions(m_AllObjects, m_Zombies, out b, m_World);
-                    if (b) ResetGame();
-
-
-                    if (ZombieTimer >= ZombieSpawnTimer && m_Zombies.Count < MaxZombies)
-                    {
-                        SpawnZombie();
-                        ZombieTimer = 0;
-                        if (ZombieSpawnTimer > 10) 
-                        {
-                            ZombieSpawnTimer -= 1;
-                        }
-                        if (ZombieSpawnTimer < 10)
-                        {
-                            ZombieSpawnTimer = 10;
-                        }
-                    }
-                    if (GameTimer >= 10 && !itemMade)
-                    {
-                        MakeItem();
-                        itemMade = true;
-                    }
                     m_Player.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
                     Vector2 playerPos = new Vector2(m_Player.Position.X, m_Player.Position.Y);
-                    foreach (GameObject g in m_AllObjects)
+                    foreach (GameObject g in ObjectManager.AllGameObjects)
                     {
                         g.Update(playerPos);
                     }
+                    bool b = false;
+                    m_Player.CheckCollisions(ObjectManager.AllGameObjects, out b, m_World);
+                    if (b) ResetGame();
+
+                    GlobalObjectManager.Update();
+                    //if (ZombieTimer >= ZombieSpawnTimer && NumZombies< MaxZombies)
+                    //{
+                    //    SpawnZombie();
+                    //    ZombieTimer = 0;
+                    //    if (ZombieSpawnTimer > 10) 
+                    //    {
+                    //        ZombieSpawnTimer -= 1;
+                    //    }
+                    //    if (ZombieSpawnTimer < 10)
+                    //    {
+                    //        ZombieSpawnTimer = 10;
+                    //    }
+                    //}
+                    //if (GameTimer >= 10 && !itemMade)
+                    //{
+                    //    MakeItem();
+                    //    itemMade = true;
+                    //}
+                    //if (GameTimer >= 25 && !face)
+                    //{
+                    //    SpawnFace();
+                    //    face = true;
+                    //}
                     m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
                     break;
                 case GameState.Menu:
@@ -207,14 +194,12 @@ namespace GameName1
                     if (toQuit)
                     {
                         m_Player.Save();
-                        Storage.Save<List<GameObject>>("GameObjects", "ObjectList.dat", m_AllObjects);
-                        m_AllObjects.Clear();
+                        Storage.Save<List<GameObject>>("GameObjects", "ObjectList.dat", ObjectManager.AllGameObjects);
+                        ObjectManager.AllGameObjects.Clear();
                         this.Exit();
                     }
                     break;
             }
-
-
             base.Update(gameTime);
         }
 
@@ -231,11 +216,8 @@ namespace GameName1
                     _spriteBatch.Begin();
                     UserInterface.DrawBackground(_spriteBatch);
                     m_Player.Draw(_spriteBatch);
-                    //foreach (Zombie z in m_Zombies)
-                    //{
-                    //    z.Draw(_spriteBatch);
-                    //}
-                    foreach (GameObject g in m_AllObjects)
+
+                    foreach (GameObject g in ObjectManager.AllGameObjects)
                     {
                         g.Draw(_spriteBatch);
                     }
@@ -249,34 +231,6 @@ namespace GameName1
                     break;
             }
             base.Draw(gameTime);
-        }
-
-        private void SpawnZombie()
-        {
-            bool nearPlayer = true;
-            int x = 0;
-            int y = 0;
-            while (nearPlayer)
-            {
-                
-                x = ZombieRandom.Next(GameWidth);
-                y = ZombieRandom.Next(GameHeight);
-
-                //don't spawn near player
-                Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
-                if (distanceFromPlayer.LengthSquared() >= (150.0f*150f))
-                {
-                    nearPlayer = false;
-                }
-            }
-            Zombie z = new Zombie();
-            Vector2 temp = new Vector2();
-            temp.X = x;
-            temp.Y = y;
-            z.Position = temp;
-            z.LoadContent(Content, m_World);
-            m_Zombies.Add(z);
-            m_AllObjects.Add(z);
         }
 
         private void MakeItem()
@@ -302,22 +256,39 @@ namespace GameName1
             temp.Y = y;
             m_PowerUp.Position = temp;
             m_PowerUp.LoadContent(Content);
-            m_AllObjects.Add(m_PowerUp);
+            ObjectManager.AllGameObjects.Add(m_PowerUp);
         }
 
         private void ResetGame()
         {
-            m_AllObjects.Clear();
-            foreach (Zombie z in m_Zombies)
+            ObjectManager.AllGameObjects.Clear();
+            GlobalObjectManager.ResetGame();
+            
+        }
+        private void SpawnFace()
+        {
+            bool nearPlayer = true;
+            int x = 0;
+            int y = 0;
+            while (nearPlayer)
             {
-                z.CleanBody();
+                x = ZombieRandom.Next(GameWidth);
+                y = ZombieRandom.Next(GameHeight);
+
+                //don't spawn near player
+                Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
+                if (distanceFromPlayer.LengthSquared() >= (150.0f * 150f))
+                {
+                    nearPlayer = false;
+                }
             }
-            m_Zombies.Clear();
-            GameTimer = 0;
-            ZombieSpawnTimer = 6;
-            ZombieTimer = 0;
-            itemMade = false;
-            m_Player.Score = 0;
+            Anubis z = new Anubis();
+            Vector2 temp = new Vector2();
+            temp.X = x;
+            temp.Y = y;
+            z.Position = temp;
+            z.LoadContent(Content, m_World);
+            ObjectManager.AllGameObjects.Add(z);
         }
     }
 }
