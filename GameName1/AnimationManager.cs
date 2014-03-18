@@ -14,10 +14,13 @@ namespace GameName1
     {
         public Texture2D Texture;
         public int NextFrame;
+		public bool NoFrame;
+		
         public AnimationInfo(Texture2D tex, int frame)
         {
             Texture = tex;
             NextFrame = frame;
+			NoFrame = false;
         }
     }
     public class SpriteInfo 
@@ -66,6 +69,7 @@ namespace GameName1
         public void SetSpriteInfo(SpriteInfo info)
         {
             m_SpriteInfo = info;
+			NoFrame = true;
         }
         public void DrawAnimationFrame(SpriteBatch _spriteBatch)
         {
