@@ -54,7 +54,7 @@ namespace GameName1
             Knockback = 250f;
         }
 
-        public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
+        public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             blast = TextureBank.GetTexture(blastString, content);
             blast2 = TextureBank.GetTexture(blast2String, content);

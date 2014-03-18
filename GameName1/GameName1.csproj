@@ -85,7 +85,9 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Magic.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="ObjectManager.cs" />
+    <Compile Include="ObjectManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Player.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,7 +98,6 @@
     </Compile>
     <Compile Include="Rifle.cs" />
     <Compile Include="Shotgun.cs" />
-    <Compile Include="ObjectManager.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="TextureBank.cs" />
     <Compile Include="Triangle.cs" />

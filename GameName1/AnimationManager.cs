@@ -69,7 +69,6 @@ namespace GameName1
         public void SetSpriteInfo(SpriteInfo info)
         {
             m_SpriteInfo = info;
-			NoFrame = true;
         }
         public void DrawAnimationFrame(SpriteBatch _spriteBatch)
         {

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Phone
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameName1", "GameName1\GameName1.csproj", "{F539ECEB-1166-4944-AD38-E4C060B0CF65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarSeerTest", "FarSeerTest\FarSeerTest.csproj", "{145F3013-AA0B-40ED-94B1-7CBC59932F9E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarSeerPort", "FarSeerPort\FarSeerPort.csproj", "{38C6014A-7647-44B1-AD8C-EDFB75AC5F18}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Framework.WindowsPhone", "..\..\..\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsPhone.csproj", "{BAA9A6E4-7690-4DE0-9531-DE0EAEEC9739}"
@@ -45,28 +43,6 @@ Global
 		{F539ECEB-1166-4944-AD38-E4C060B0CF65}.Release|x86.ActiveCfg = Release|x86
 		{F539ECEB-1166-4944-AD38-E4C060B0CF65}.Release|x86.Build.0 = Release|x86
 		{F539ECEB-1166-4944-AD38-E4C060B0CF65}.Release|x86.Deploy.0 = Release|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|ARM.ActiveCfg = Debug|ARM
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|ARM.Build.0 = Debug|ARM
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|ARM.Deploy.0 = Debug|ARM
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|Mixed Platforms.Deploy.0 = Debug|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|Windows Phone.ActiveCfg = Debug|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|x86.ActiveCfg = Debug|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|x86.Build.0 = Debug|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Debug|x86.Deploy.0 = Debug|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|Any CPU.ActiveCfg = Release|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|ARM.ActiveCfg = Release|ARM
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|ARM.Build.0 = Release|ARM
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|ARM.Deploy.0 = Release|ARM
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|Mixed Platforms.Build.0 = Release|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|Mixed Platforms.Deploy.0 = Release|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|Windows Phone.ActiveCfg = Release|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|x86.ActiveCfg = Release|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|x86.Build.0 = Release|x86
-		{145F3013-AA0B-40ED-94B1-7CBC59932F9E}.Release|x86.Deploy.0 = Release|x86
 		{38C6014A-7647-44B1-AD8C-EDFB75AC5F18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38C6014A-7647-44B1-AD8C-EDFB75AC5F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38C6014A-7647-44B1-AD8C-EDFB75AC5F18}.Debug|ARM.ActiveCfg = Debug|ARM
