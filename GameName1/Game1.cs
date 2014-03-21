@@ -163,29 +163,7 @@ namespace GameName1
                     if (b) ResetGame();
 
                     GlobalObjectManager.Update();
-                    //if (ZombieTimer >= ZombieSpawnTimer && NumZombies< MaxZombies)
-                    //{
-                    //    SpawnZombie();
-                    //    ZombieTimer = 0;
-                    //    if (ZombieSpawnTimer > 10) 
-                    //    {
-                    //        ZombieSpawnTimer -= 1;
-                    //    }
-                    //    if (ZombieSpawnTimer < 10)
-                    //    {
-                    //        ZombieSpawnTimer = 10;
-                    //    }
-                    //}
-                    //if (GameTimer >= 10 && !itemMade)
-                    //{
-                    //    MakeItem();
-                    //    itemMade = true;
-                    //}
-                    //if (GameTimer >= 25 && !face)
-                    //{
-                    //    SpawnFace();
-                    //    face = true;
-                    //}
+
                     m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
                     break;
                 case GameState.Menu:

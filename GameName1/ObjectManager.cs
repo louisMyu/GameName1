@@ -58,6 +58,29 @@ namespace GameName1
             {
                 ++FrameCounter;
             }
+            //if (ZombieTimer >= ZombieSpawnTimer && NumZombies< MaxZombies)
+            //{
+            //    SpawnZombie();
+            //    ZombieTimer = 0;
+            //    if (ZombieSpawnTimer > 10) 
+            //    {
+            //        ZombieSpawnTimer -= 1;
+            //    }
+            //    if (ZombieSpawnTimer < 10)
+            //    {
+            //        ZombieSpawnTimer = 10;
+            //    }
+            //}
+            //if (GameTimer >= 10 && !itemMade)
+            //{
+            //    MakeItem();
+            //    itemMade = true;
+            //}
+            //if (GameTimer >= 25 && !face)
+            //{
+            //    SpawnFace();
+            //    face = true;
+            //}
         }
 
         private void SpawnZombie()
