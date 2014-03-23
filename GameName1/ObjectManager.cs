@@ -81,6 +81,7 @@ namespace GameName1
             //    SpawnFace();
             //    face = true;
             //}
+            //merged from desktop, these comments are necessary
         }
 
         private void SpawnZombie()
@@ -117,5 +118,6 @@ namespace GameName1
             face = false;
             m_Player.Score = 0;
         }
+        //probably should add spawn face in here
     }
 }
