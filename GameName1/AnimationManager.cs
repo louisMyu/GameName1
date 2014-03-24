@@ -43,10 +43,10 @@ namespace GameName1
     {
         AnimationInfo[] AnimationArray;
         private SpriteInfo m_SpriteInfo;
-        public SpriteInfo SpriteInfo { set { m_SpriteInfo = value; m_CurrentFrame = 0; FrameCounter = MaxFrames;} }
+        public SpriteInfo SpriteInfo { set { m_SpriteInfo = value; m_CurrentSprite = 0; FrameCounter = 0;} }
         public bool Finished { get; set; }
-        private int m_CurrentFrame;
-        public int CurrentFrame { get { return m_CurrentFrame; } }
+        private int m_CurrentSprite;
+        public int CurrentSprite { get { return m_CurrentSprite; } }
         public bool Animating { get; set; }
         public int MaxFrames {get;set;}
         public int FrameCounter {get;set;}
@@ -55,14 +55,14 @@ namespace GameName1
             m_SpriteInfo = shotInfo;
             AnimationArray = array;
             Finished = false;
-            m_CurrentFrame = 0;
+            m_CurrentSprite = 0;
             MaxFrames = maxFrames;
         }
 
         public void SetAnimation(AnimationInfo[] array)
         {
             AnimationArray = array;
-            m_CurrentFrame = 0;
+            m_CurrentSprite = 0;
         }
         public void SetSpriteInfo(SpriteInfo info)
         {
@@ -70,16 +70,16 @@ namespace GameName1
         }
         public void DrawAnimationFrame(SpriteBatch _spriteBatch)
         {
-            if (FrameCounter > 0)
+            if (FrameCounter < MaxFrames)
             {
                 Animating = true;
                 Finished = false;
-                if (FrameCounter == AnimationArray[CurrentFrame].NextFrame)
+                if (FrameCounter == AnimationArray[m_CurrentSprite].NextFrame)
                 {
-                    ++m_CurrentFrame;
+                    ++m_CurrentSprite;
                 }
-                _spriteBatch.Draw(AnimationArray[CurrentFrame].Texture, m_SpriteInfo.Position, null, Color.White, m_SpriteInfo.Rotation, new Vector2(0, AnimationArray[CurrentFrame].Texture.Height / 2), 1.0f, SpriteEffects.None, 0f);
-                --FrameCounter;
+                _spriteBatch.Draw(AnimationArray[m_CurrentSprite].Texture, m_SpriteInfo.Position, null, Color.White, m_SpriteInfo.Rotation, new Vector2(0, AnimationArray[m_CurrentSprite].Texture.Height / 2), 1.0f, SpriteEffects.None, 0f);
+                ++FrameCounter;
             }
             else
             {

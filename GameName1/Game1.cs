@@ -159,7 +159,7 @@ namespace GameName1
                         g.Update(playerPos);
                     }
                     bool b = false;
-                    m_Player.CheckCollisions(ObjectManager.AllGameObjects, out b, m_World);
+                    m_Player.CheckCollisions(out b, m_World);
                     if (b) ResetGame();
 
                     GlobalObjectManager.Update();

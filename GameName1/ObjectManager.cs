@@ -20,8 +20,8 @@ namespace GameName1
         private Player m_Player;
         private ContentManager m_Content;
         private World m_World;
-        private int NumZombies = 0;
-        private int MaxZombies = 50;
+        private static int NumZombies = 0;
+        private static int MaxZombies = 50;
         public void Init(Player p, ContentManager content, World world)
         {
             m_Player = p;
@@ -117,6 +117,16 @@ namespace GameName1
             itemMade = false;
             face = false;
             m_Player.Score = 0;
+            NumZombies = 0;
+        }
+
+        public static void RemoveObject(GameObject obj)
+        {
+            AllGameObjects.Remove(obj);
+            if (obj is Zombie)
+            {
+                --NumZombies;
+            }
         }
         //probably should add spawn face in here
     }

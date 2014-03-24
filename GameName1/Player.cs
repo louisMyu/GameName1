@@ -21,10 +21,6 @@ namespace GameName1
         public static readonly string playerSaveDir = "playerDir";
         [IgnoreDataMember]
         static float VELOCITY = 5.0F;
-        [IgnoreDataMember]
-        private int m_SightRange = 100;
-        [DataMember]
-        public int SightRange { get { return m_SightRange; } set { m_SightRange = value; } }
 
         [IgnoreDataMember]
         public Vector2 m_MoveToward = new Vector2();
@@ -77,14 +73,14 @@ namespace GameName1
             isFireButtonDown = false;
             LifeTotal = 100;
         }
-        public void CheckCollisions(List<GameObject> exists, out bool reset, World _world)
+        public void CheckCollisions(out bool reset, World _world)
         {
             List<GameObject> removedAtEnd = new List<GameObject>();
             bool weaponHit = false;
             float nearestLength = float.MaxValue;
             shotHappened = false;
             reset = false;
-            foreach (GameObject ob in exists)
+            foreach (GameObject ob in ObjectManager.AllGameObjects)
             {
                 //TODO: seriously need to refactor this later
                 //its good to find the nearest zombie when i run through entire zombie list, but probably not here
@@ -135,7 +131,7 @@ namespace GameName1
 
             foreach (GameObject g in removedAtEnd)
             {
-                exists.Remove(g);
+                ObjectManager.RemoveObject(g);
             }
             //TODO: seriously need to refactor this later
             //its good to find the nearest zombie when i run through entire zombie list, but probably not here
@@ -145,7 +141,7 @@ namespace GameName1
                 {
                     shotHappened = true;
                 }
-                foreach (GameObject ob in exists)
+                foreach (GameObject ob in ObjectManager.AllGameObjects)
                 {
                     Vector2 hitAngle = new Vector2();
                     weaponHit = m_Weapon.CheckCollision(ob, out hitAngle);
@@ -172,13 +168,14 @@ namespace GameName1
             }
             foreach (GameObject g in removedAtEnd)
             {
-                exists.Remove(g);
+                ObjectManager.RemoveObject(g);
             }
         }
         public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             Texture = content.Load<Texture2D>("Player");
             base.LoadContent(content);
+            m_Weapon.LoadContent(content);
         }
 
         //moves a set amount per frame toward a certain location
@@ -217,7 +214,7 @@ namespace GameName1
 
         public void Update(float elapsedTime)
         {
-            m_Weapon.Update(elapsedTime, Position, RotationAngle, 10, m_SightRange, isFireButtonDown);
+            m_Weapon.Update(elapsedTime, Position, RotationAngle, 10, isFireButtonDown);
             if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
             {
                 m_Moving = false;

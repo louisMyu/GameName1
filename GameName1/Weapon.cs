@@ -14,8 +14,10 @@ namespace GameName1
     {
         [DataMember]
         public float Knockback { get; set; }
+        [IgnoreDataMember]
+        protected int m_SightRange;
         [DataMember]
-        public int SightRange { get; set; }
+        public int SightRange { get { return m_SightRange; } set { m_SightRange = value; } }
         [DataMember]
         public float LeftAngle
         {
@@ -71,7 +73,7 @@ namespace GameName1
         {
         }
         //this should be called every update if it exists for the player
-        public virtual void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength, bool isFireDown)
+        public virtual void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, bool isFireDown)
         {
             //decrement unless its ready to fire or is being fired
             if (m_ElapsedFrames > 0 && !Firing)
@@ -104,6 +106,10 @@ namespace GameName1
         }
 
         public virtual void LoadWeapon(Microsoft.Xna.Framework.Content.ContentManager content)
+        {
+        }
+
+        protected virtual void LoadTextures(Microsoft.Xna.Framework.Content.ContentManager content)
         {
         }
     }

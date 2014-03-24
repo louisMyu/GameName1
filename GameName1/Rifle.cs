@@ -12,22 +12,11 @@ namespace GameName1
     [DataContract]
     public class Rifle : Weapon
     {
-        [IgnoreDataMember]
-        private Texture2D blast;
-        [IgnoreDataMember]
-        private Texture2D blast2;
-        [IgnoreDataMember]
-        private Texture2D blast3;
-        [IgnoreDataMember]
-        private Texture2D blast4;
         [DataMember]
-        public string blastString { get; set; }
+        public string shotString1 { get; set; }
         [DataMember]
-        public string blast2String { get; set; }
+        public string shotString2 { get; set; }
         [DataMember]
-        public string blast3String { get; set; }
-        [DataMember]
-        public string blast4String { get; set; }
         [IgnoreDataMember]
         private List<Line> m_BulletLines = new List<Line>();
         [IgnoreDataMember]
@@ -44,32 +33,17 @@ namespace GameName1
         public Rifle()
         {
             Spread = (float)Math.PI / 6;
-            NumberOfBullets = 3;
+            NumberOfBullets = 1;
             FireRate = 15;
-            blastString = "Shotgun-Blast-1";
-            blast2String = "Shotgun-Blast-2";
-            blast3String = "Shotgun-Blast-3";
-            blast4String = "Shotgun-Blast-4";
-
+            shotString1 = "rifle1";
+            shotString2 = "rifle2";
+            m_SightRange = 400;
             Knockback = 250f;
         }
 
         public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
         {
-            blast = TextureBank.GetTexture(blastString, content);
-            blast2 = TextureBank.GetTexture(blast2String, content);
-            blast3 = TextureBank.GetTexture(blast3String, content);
-            blast4 = TextureBank.GetTexture(blast4String, content);
-            AnimationInfo[] array = new AnimationInfo[4];
-            array[0].Texture = blast4;
-            array[0].NextFrame = -1;
-            array[1].Texture = blast3;
-            array[1].NextFrame = 12;
-            array[2].Texture = blast2;
-            array[2].NextFrame = 9;
-            array[3].Texture = blast;
-            array[3].NextFrame = 5;
-            m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 15);
+            LoadTextures(content);
             for (int i = 0; i < NumberOfBullets; ++i)
             {
                 m_BulletLines.Add(new Line(content));
@@ -77,31 +51,36 @@ namespace GameName1
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
-        public override void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, int weaponLength, bool shotFired)
+        public override void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, bool shotFired)
         {
-            base.Update(elapsedTime, playerCenter, rotationAngle, accuracy, weaponLength, shotFired);
+            base.Update(elapsedTime, playerCenter, rotationAngle, accuracy, shotFired);
             if (!Firing)
             {
-                float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
+                //float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
                 //TODO: add a random so its either plus or minus accuracy
-                float centerVector = rotationAngle - accuracyInRadians;
-
-                float leftAngle = centerVector - (Spread / (NumberOfBullets - 1));
-                LeftAngle = leftAngle;
-                SightRange = weaponLength;
+                float centerVector = rotationAngle;
+                if (NumberOfBullets > 1)
+                {
+                    float leftAngle = centerVector - (Spread / (NumberOfBullets - 1));
+                    LeftAngle = leftAngle;
+                }
+                else
+                {
+                    LeftAngle = centerVector;
+                }
+                
                 foreach (Line line in m_BulletLines)
                 {
                     line.Update(playerCenter, LeftAngle, SightRange);
-                    leftAngle += (float)(Spread / (NumberOfBullets - 1));
                 }
-                m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle);
+                m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, LeftAngle);
             }
             //firing a shot, save the state
             if (!Firing && shotFired && CanFire())
             {
                 Firing = true;
                 m_FireAnimation.SpriteInfo = m_CurrentShotInfo;
-                CanDamage = true;
+                CanDamage = false;
                 if (m_FireAnimation.CanStartAnimating())
                     m_FireAnimation.Finished = false;
             }
@@ -135,7 +114,11 @@ namespace GameName1
             {
                 m_FireAnimation.DrawAnimationFrame(_spriteBatch);
                 //if frame is at 5
-                if (m_FireAnimation.CurrentFrame == 5)
+                if (m_FireAnimation.CurrentSprite == 20)
+                {
+                    CanDamage = true;
+                }
+                if (m_FireAnimation.CurrentSprite == 40)
                 {
                     CanDamage = false;
                 }
@@ -148,15 +131,21 @@ namespace GameName1
         }
         public override void LoadWeapon(Microsoft.Xna.Framework.Content.ContentManager content)
         {
-            blast = TextureBank.GetTexture(blastString, content);
-            blast2 = TextureBank.GetTexture(blast2String, content);
-            blast3 = TextureBank.GetTexture(blast3String, content);
-            blast4 = TextureBank.GetTexture(blast4String, content);
+            LoadTextures(content);
+
             m_BulletLines = new List<Line>();
             for (int i = 0; i < NumberOfBullets; ++i)
             {
                 m_BulletLines.Add(new Line(content));
             }
         }
+        protected override void LoadTextures(Microsoft.Xna.Framework.Content.ContentManager content)
+        {
+            AnimationInfo[] array = new AnimationInfo[1];
+            array[0] = new AnimationInfo(TextureBank.GetTexture(shotString1, content), 20);
+            array[1] = new AnimationInfo(TextureBank.GetTexture(shotString2, content), -1);
+            m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 60);
+        }
+
     }
 }
