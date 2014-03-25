@@ -122,6 +122,7 @@ namespace GameName1
 
         public static void RemoveObject(GameObject obj)
         {
+            //i suspect that an issue is occuring in this method with farseer
             AllGameObjects.Remove(obj);
             if (obj is Zombie)
             {
