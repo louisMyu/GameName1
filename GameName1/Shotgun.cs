@@ -68,7 +68,7 @@ namespace GameName1
                 LeftAngle = leftAngle;
                 foreach (Line line in m_BulletLines)
                 {
-                    line.Update(playerCenter, LeftAngle, SightRange);
+                    line.Update(playerCenter, leftAngle, SightRange);
                     leftAngle += (float)(Spread / (NumberOfBullets - 1));
                 }
                 m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle);
@@ -111,6 +111,10 @@ namespace GameName1
             if (m_FireAnimation.CanDraw())
             {
                 m_FireAnimation.DrawAnimationFrame(_spriteBatch);
+                foreach (Line line in m_BulletLines)
+                {
+                    line.Draw(_spriteBatch);
+                }
                 //if frame is at 12
                 if (m_FireAnimation.FrameCounter == 12)
                 {

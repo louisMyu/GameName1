@@ -21,7 +21,7 @@ namespace GameName1
         private ContentManager m_Content;
         private World m_World;
         private static int NumZombies = 0;
-        private static int MaxZombies = 50;
+        private static int MaxZombies = 5;
         public void Init(Player p, ContentManager content, World world)
         {
             m_Player = p;
@@ -122,11 +122,15 @@ namespace GameName1
 
         public static void RemoveObject(GameObject obj)
         {
-            //i suspect that an issue is occuring in this method with farseer
-            AllGameObjects.Remove(obj);
+
             if (obj is Zombie)
             {
+                ((Zombie)obj).CleanBody();
                 --NumZombies;
+            }
+            if (AllGameObjects.Contains(obj))
+            {
+                AllGameObjects.Remove(obj);
             }
         }
         //probably should add spawn face in here

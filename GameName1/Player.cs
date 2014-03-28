@@ -104,7 +104,6 @@ namespace GameName1
                     if (ob is Zombie)
                     {
                         removedAtEnd.Add(ob);
-                        ((Zombie)ob).CleanBody();
                         LifeTotal -= 5;
                         if (LifeTotal <= 0)
                         {
@@ -116,7 +115,6 @@ namespace GameName1
                     if (ob is Anubis)
                     {
                         removedAtEnd.Add(ob);
-                        ((Anubis)ob).CleanBody();
                     }
                     if (ob is PowerUp)
                     {
@@ -133,6 +131,7 @@ namespace GameName1
             {
                 ObjectManager.RemoveObject(g);
             }
+            removedAtEnd.Clear();
             //TODO: seriously need to refactor this later
             //its good to find the nearest zombie when i run through entire zombie list, but probably not here
             if ((m_Weapon.CanFire() && isFireButtonDown) || m_Weapon.Firing)
@@ -159,7 +158,6 @@ namespace GameName1
                             temp.LifeTotal -= 10;
                             if (temp.LifeTotal <= 0)
                             {
-                                temp.CleanBody();
                                 removedAtEnd.Add(ob);
                                 ++Score;
                             }
