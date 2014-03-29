@@ -16,7 +16,7 @@ namespace GameName1
     [KnownType(typeof(Zombie))]
     [KnownType(typeof(GameObject))]
     [DataContract]
-    public class Zombie : GameObject
+    public class Zombie : GameObject, IEnemy
     {
         public enum MotionState
         {

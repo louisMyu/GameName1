@@ -83,9 +83,8 @@ namespace GameName1
                     m_FireAnimation.Finished = false;
             }
         }
-        public override bool CheckCollision(GameObject ob, out Vector2 intersectingAngle)
+        public override bool CheckCollision(GameObject ob)
         {
-            intersectingAngle = new Vector2(0, 0);
             if (!CanDamage)
             {
                 return false;
@@ -95,7 +94,9 @@ namespace GameName1
                 Vector2 check = line.Intersects(ob.m_Bounds);
                 if (check.X != -1)
                 {
-                    intersectingAngle = new Vector2(line.P2.X - line.P1.X, line.P2.Y - line.P1.Y); ;
+                    Vector2 intersectingAngle = new Vector2(line.P2.X - line.P1.X, line.P2.Y - line.P1.Y);
+                    IEnemy enemy = ob as IEnemy;
+                    enemy.ApplyLinearForce(intersectingAngle, Knockback);
                     return true;
                 }
             }

@@ -85,9 +85,8 @@ namespace GameName1
                     m_FireAnimation.Finished = false;
             }
         }
-        public override bool CheckCollision(GameObject ob, out Vector2 intersectingAngle)
+        public override bool CheckCollision(GameObject ob)
         {
-            intersectingAngle = new Vector2(0, 0);
             if (!CanDamage)
             {
                 return false;
@@ -97,7 +96,9 @@ namespace GameName1
                 Vector2 check = line.Intersects(ob.m_Bounds);
                 if (check.X != -1)
                 {
-                    intersectingAngle = new Vector2(line.P2.X - line.P1.X, line.P2.Y - line.P1.Y); ;
+                    Vector2 intersectingAngle = new Vector2(line.P2.X - line.P1.X, line.P2.Y - line.P1.Y);
+                    IEnemy enemy = ob as IEnemy;
+                    enemy.ApplyLinearForce(intersectingAngle, Knockback);
                     return true;
                 }
             }
@@ -114,11 +115,15 @@ namespace GameName1
             {
                 m_FireAnimation.DrawAnimationFrame(_spriteBatch);
                 //if frame is at 5
-                if (m_FireAnimation.CurrentSprite == 20)
+                if (m_FireAnimation.FrameCounter == 20)
                 {
                     CanDamage = true;
                 }
-                if (m_FireAnimation.CurrentSprite == 40)
+                foreach (Line line in m_BulletLines)
+                {
+                    line.Draw(_spriteBatch);
+                }
+                if (m_FireAnimation.FrameCounter == 40)
                 {
                     CanDamage = false;
                 }
@@ -141,7 +146,7 @@ namespace GameName1
         }
         protected override void LoadTextures(Microsoft.Xna.Framework.Content.ContentManager content)
         {
-            AnimationInfo[] array = new AnimationInfo[1];
+            AnimationInfo[] array = new AnimationInfo[2];
             array[0] = new AnimationInfo(TextureBank.GetTexture(shotString1, content), 20);
             array[1] = new AnimationInfo(TextureBank.GetTexture(shotString2, content), -1);
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 60);

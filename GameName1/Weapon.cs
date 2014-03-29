@@ -82,9 +82,8 @@ namespace GameName1
             }
         }
 
-        public virtual bool CheckCollision(GameObject ob, out Vector2 angle)
+        public virtual bool CheckCollision(GameObject ob)
         {
-            angle = new Vector2();
             return false;
         }
 

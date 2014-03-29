@@ -142,14 +142,9 @@ namespace GameName1
                 }
                 foreach (GameObject ob in ObjectManager.AllGameObjects)
                 {
-                    Vector2 hitAngle = new Vector2();
                     //this probably should check for collision only when firing
                     //that way the bullet lines wont update to the next person while a shot is going off
-
-                    //right now checkcollision is not finding collisions correctly,
-                   //and enemies are leaving behind invisible islands again.  this happened when i first ported
-                    //farseer into here.  can look at commits to find a possible issue that i can resolve.
-                    weaponHit = m_Weapon.CheckCollision(ob, out hitAngle);
+                    weaponHit = m_Weapon.CheckCollision(ob);
                     if (weaponHit)
                     {
                         if (ob is Zombie)
@@ -163,7 +158,7 @@ namespace GameName1
                             }
                             else
                             {
-                                temp.ApplyLinearForce(hitAngle, m_Weapon.Knockback);
+                                
                             }
                         }
                     }
