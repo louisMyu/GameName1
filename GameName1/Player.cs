@@ -68,7 +68,7 @@ namespace GameName1
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
-            m_Weapon = new Shotgun();
+            m_Weapon = new Rifle();
             Position = pos;
             isFireButtonDown = false;
             LifeTotal = 100;
