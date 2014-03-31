@@ -43,6 +43,7 @@ namespace GameName1
             blast4String = "Shotgun-Blast-4";
             SightRange = 100;
             Knockback = 250f;
+            CanMoveWhileShooting = true;
         }
 
         public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)

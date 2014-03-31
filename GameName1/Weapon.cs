@@ -13,6 +13,8 @@ namespace GameName1
     public class Weapon
     {
         [DataMember]
+        public bool CanMoveWhileShooting { get; set; }
+        [DataMember]
         public float Knockback { get; set; }
         [IgnoreDataMember]
         protected int m_SightRange;

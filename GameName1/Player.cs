@@ -76,7 +76,6 @@ namespace GameName1
         public void CheckCollisions(out bool reset, World _world)
         {
             List<GameObject> removedAtEnd = new List<GameObject>();
-            bool weaponHit = false;
             float nearestLength = float.MaxValue;
             shotHappened = false;
             reset = false;
@@ -91,7 +90,7 @@ namespace GameName1
                     nearestLength = temp;
                     if (!m_Weapon.Firing)
                     {
-                        RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
+                        //RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
                     }
                 }
                 if (ob == null)
@@ -140,6 +139,7 @@ namespace GameName1
                 {
                     shotHappened = true;
                 }
+                bool weaponHit = false;
                 foreach (GameObject ob in ObjectManager.AllGameObjects)
                 {
                     //this probably should check for collision only when firing
@@ -155,10 +155,6 @@ namespace GameName1
                             {
                                 removedAtEnd.Add(ob);
                                 ++Score;
-                            }
-                            else
-                            {
-                                
                             }
                         }
                     }
@@ -180,20 +176,33 @@ namespace GameName1
         //moves a set amount per frame toward a certain location
         public override void Move(Microsoft.Xna.Framework.Vector2 loc)
         {
-            //get a normalized direction toward the point
-            Vector2 amount = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
-            if (amount.LengthSquared() > VELOCITY*VELOCITY)
+            if (Input.UseAccelerometer)
             {
-                amount = Vector2.Normalize(amount);
-                amount *= VELOCITY;
+                base.Move(loc);
+                Vector2 temp = new Vector2();
+                temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth);
+                temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight);
+                Position = temp;
+                m_Bounds.X = (int)Position.X - Width / 2;
+                m_Bounds.Y = (int)Position.Y - Height / 2;
             }
-            base.Move(amount);
-            Vector2 temp = new Vector2();
-            temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth + Width);
-            temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight + Height);
-            Position = temp;
-            m_Bounds.X = (int)Position.X - Width / 2;
-            m_Bounds.Y = (int)Position.Y - Height / 2;
+            else
+            {
+                //get a normalized direction toward the point
+                Vector2 amount = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
+                if (amount.LengthSquared() > VELOCITY * VELOCITY)
+                {
+                    amount = Vector2.Normalize(amount);
+                    amount *= VELOCITY;
+                }
+                base.Move(amount);
+                Vector2 temp = new Vector2();
+                temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth + Width);
+                temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight + Height);
+                Position = temp;
+                m_Bounds.X = (int)Position.X - Width / 2;
+                m_Bounds.Y = (int)Position.Y - Height / 2;
+            }
         }
 
         internal void ProcessInput(Vector2 vec, bool inPlayField, bool stopPlayer = false)
@@ -213,15 +222,35 @@ namespace GameName1
 
         public void Update(float elapsedTime)
         {
-            m_Weapon.Update(elapsedTime, Position, RotationAngle, 10, isFireButtonDown);
-            if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
+            
+            if (!Input.UseAccelerometer)
             {
-                m_Moving = false;
+                if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
+                {
+                    m_Moving = false;
+                }
             }
-            if (m_Moving)
+            else
+            {
+                m_Moving = true;
+                Vector3 acceleration = Input.CurrentAccelerometerValues;
+                m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X*30, acceleration.X*20, -acceleration.X*20),
+                                            MathHelper.Clamp(acceleration.Y*-30, -acceleration.Y*20, acceleration.Y*20));
+                Vector2 temp = new Vector2(-acceleration.Y, acceleration.X);
+                if (!m_Weapon.Firing)
+                {
+                    RotationAngle = (float)Math.Atan2(temp.X, temp.Y);
+                }
+            }
+            if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
             {
                 Move(m_MoveToward);
             }
+            else if (m_Moving && !m_Weapon.Firing)
+            {
+                Move(m_MoveToward);
+            }
+            m_Weapon.Update(elapsedTime, Position, RotationAngle, 10, isFireButtonDown);
         }
 
         public override void Draw(SpriteBatch _spriteBatch)

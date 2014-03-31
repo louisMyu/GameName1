@@ -54,6 +54,7 @@ namespace GameName1
             Content.RootDirectory = "Content";
             m_Player = new Player();
             GlobalObjectManager = new ObjectManager();
+
         }
 
         /// <summary>
@@ -103,6 +104,10 @@ namespace GameName1
 
             m_song = Content.Load<Song>("AuraQualic - DATA (FL Studio Remix)");
             // TODO: use this.Content to load your game content here
+            if (Input.UseAccelerometer)
+            {
+                Input.accelerometer.Start();
+            }
         }
 
         /// <summary>
@@ -113,6 +118,10 @@ namespace GameName1
         {
             // TODO: Unload any non ContentManager content here
             ObjectManager.AllGameObjects.Clear();
+            if (Input.UseAccelerometer)
+            {
+                Input.accelerometer.Stop();
+            }
         }
         /// <summary>
         /// Allows the game to run logic such as updating the world,

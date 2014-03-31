@@ -39,6 +39,7 @@ namespace GameName1
             shotString2 = "rifle2";
             m_SightRange = 400;
             Knockback = 250f;
+            CanMoveWhileShooting = false;
         }
 
         public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
