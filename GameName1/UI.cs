@@ -63,8 +63,7 @@ namespace GameName1
         public void ProcessInput(List<Vector2> vecList, Player p, List<GameObject> AllItems)
         {
             m_FireButtonColor = Color.White;
-            Vector2 playerVec = new Vector2(-1, -1);
-            bool stopPlayer = false;
+            p.Moving = true;
             p.isFireButtonDown = false;
             foreach (Vector2 vec in vecList) {
                 //give a little leeway so its smoother to touch the bottom of the playfield
@@ -75,7 +74,6 @@ namespace GameName1
                     if (Utilities.PointIntersectsRectangle(vec, m_FireButtonRec))
                     {
                         m_FireButtonColor = Color.Orange;
-                        stopPlayer = false;
                         p.isFireButtonDown = true;
                     }
                     Rectangle temp = new Rectangle((int)WeaponSlot1Position.X - (m_FireButton.Width / 2), (int)WeaponSlot1Position.Y - (m_FireButton.Height / 2), m_FireButton.Width, m_FireButton.Height);
@@ -98,9 +96,7 @@ namespace GameName1
                 }
                 else
                 {
-                    playerVec.X = vec.X;
-                    playerVec.Y = vec.Y;
-                    p.ProcessInput(playerVec, true, stopPlayer);
+                    p.ProcessInput(vec, true);
                 }
             }
         }

@@ -205,14 +205,9 @@ namespace GameName1
             }
         }
 
-        internal void ProcessInput(Vector2 vec, bool inPlayField, bool stopPlayer = false)
+        internal void ProcessInput(Vector2 vec, bool inPlayField)
         {
-            if (vec.X != -1 && Input.CurrentState == Microsoft.Xna.Framework.Input.Touch.TouchLocationState.Pressed && inPlayField)
-            {
-                m_Moving = true;
-                m_MoveToward = vec;
-            }
-            if (stopPlayer)
+            if (vec.X != -1 && inPlayField)
             {
                 m_Moving = false;
             }
@@ -232,7 +227,6 @@ namespace GameName1
             }
             else
             {
-                m_Moving = true;
                 Vector3 acceleration = Input.CurrentAccelerometerValues;
                 m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X*30, acceleration.X*20, -acceleration.X*20),
                                             MathHelper.Clamp(acceleration.Y*-30, -acceleration.Y*20, acceleration.Y*20));

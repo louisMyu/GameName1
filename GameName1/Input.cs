@@ -14,7 +14,6 @@ namespace GameName1
 
     static class Input
     {
-
         public static bool UseAccelerometer = true;
         public static Accelerometer accelerometer;
         public static float AccelerometerAlpha = 0.65f;
@@ -48,6 +47,7 @@ namespace GameName1
             get;
             set;
         }
+        public static List<int> TouchIDs = new List<int>();
         public static void ProcessTouchInput(out List<Vector2> touches) 
         {
             touches = new List<Vector2>();
@@ -59,6 +59,11 @@ namespace GameName1
                     Vector2 touch = new Vector2(loc.Position.X, loc.Position.Y);
                     touches.Add(touch);
                     CurrentState = loc.State;
+                    TouchIDs.Add(loc.Id);
+                }
+                if (loc.State == TouchLocationState.Released)
+                {
+                    TouchIDs.Remove(loc.Id);
                 }
             }
         }
