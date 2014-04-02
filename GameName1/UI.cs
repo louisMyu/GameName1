@@ -15,11 +15,11 @@ namespace GameName1
         public static SpriteFont m_SpriteFont;
         private Texture2D m_FireButton;
         private Color m_FireButtonColor = Color.White;
+        private Color m_StopButtonColor = Color.White;
         private Vector2 FireButtonPosition;
-        private Vector2 WeaponSlot1Position;
-        private Vector2 WeaponSlot2Position;
+        private Vector2 StopButtonPosition;
+        private Vector2 WeaponSlotPosition;
         private Color m_Weapon1ButtonColor = Color.White;
-        private Color m_Weapon2ButtonColor = Color.White;
 
         private int CurrentFPS;
         public static int OFFSET = 175;
@@ -49,8 +49,8 @@ namespace GameName1
             GameHeight = height;
             m_Background = content.Load<Texture2D>("Louis-game-background");
             FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2), GameHeight - m_FireButton.Height - 150);
-            WeaponSlot1Position = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), FireButtonPosition.Y - 900 + (m_FireButton.Height / 2));
-            WeaponSlot2Position = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), WeaponSlot1Position.Y + m_FireButton.Height + 150);
+            StopButtonPosition = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), FireButtonPosition.Y - 900 + (m_FireButton.Height / 2));
+            WeaponSlotPosition = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), StopButtonPosition.Y + m_FireButton.Height + 150);
             m_FireButtonRec = new Rectangle((int)FireButtonPosition.X, (int)FireButtonPosition.Y, m_FireButton.Width+20, 300);
             m_FireButtonScale = Utilities.GetSpriteScaling(new Vector2(m_FireButtonRec.Width, m_FireButtonRec.Height), new Vector2(m_FireButton.Width, m_FireButton.Height));
         }
@@ -63,8 +63,10 @@ namespace GameName1
         public void ProcessInput(List<Vector2> vecList, Player p, List<GameObject> AllItems)
         {
             m_FireButtonColor = Color.White;
+            m_StopButtonColor = Color.White;
             p.Moving = true;
-            p.isFireButtonDown = false;
+            bool isFireDown = false;
+            bool isStopDown = false;
             foreach (Vector2 vec in vecList) {
                 //give a little leeway so its smoother to touch the bottom of the playfield
                 //the player movement clamping will prevent it going off screen
@@ -74,9 +76,15 @@ namespace GameName1
                     if (Utilities.PointIntersectsRectangle(vec, m_FireButtonRec))
                     {
                         m_FireButtonColor = Color.Orange;
-                        p.isFireButtonDown = true;
+                        isFireDown = true;
                     }
-                    Rectangle temp = new Rectangle((int)WeaponSlot1Position.X - (m_FireButton.Width / 2), (int)WeaponSlot1Position.Y - (m_FireButton.Height / 2), m_FireButton.Width, m_FireButton.Height);
+                    Rectangle temp = new Rectangle((int)StopButtonPosition.X - (m_FireButton.Width / 2), (int)StopButtonPosition.Y - (m_FireButton.Height / 2), m_FireButton.Width, m_FireButton.Height);
+                    if (Utilities.PointIntersectsRectangle(vec, temp))
+                    {
+                        m_StopButtonColor = Color.Orange;
+                        isStopDown = true;
+                    }
+                    temp = new Rectangle((int)WeaponSlotPosition.X - (m_FireButton.Width / 2), (int)WeaponSlotPosition.Y - (m_FireButton.Height / 2), m_FireButton.Width, m_FireButton.Height);
                     if (Utilities.PointIntersectsRectangle(vec, temp))
                     {
                         if (p.WeaponSlot1Magic != null)
@@ -85,20 +93,9 @@ namespace GameName1
                         }
                         p.WeaponSlot1Magic = null;
                     }
-                    temp = new Rectangle((int)WeaponSlot2Position.X - (m_FireButton.Width / 2), (int)WeaponSlot2Position.Y - (m_FireButton.Height / 2), m_FireButton.Width, m_FireButton.Height);
-                    if (Utilities.PointIntersectsRectangle(vec, temp))
-                    {
-                        if (p.WeaponSlot1Magic != null)
-                        {
-                            p.WeaponSlot1Magic.GetEffect(AllItems);
-                        }
-                    }
-                }
-                else
-                {
-                    p.ProcessInput(vec, true);
                 }
             }
+            p.ProcessInput(isFireDown, isStopDown);
         }
 
         public void Draw(SpriteBatch spriteBatch, Player p)
@@ -108,6 +105,7 @@ namespace GameName1
             spriteBatch.DrawString(m_SpriteFont, "Life: " + p.LifeTotal, new Vector2(PlayfieldBottom - 50, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
             spriteBatch.DrawString(m_SpriteFont, "XP: " + p.Score, new Vector2(PlayfieldBottom - 80, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
             spriteBatch.Draw(m_FireButton, FireButtonPosition, null, m_FireButtonColor, 0.0f, new Vector2(0, 0), m_FireButtonScale, SpriteEffects.None, 0);
+            spriteBatch.Draw(m_FireButton, StopButtonPosition, null, m_StopButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), new Vector2(1, 1), SpriteEffects.None, 0);
 
             Texture2D tempTex = null;
             if (p.WeaponSlot1Magic != null)
@@ -115,19 +113,11 @@ namespace GameName1
                 tempTex = p.WeaponSlot1Magic.GetTexture();
                 float w_scale = m_FireButton.Width / tempTex.Width;
                 float h_scale = m_FireButton.Height / tempTex.Height;
-                spriteBatch.Draw(tempTex, WeaponSlot1Position, null, m_Weapon1ButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(tempTex.Width / 2, tempTex.Height / 2), new Vector2(w_scale, h_scale), SpriteEffects.None, 0);
+                spriteBatch.Draw(tempTex, WeaponSlotPosition, null, m_Weapon1ButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(tempTex.Width / 2, tempTex.Height / 2), new Vector2(w_scale, h_scale), SpriteEffects.None, 0);
             }
             else
             {
-                spriteBatch.Draw(m_FireButton, WeaponSlot1Position, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), new Vector2(1, 1), SpriteEffects.None, 0);
-            }
-            if (p.WeaponSlot2Magic != null)
-            {
-                spriteBatch.Draw(p.WeaponSlot2Magic.GetTexture(), WeaponSlot2Position, m_Weapon2ButtonColor);
-            }
-            else
-            {
-                spriteBatch.Draw(m_FireButton, WeaponSlot2Position, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), new Vector2(1, 1), SpriteEffects.None, 0);
+                spriteBatch.Draw(m_FireButton, WeaponSlotPosition, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), new Vector2(1, 1), SpriteEffects.None, 0);
             }
         }
 

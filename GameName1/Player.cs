@@ -9,6 +9,8 @@ using FarseerPhysics.Collision;
 using FarseerPhysics.Dynamics;
 using System.Runtime.Serialization;
 using System.IO.IsolatedStorage;
+using FarseerPhysics.Factories;
+using FarseerPhysics;
 
 namespace GameName1
 {
@@ -36,16 +38,10 @@ namespace GameName1
         private bool m_Moving = false;
         [DataMember]
         public bool Moving { get { return m_Moving; } set { m_Moving = value; } }
-        [IgnoreDataMember]
-        private bool shotHappened = false;
-        [DataMember]
-        public bool ShotHappened { get { return shotHappened; } set { shotHappened = value; } }
         [DataMember]
         public int LifeTotal { get; set; }
         [DataMember]
         public Magic WeaponSlot1Magic { get; set; }
-        [DataMember]
-        public Magic WeaponSlot2Magic { get; set; }
 
         [DataMember]
         public int Score { get; set; }
@@ -55,6 +51,7 @@ namespace GameName1
             get;
             set;
         }
+        public Body _circleBody;
         public Player() : base()
         {
 			
@@ -68,7 +65,7 @@ namespace GameName1
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
-            m_Weapon = new Rifle();
+            m_Weapon = new Shotgun();
             Position = pos;
             isFireButtonDown = false;
             LifeTotal = 100;
@@ -77,7 +74,7 @@ namespace GameName1
         {
             List<GameObject> removedAtEnd = new List<GameObject>();
             float nearestLength = float.MaxValue;
-            shotHappened = false;
+
             reset = false;
             foreach (GameObject ob in ObjectManager.AllGameObjects)
             {
@@ -133,11 +130,16 @@ namespace GameName1
             removedAtEnd.Clear();
             //TODO: seriously need to refactor this later
             //its good to find the nearest zombie when i run through entire zombie list, but probably not here
-            if ((m_Weapon.CanFire() && isFireButtonDown) || m_Weapon.Firing)
+            if (m_Weapon.Firing)
             {
-                if (!m_Weapon.Firing)
+                if (!KickedBack && isFireButtonDown)
                 {
-                    shotHappened = true;
+                    KickedBack = true;
+                    if (m_Weapon is Shotgun)
+                    {
+                        Vector2 temp = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle)) * -50;
+                        this._circleBody.ApplyLinearImpulse(temp);
+                    }
                 }
                 bool weaponHit = false;
                 foreach (GameObject ob in ObjectManager.AllGameObjects)
@@ -166,16 +168,23 @@ namespace GameName1
                 ObjectManager.RemoveObject(g);
             }
         }
-        public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
+        public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content, World world)
         {
             Texture = content.Load<Texture2D>("Player");
             base.LoadContent(content);
             m_Weapon.LoadContent(content);
+
+            _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
+            _circleBody.BodyType = BodyType.Dynamic;
+            _circleBody.Mass = 0.2f;
+            _circleBody.LinearDamping = 2f;
         }
 
+        private bool KickedBack = false;
         //moves a set amount per frame toward a certain location
         public override void Move(Microsoft.Xna.Framework.Vector2 loc)
         {
+            
             if (Input.UseAccelerometer)
             {
                 base.Move(loc);
@@ -200,24 +209,36 @@ namespace GameName1
                 temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth + Width);
                 temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight + Height);
                 Position = temp;
+
                 m_Bounds.X = (int)Position.X - Width / 2;
                 m_Bounds.Y = (int)Position.Y - Height / 2;
             }
         }
 
-        internal void ProcessInput(Vector2 vec, bool inPlayField)
+        internal void ProcessInput(bool firing, bool stopMoving)
         {
-            if (vec.X != -1 && inPlayField)
-            {
-                m_Moving = false;
-            }
+            isFireButtonDown = firing;
+            m_Moving = !stopMoving;
             //test.Update(m_MoveToward, new Vector2(Position.X, Position.Y));
             
         }
 
         public void Update(float elapsedTime)
         {
-            
+            if (!m_Weapon.Firing && KickedBack)
+            {
+                KickedBack = false;
+            }
+            //should really just use the Sim's position for everything instead of converting from one to another
+            Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
+            if (float.IsNaN(simPosition.X) || float.IsNaN(simPosition.Y))
+            {
+                return;
+            }
+            else
+            {
+                this.Position = simPosition;
+            }
             if (!Input.UseAccelerometer)
             {
                 if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
@@ -236,13 +257,17 @@ namespace GameName1
                     RotationAngle = (float)Math.Atan2(temp.X, temp.Y);
                 }
             }
-            if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
+            if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting && !KickedBack)
             {
                 Move(m_MoveToward);
             }
             else if (m_Moving && !m_Weapon.Firing)
             {
                 Move(m_MoveToward);
+            }
+            if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
+            {
+                _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
             }
             m_Weapon.Update(elapsedTime, Position, RotationAngle, 10, isFireButtonDown);
         }
@@ -251,7 +276,7 @@ namespace GameName1
         {
             base.Draw(_spriteBatch);
 
-            if (shotHappened || m_Weapon.Firing)
+            if (m_Weapon.Firing)
             {
                 m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
             }

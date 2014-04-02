@@ -95,7 +95,7 @@ namespace GameName1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            m_Player.LoadContent(Content);
+            m_Player.LoadContent(Content, m_World);
             UserInterface.LoadContent(Content, GameWidth, GameHeight);
             Magic.TextureInit(Content);
             m_Menu.LoadContent(Content);
