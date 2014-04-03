@@ -70,6 +70,7 @@ namespace GameName1
             GameHeight = GraphicsDevice.Viewport.Height;
             
             m_World = new World(new Vector2(0, 0));
+            ConvertUnits.SetDisplayUnitToSimUnitRatio(5);
 
             Player p = Player.Load(Content);
             if (p == null)
@@ -100,7 +101,6 @@ namespace GameName1
             Magic.TextureInit(Content);
             m_Menu.LoadContent(Content);
             GlobalObjectManager.LoadContent();
-            ConvertUnits.SetDisplayUnitToSimUnitRatio(10);
 
             m_song = Content.Load<Song>("AuraQualic - DATA (FL Studio Remix)");
             // TODO: use this.Content to load your game content here

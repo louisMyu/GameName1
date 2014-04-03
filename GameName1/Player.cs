@@ -178,6 +178,10 @@ namespace GameName1
             _circleBody.BodyType = BodyType.Dynamic;
             _circleBody.Mass = 0.2f;
             _circleBody.LinearDamping = 2f;
+            if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
+            {
+                _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
+            }
         }
 
         private bool KickedBack = false;
@@ -286,9 +290,22 @@ namespace GameName1
         {
             Storage.Save<Player>(Player.playerSaveDir, "player1", this);
         }
-        public override void Load(Microsoft.Xna.Framework.Content.ContentManager content, World world)
+        public static Player Load(Microsoft.Xna.Framework.Content.ContentManager content, World world)
         {
-            throw new NotImplementedException();
+            Player p = Storage.Load<Player>(Player.playerSaveDir, "player1");
+            if (p != null)
+            {
+                p.m_Weapon.LoadWeapon(content);
+            }
+            p._circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(p.Position));
+            p._circleBody.BodyType = BodyType.Dynamic;
+            p._circleBody.Mass = 0.2f;
+            p._circleBody.LinearDamping = 2f;
+            if (!float.IsNaN(p.Position.X) && !float.IsNaN(p.Position.Y))
+            {
+                p._circleBody.Position = ConvertUnits.ToSimUnits(p.Position);
+            }
+            return p;
         }
         public static Player Load(Microsoft.Xna.Framework.Content.ContentManager content)
         {
