@@ -253,9 +253,9 @@ namespace GameName1
             else
             {
                 Vector3 acceleration = Input.CurrentAccelerometerValues;
-                m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X*30, acceleration.X*20, -acceleration.X*20),
-                                            MathHelper.Clamp(acceleration.Y*-30, -acceleration.Y*20, acceleration.Y*20));
-                Vector2 temp = new Vector2(-acceleration.Y, acceleration.X);
+                m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X*50, -(Math.Abs(acceleration.X)*25), Math.Abs(acceleration.X)*25),
+                                            MathHelper.Clamp(acceleration.Y*50, -(Math.Abs(acceleration.Y)*25), Math.Abs(acceleration.Y)*25));
+                Vector2 temp = new Vector2(acceleration.Y, acceleration.X);
                 if (!m_Weapon.Firing)
                 {
                     RotationAngle = (float)Math.Atan2(temp.X, temp.Y);
