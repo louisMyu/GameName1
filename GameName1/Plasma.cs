@@ -27,14 +27,11 @@ namespace GameName1
         [DataMember]
         public SpriteInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
 
-        private AnimationManager m_FireAnimation;
         public Plasma()
         {
             Spread = (float)Math.PI / 6;
             NumberOfBullets = 1;
             FireRate = 15;
-            shotString1 = "rifle1";
-            shotString2 = "rifle2";
             m_SightRange = 400;
             Knockback = 250f;
             CanMoveWhileShooting = true;
@@ -74,10 +71,7 @@ namespace GameName1
             if (!Firing && shotFired && CanFire())
             {
                 Firing = true;
-                m_FireAnimation.SpriteInfo = m_CurrentShotInfo;
                 CanDamage = false;
-                if (m_FireAnimation.CanStartAnimating())
-                    m_FireAnimation.Finished = false;
             }
         }
         public override bool CheckCollision(GameObject ob)
@@ -106,28 +100,15 @@ namespace GameName1
 
         public override void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
-            if (m_FireAnimation.CanDraw())
-            {
-                m_FireAnimation.DrawAnimationFrame(_spriteBatch);
-                //if frame is at 5
-                if (m_FireAnimation.FrameCounter == 20)
-                {
-                    CanDamage = true;
-                }
-                //foreach (Line line in m_BulletLines)
-                //{
-                //    line.Draw(_spriteBatch);
-                //}
-                if (m_FireAnimation.FrameCounter == 40)
-                {
-                    CanDamage = false;
-                }
-            }
-            else if (Firing)
-            {
-                Firing = false;
-                m_ElapsedFrames = FireRate;
-            }
+            throw new NotImplementedException();
+            //if (m_FireAnimation.CanDraw())
+            //{
+            //}
+            //else if (Firing)
+            //{
+            //    Firing = false;
+            //    m_ElapsedFrames = FireRate;
+            //}
         }
         public override void LoadWeapon(Microsoft.Xna.Framework.Content.ContentManager content)
         {
@@ -142,10 +123,6 @@ namespace GameName1
         protected override void LoadTextures(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             Bullet s = new Bullet("PlasmaBullet", content);
-            AnimationInfo[] array = new AnimationInfo[2];
-            array[0] = new AnimationInfo(TextureBank.GetTexture(shotString1, content), 20);
-            array[1] = new AnimationInfo(TextureBank.GetTexture(shotString2, content), -1);
-            m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 60);
         }   
     }
     public class Bullet : GameObject
