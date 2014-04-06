@@ -124,8 +124,10 @@ namespace GameName1
             base.Move(amount);
 
             //Later on, remove the clamp to the edge and despawn when too far out of the screen.
-            //Position.X = MathHelper.Clamp(Position.X, Width + UI.OFFSET, Game1.GameWidth - (Width / 2));
-            //Position.Y = MathHelper.Clamp(Position.Y, Height, Game1.GameHeight - (Height / 2));
+            //Vector2 temp = new Vector2();
+            //temp.X = MathHelper.Clamp(Position.X, Width + UI.OFFSET, Game1.GameWidth - (Width / 2));
+            //temp.Y = MathHelper.Clamp(Position.Y, Height, Game1.GameHeight - (Height / 2));
+            //Position = temp;
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);

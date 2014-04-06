@@ -16,7 +16,7 @@ namespace GameName1
     {
         public static bool UseAccelerometer = true;
         public static Accelerometer accelerometer;
-        public static float AccelerometerAlpha = 0.65f;
+        public static float AccelerometerAlpha = 0.45f;
         public static Vector3 CurrentAccelerometerValues { get; set; }
         static Input()
         {

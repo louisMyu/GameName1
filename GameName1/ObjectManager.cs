@@ -59,7 +59,7 @@ namespace GameName1
                 }
             }
             AllGameObjects.RemoveAll(x => x.CanDelete);
-            if (FrameCounter % 20 == 0 && NumZombies < MaxZombies)
+            if (FrameCounter % 100 == 0 && NumZombies < MaxZombies)
             {
                 SpawnZombie();
             }

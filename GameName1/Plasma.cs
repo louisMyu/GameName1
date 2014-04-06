@@ -57,7 +57,9 @@ namespace GameName1
             //firing a shot, save the state
             if (shotFired && CanFire())
             {
-                m_Bullets.Add(new Bullet(TextureBank.GetTexture("PlasmaBullet"), m_CurrentShotInfo, 20));
+                Bullet temp = new Bullet(TextureBank.GetTexture("PlasmaBullet"), m_CurrentShotInfo, 20);
+                temp.LoadContent();
+                m_Bullets.Add(temp);
                 m_ElapsedFrames = FireRate;
             }
             if (m_Bullets.Count > 0)
@@ -140,6 +142,10 @@ namespace GameName1
             Life = 25;
         }
 
+        public override void LoadContent()
+        {
+            base.LoadContent();
+        }
         public void Update()
         {
             --Life;
