@@ -18,9 +18,9 @@ namespace GameName1
 
         //i should remove the graphics device later, or 
         //separate the graphical line from the line class
-        public Line(Microsoft.Xna.Framework.Content.ContentManager content)
+        public Line()
         {
-            m_WeaponLine = new GraphicalLine(content);
+            m_WeaponLine = new GraphicalLine();
         }
         public Line(Vector2 one, Vector2 two)
         {

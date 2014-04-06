@@ -13,14 +13,14 @@ namespace GameName1
     [DataContract]
     public class PowerUp : GameObject
     {
-        public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
+        public override void LoadContent()
         {
-            Texture = TextureBank.GetTexture("Powerup", content);
-            base.LoadContent(content);
+            Texture = TextureBank.GetTexture("Powerup");
+            base.LoadContent();
         }
-        public override void Load(Microsoft.Xna.Framework.Content.ContentManager content, FarseerPhysics.Dynamics.World world)
+        public override void Load(FarseerPhysics.Dynamics.World world)
         {
-            Texture = TextureBank.GetTexture("Powerup", content);
+            Texture = TextureBank.GetTexture("Powerup");
         }
         public PowerUp() { }
     }

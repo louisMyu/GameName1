@@ -53,6 +53,7 @@ namespace GameName1
             }
                 
         }
+        public bool CanDelete = false;
         public GameObject()
         {
             if (m_Bounds == null)
@@ -68,7 +69,7 @@ namespace GameName1
         public virtual void Update(Vector2 playerPos)
         {
         }
-        public virtual void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content) 
+        public virtual void LoadContent() 
         {
             Width = Texture != null ? Texture.Width : 0;
             Height = Texture != null ? Texture.Height : 0;
@@ -95,7 +96,7 @@ namespace GameName1
         public virtual void Save()
         {
         }
-        public virtual void Load(Microsoft.Xna.Framework.Content.ContentManager content, FarseerPhysics.Dynamics.World world)
+        public virtual void Load(FarseerPhysics.Dynamics.World world)
         {
         }
     }

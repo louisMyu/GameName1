@@ -65,7 +65,7 @@ namespace GameName1
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
-            m_Weapon = new Shotgun();
+            m_Weapon = new Plasma();
             Position = pos;
             isFireButtonDown = false;
             LifeTotal = 100;
@@ -130,7 +130,7 @@ namespace GameName1
             removedAtEnd.Clear();
             //TODO: seriously need to refactor this later
             //its good to find the nearest zombie when i run through entire zombie list, but probably not here
-            if (m_Weapon.Firing)
+            if (m_Weapon.Firing || m_Weapon.BulletsExist)
             {
                 if (!KickedBack && isFireButtonDown)
                 {
@@ -141,38 +141,19 @@ namespace GameName1
                         this._circleBody.ApplyLinearImpulse(temp);
                     }
                 }
-                bool weaponHit = false;
                 foreach (GameObject ob in ObjectManager.AllGameObjects)
                 {
                     //this probably should check for collision only when firing
                     //that way the bullet lines wont update to the next person while a shot is going off
-                    weaponHit = m_Weapon.CheckCollision(ob);
-                    if (weaponHit)
-                    {
-                        if (ob is Zombie)
-                        {
-                            Zombie temp = (Zombie)ob;
-                            temp.LifeTotal -= 10;
-                            if (temp.LifeTotal <= 0)
-                            {
-                                removedAtEnd.Add(ob);
-                                ++Score;
-                            }
-                        }
-                    }
-                    weaponHit = false;
+                    m_Weapon.CheckCollision(ob);
                 }
             }
-            foreach (GameObject g in removedAtEnd)
-            {
-                ObjectManager.RemoveObject(g);
-            }
         }
-        public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content, World world)
+        public void LoadContent(World world)
         {
-            Texture = content.Load<Texture2D>("Player");
-            base.LoadContent(content);
-            m_Weapon.LoadContent(content);
+            Texture = TextureBank.GetTexture("Player");
+            base.LoadContent();
+            m_Weapon.LoadContent();
 
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
@@ -254,11 +235,10 @@ namespace GameName1
             {
                 Vector3 acceleration = Input.CurrentAccelerometerValues;
                 m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X*50, -(Math.Abs(acceleration.X)*25), Math.Abs(acceleration.X)*25),
-                                            MathHelper.Clamp(acceleration.Y*50, -(Math.Abs(acceleration.Y)*25), Math.Abs(acceleration.Y)*25));
-                Vector2 temp = new Vector2(acceleration.Y, acceleration.X);
+                                            -1*MathHelper.Clamp(acceleration.Y*50, -(Math.Abs(acceleration.Y)*25), Math.Abs(acceleration.Y)*25));
                 if (!m_Weapon.Firing)
                 {
-                    RotationAngle = (float)Math.Atan2(temp.X, temp.Y);
+                    RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
                 }
             }
             if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting && !KickedBack)
@@ -279,11 +259,7 @@ namespace GameName1
         public override void Draw(SpriteBatch _spriteBatch)
         {
             base.Draw(_spriteBatch);
-
-            if (m_Weapon.Firing)
-            {
-                m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
-            }
+            m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
         }
 
         public override void Save()
@@ -295,7 +271,7 @@ namespace GameName1
             Player p = Storage.Load<Player>(Player.playerSaveDir, "player1");
             if (p != null)
             {
-                p.m_Weapon.LoadWeapon(content);
+                p.m_Weapon.LoadWeapon();
             }
             p._circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(p.Position));
             p._circleBody.BodyType = BodyType.Dynamic;
@@ -312,7 +288,7 @@ namespace GameName1
             Player p = Storage.Load<Player>(Player.playerSaveDir, "player1");
             if (p != null)
             {
-                p.m_Weapon.LoadWeapon(content);
+                p.m_Weapon.LoadWeapon();
             }
             return p;
         }

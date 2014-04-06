@@ -9,6 +9,8 @@ namespace GameName1
 {
     public interface IEnemy
     {
+        int GetHealth();
+        void AddToHealth(int amount);
         void ApplyLinearForce(Vector2 angle, float amount);
         void CleanBody();
     }

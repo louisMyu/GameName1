@@ -32,7 +32,7 @@ namespace GameName1
         public SpriteInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
 
         private AnimationManager m_FireAnimation;
-        public Shotgun()
+        public Shotgun() : base()
         {
             Spread = (float)Math.PI / 6;
             NumberOfBullets = 3;
@@ -44,14 +44,15 @@ namespace GameName1
             SightRange = 100;
             Knockback = 250f;
             CanMoveWhileShooting = true;
+            BulletsExist = false;
         }
 
-        public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
+        public override void LoadContent()
         {
-            LoadTextures(content);
+            LoadTextures();
             for (int i = 0; i < NumberOfBullets; ++i)
             {
-                m_BulletLines.Add(new Line(content));
+                m_BulletLines.Add(new Line());
             }
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
@@ -98,6 +99,7 @@ namespace GameName1
                     Vector2 intersectingAngle = new Vector2(line.P2.X - line.P1.X, line.P2.Y - line.P1.Y);
                     IEnemy enemy = ob as IEnemy;
                     enemy.ApplyLinearForce(intersectingAngle, Knockback);
+                    enemy.AddToHealth(-10);
                     return true;
                 }
             }
@@ -110,7 +112,7 @@ namespace GameName1
 
         public override void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
-            if (m_FireAnimation.CanDraw())
+            if (m_FireAnimation.CanDraw() && Firing)
             {
                 m_FireAnimation.DrawAnimationFrame(_spriteBatch);
                 foreach (Line line in m_BulletLines)
@@ -129,22 +131,22 @@ namespace GameName1
                 m_ElapsedFrames = FireRate;
             }
         }
-        public override void LoadWeapon(Microsoft.Xna.Framework.Content.ContentManager content)
+        public override void LoadWeapon()
         {
-            LoadTextures(content);
+            LoadTextures();
             m_BulletLines = new List<Line>();
             for (int i = 0; i < NumberOfBullets; ++i)
             {
-                m_BulletLines.Add(new Line(content));
+                m_BulletLines.Add(new Line());
             }
         }
-        protected override void LoadTextures(Microsoft.Xna.Framework.Content.ContentManager content)
+        protected override void LoadTextures()
         {
             AnimationInfo[] array = new AnimationInfo[4];
-            array[0] = new AnimationInfo(TextureBank.GetTexture(blastString, content), 5);
-            array[1] = new AnimationInfo(TextureBank.GetTexture(blast2String, content), 9);
-            array[2] = new AnimationInfo(TextureBank.GetTexture(blast3String, content), 12);
-            array[3] = new AnimationInfo(TextureBank.GetTexture(blast4String, content), -1);
+            array[0] = new AnimationInfo(TextureBank.GetTexture(blastString), 5);
+            array[1] = new AnimationInfo(TextureBank.GetTexture(blast2String), 9);
+            array[2] = new AnimationInfo(TextureBank.GetTexture(blast3String), 12);
+            array[3] = new AnimationInfo(TextureBank.GetTexture(blast4String), -1);
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 15);
         }
     }

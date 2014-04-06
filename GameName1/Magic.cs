@@ -66,20 +66,15 @@ namespace GameName1
         public override void GetEffect(List<GameObject> exists)
         {
             //for now hitting the powerup will reset the game
-            List<GameObject> removedAtEnd = new List<GameObject>();
             foreach (GameObject g in exists)
             {
                 if (g is Zombie)
                 {
                     ((Zombie)g).CleanBody();
-                    removedAtEnd.Add(g);
+                    g.CanDelete = true;
                 }
             }
             ObjectManager.itemMade = false;
-            foreach (GameObject g in removedAtEnd)
-            {
-                exists.Remove(g);
-            }
             return;
         }
 

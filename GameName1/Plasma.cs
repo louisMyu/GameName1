@@ -11,12 +11,7 @@ namespace GameName1
 {
     [DataContract]
     class Plasma : Weapon
-    {
-        [DataMember]
-        public string shotString1 { get; set; }
-        [DataMember]
-        public string shotString2 { get; set; }
-        
+    {     
         [IgnoreDataMember]
         private SpriteInfo m_SavedShotInfo;
         [IgnoreDataMember]
@@ -27,70 +22,72 @@ namespace GameName1
         [DataMember]
         public SpriteInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
 
-        public Plasma()
+        private List<Bullet> m_Bullets = new List<Bullet>();
+        public Plasma() : base()
         {
             Spread = (float)Math.PI / 6;
             NumberOfBullets = 1;
-            FireRate = 15;
+            FireRate = 5;
             m_SightRange = 400;
             Knockback = 250f;
             CanMoveWhileShooting = true;
+            Firing = false;
         }
 
-        public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
+        public override void LoadContent()
         {
-            LoadTextures(content);
+            LoadTextures();
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
         public override void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, bool shotFired)
         {
             base.Update(elapsedTime, playerCenter, rotationAngle, accuracy, shotFired);
-            if (!Firing)
+            //float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
+            //TODO: add a random so its either plus or minus accuracy
+            float centerVector = rotationAngle;
+
+            m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, LeftAngle);
+            
+            m_Bullets.RemoveAll(x => x.CanDelete);
+            foreach (Bullet b in m_Bullets)
             {
-                //float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
-                //TODO: add a random so its either plus or minus accuracy
-                float centerVector = rotationAngle;
-                if (NumberOfBullets > 1)
-                {
-                    float leftAngle = centerVector - (Spread / (NumberOfBullets - 1));
-                    LeftAngle = leftAngle;
-                }
-                else
-                {
-                    LeftAngle = centerVector;
-                }
-                
-                //foreach (Line line in m_BulletLines)
-                //{
-                //    line.Update(playerCenter, LeftAngle, SightRange);
-                //}
-                m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, LeftAngle);
+                b.Update();
             }
             //firing a shot, save the state
-            if (!Firing && shotFired && CanFire())
+            if (shotFired && CanFire())
             {
-                Firing = true;
-                CanDamage = false;
+                m_Bullets.Add(new Bullet(TextureBank.GetTexture("PlasmaBullet"), m_CurrentShotInfo, 20));
+                m_ElapsedFrames = FireRate;
+            }
+            if (m_Bullets.Count > 0)
+            {
+                BulletsExist = true;
+            }
+            else
+            {
+                BulletsExist = false;
             }
         }
         public override bool CheckCollision(GameObject ob)
         {
-            if (!CanDamage)
+            bool hit = false;
+            //i think im having an issue with bullets skipping their target because they are 
+            //traveling too far per frame
+            foreach (Bullet b in m_Bullets)
             {
-                return false;
+                hit = b.CheckCollision(ob);
+                if (hit)
+                {
+                    b.CanDelete = true;
+                    if (ob is IEnemy)
+                    {
+                        IEnemy temp = ob as IEnemy;
+                        temp.AddToHealth(-10);
+                    }
+                    return true;
+                }
             }
-            //foreach (Line line in m_BulletLines)
-            //{
-            //    Vector2 check = line.Intersects(ob.m_Bounds);
-            //    if (check.X != -1)
-            //    {
-            //        Vector2 intersectingAngle = new Vector2(line.P2.X - line.P1.X, line.P2.Y - line.P1.Y);
-            //        IEnemy enemy = ob as IEnemy;
-            //        enemy.ApplyLinearForce(intersectingAngle, Knockback);
-            //        return true;
-            //    }
-            //}
             return false;
         }
         public override void DrawWeapon(SpriteBatch _spriteBatch, Vector2 position, float rot)
@@ -100,7 +97,10 @@ namespace GameName1
 
         public override void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
-            throw new NotImplementedException();
+            foreach (Bullet b in m_Bullets)
+            {
+                b.Draw(_spriteBatch);
+            }
             //if (m_FireAnimation.CanDraw())
             //{
             //}
@@ -110,9 +110,9 @@ namespace GameName1
             //    m_ElapsedFrames = FireRate;
             //}
         }
-        public override void LoadWeapon(Microsoft.Xna.Framework.Content.ContentManager content)
+        public override void LoadWeapon()
         {
-            LoadTextures(content);
+            LoadTextures();
 
             //m_BulletLines = new List<Line>();
             //for (int i = 0; i < NumberOfBullets; ++i)
@@ -120,16 +120,50 @@ namespace GameName1
             //    m_BulletLines.Add(new Line(content));
             //}
         }
-        protected override void LoadTextures(Microsoft.Xna.Framework.Content.ContentManager content)
+        protected override void LoadTextures()
         {
-            Bullet s = new Bullet("PlasmaBullet", content);
         }   
     }
     public class Bullet : GameObject
     {
-        public Bullet(string s, Microsoft.Xna.Framework.Content.ContentManager content)
+        public int Velocity { get; set; }
+        private Vector2 m_Heading;
+        //time in frames that this bullet will exist
+        private int Life;
+        public Bullet(Texture2D tex, SpriteInfo info, int vel) : base()
         {
-            Texture = TextureBank.GetTexture(s, content);
+            Texture = tex;
+            Position = info.Position;
+            RotationAngle = info.Rotation;
+            m_Heading = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle));
+            Velocity = vel;
+            Life = 25;
+        }
+
+        public void Update()
+        {
+            --Life;
+            Move(Velocity * m_Heading);
+            m_Bounds.X = (int)Position.X - Width / 2;
+            m_Bounds.Y = (int)Position.Y - Height / 2;
+        }
+        public bool IsAlive()
+        {
+            return Life > 0;
+        }
+        public override void Draw(SpriteBatch _spriteBatch)
+        {
+            //base.Draw(_spriteBatch);
+            _spriteBatch.Draw(Texture, new Vector2(Bounds.X, Bounds.Y), Color.White);
+        }
+
+        public bool CheckCollision(GameObject ob)
+        {
+            if (Bounds.Intersects(ob.Bounds))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

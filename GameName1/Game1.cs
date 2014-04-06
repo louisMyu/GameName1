@@ -34,9 +34,7 @@ namespace GameName1
 
         private Menu m_Menu = new Menu();
 
-        public static bool ZombiesSpawned = false;
-        private PowerUp m_PowerUp;
-        
+        public static bool ZombiesSpawned = false;        
         public static double GameTimer = 0;
         
         private UI UserInterface = new UI();
@@ -96,7 +94,8 @@ namespace GameName1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            m_Player.LoadContent(Content, m_World);
+            TextureBank.SetContentManager(Content);
+            m_Player.LoadContent(m_World);
             UserInterface.LoadContent(Content, GameWidth, GameHeight);
             Magic.TextureInit(Content);
             m_Menu.LoadContent(Content);
@@ -220,32 +219,6 @@ namespace GameName1
             base.Draw(gameTime);
         }
 
-        private void MakeItem()
-        {
-            bool nearPlayer = true;
-            int x = 0;
-            int y = 0;
-            while (nearPlayer)
-            {
-                x = ZombieRandom.Next(720);
-                y = ZombieRandom.Next(1280);
-
-                //don't spawn near player
-                Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
-                if (distanceFromPlayer.LengthSquared() >= (150.0f*150.0f))
-                {
-                    nearPlayer = false;
-                }
-            }
-            m_PowerUp = new PowerUp();
-            Vector2 temp = new Vector2();
-            temp.X = x;
-            temp.Y = y;
-            m_PowerUp.Position = temp;
-            m_PowerUp.LoadContent(Content);
-            ObjectManager.AllGameObjects.Add(m_PowerUp);
-        }
-
         private void ResetGame()
         {
             ObjectManager.AllGameObjects.Clear();
@@ -274,7 +247,7 @@ namespace GameName1
             temp.X = x;
             temp.Y = y;
             z.Position = temp;
-            z.LoadContent(Content, m_World);
+            z.LoadContent(m_World);
             ObjectManager.AllGameObjects.Add(z);
         }
     }

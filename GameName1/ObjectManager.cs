@@ -22,6 +22,7 @@ namespace GameName1
         private World m_World;
         private static int NumZombies = 0;
         private static int MaxZombies = 5;
+        private PowerUp m_PowerUp;
         public void Init(Player p, ContentManager content, World world)
         {
             m_Player = p;
@@ -40,12 +41,24 @@ namespace GameName1
             {
                 foreach (GameObject g in AllGameObjects)
                 {
-                    g.Load(m_Content, m_World);
+                    g.Load(m_World);
                 }
             }
         }
         public void Update()
         {
+            foreach (GameObject ob in AllGameObjects)
+            {
+                if (ob is IEnemy)
+                {
+                    IEnemy temp = ob as IEnemy;
+                    if (temp.GetHealth() <= 0)
+                    {
+                        ob.CanDelete = true;
+                    }
+                }
+            }
+            AllGameObjects.RemoveAll(x => x.CanDelete);
             if (FrameCounter % 20 == 0 && NumZombies < MaxZombies)
             {
                 SpawnZombie();
@@ -58,30 +71,19 @@ namespace GameName1
             {
                 ++FrameCounter;
             }
-            //if (ZombieTimer >= ZombieSpawnTimer && NumZombies< MaxZombies)
-            //{
-            //    SpawnZombie();
-            //    ZombieTimer = 0;
-            //    if (ZombieSpawnTimer > 10) 
-            //    {
-            //        ZombieSpawnTimer -= 1;
-            //    }
-            //    if (ZombieSpawnTimer < 10)
-            //    {
-            //        ZombieSpawnTimer = 10;
-            //    }
-            //}
-            //if (GameTimer >= 10 && !itemMade)
-            //{
-            //    MakeItem();
-            //    itemMade = true;
-            //}
-            //if (GameTimer >= 25 && !face)
-            //{
-            //    SpawnFace();
-            //    face = true;
-            //}
-            //merged from desktop, these comments are necessary
+        }
+        public static void RemoveObject(GameObject obj)
+        {
+
+            if (obj is Zombie)
+            {
+                ((Zombie)obj).CleanBody();
+                --NumZombies;
+            }
+            if (AllGameObjects.Contains(obj))
+            {
+                AllGameObjects.Remove(obj);
+            }
         }
 
         private void SpawnZombie()
@@ -106,7 +108,7 @@ namespace GameName1
             temp.X = x;
             temp.Y = y;
             z.Position = temp;
-            z.LoadContent(m_Content, m_World);
+            z.LoadContent(m_World);
             AllGameObjects.Add(z);
             ++NumZombies;
         }
@@ -120,18 +122,30 @@ namespace GameName1
             NumZombies = 0;
         }
 
-        public static void RemoveObject(GameObject obj)
+        private void MakeItem()
         {
+            bool nearPlayer = true;
+            int x = 0;
+            int y = 0;
+            while (nearPlayer)
+            {
+                x = ZombieRandom.Next(720);
+                y = ZombieRandom.Next(1280);
 
-            if (obj is Zombie)
-            {
-                ((Zombie)obj).CleanBody();
-                --NumZombies;
+                //don't spawn near player
+                Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
+                if (distanceFromPlayer.LengthSquared() >= (150.0f * 150.0f))
+                {
+                    nearPlayer = false;
+                }
             }
-            if (AllGameObjects.Contains(obj))
-            {
-                AllGameObjects.Remove(obj);
-            }
+            m_PowerUp = new PowerUp();
+            Vector2 temp = new Vector2();
+            temp.X = x;
+            temp.Y = y;
+            m_PowerUp.Position = temp;
+            m_PowerUp.LoadContent();
+            ObjectManager.AllGameObjects.Add(m_PowerUp);
         }
         //probably should add spawn face in here
     }

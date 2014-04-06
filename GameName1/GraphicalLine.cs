@@ -14,9 +14,9 @@ namespace GameName1
         private Vector2 point1;
         private Vector2 point2;
 
-        public GraphicalLine(Microsoft.Xna.Framework.Content.ContentManager content) 
+        public GraphicalLine() 
         {
-            blank = content.Load<Texture2D>("Line");
+            blank = TextureBank.GetTexture("Line");
             point1 = new Vector2();
             point2 = new Vector2();
         }

@@ -63,6 +63,8 @@ namespace GameName1
             get;
             set;
         }
+        //if bullets exist without the weapon firing
+        public bool BulletsExist { get; set; }
         protected static Random WEAPON_RANDOM = new Random();
         [DataMember]
         public int m_ElapsedFrames { get; set; }
@@ -70,8 +72,9 @@ namespace GameName1
         public bool CanDamage { get; set; }
         public Weapon() 
         {
+            m_ElapsedFrames = FireRate;
         }
-        public virtual void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
+        public virtual void LoadContent()
         {
         }
         //this should be called every update if it exists for the player
@@ -96,7 +99,6 @@ namespace GameName1
         public virtual void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
         }
-
         public virtual bool CanFire()
         {
             if (m_ElapsedFrames == 0)
@@ -106,11 +108,11 @@ namespace GameName1
             return false;
         }
 
-        public virtual void LoadWeapon(Microsoft.Xna.Framework.Content.ContentManager content)
+        public virtual void LoadWeapon()
         {
         }
 
-        protected virtual void LoadTextures(Microsoft.Xna.Framework.Content.ContentManager content)
+        protected virtual void LoadTextures()
         {
         }
     }

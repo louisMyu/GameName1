@@ -50,11 +50,11 @@ namespace GameName1
 
         }
 
-        public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager Content, World world)
+        public void LoadContent(World world)
         {
             if (m_Texture == null)
             {
-                m_Texture = TextureBank.GetTexture("Face", Content);
+                m_Texture = TextureBank.GetTexture("Face");
             }
             m_State = MotionState.Wandering;
             RotationAngle = (float)GameObject.RANDOM_GENERATOR.NextDouble();
@@ -159,16 +159,24 @@ namespace GameName1
 
             }
         }
+        public void AddToHealth(int amount)
+        {
+            LifeTotal += amount;
+        }
+        public int GetHealth()
+        {
+            return LifeTotal;
+        }
 
         public override void Save()
         {
             Storage.Save<Anubis>("", "", this);
         }
-        public override void Load(Microsoft.Xna.Framework.Content.ContentManager content, World world)
+        public override void Load(World world)
         {
             if (m_Texture == null)
             {
-                m_Texture = TextureBank.GetTexture("Face", content);
+                m_Texture = TextureBank.GetTexture("Face");
             }
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
