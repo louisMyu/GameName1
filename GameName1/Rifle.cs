@@ -43,7 +43,7 @@ namespace GameName1
             BulletsExist = false;
         }
 
-        public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
+        public override void LoadContent()
         {
             LoadTextures();
             for (int i = 0; i < NumberOfBullets; ++i)
@@ -154,6 +154,5 @@ namespace GameName1
             array[1] = new AnimationInfo(TextureBank.GetTexture(shotString2), -1);
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 60);
         }
-
     }
 }

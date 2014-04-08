@@ -49,7 +49,7 @@ namespace GameName1
 
             m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, LeftAngle);
             
-            m_Bullets.RemoveAll(x => x.CanDelete);
+            m_Bullets.RemoveAll(x => x.CanDelete || !x.IsAlive());
             foreach (Bullet b in m_Bullets)
             {
                 b.Update();
@@ -74,8 +74,6 @@ namespace GameName1
         public override bool CheckCollision(GameObject ob)
         {
             bool hit = false;
-            //i think im having an issue with bullets skipping their target because they are 
-            //traveling too far per frame
             foreach (Bullet b in m_Bullets)
             {
                 hit = b.CheckCollision(ob);

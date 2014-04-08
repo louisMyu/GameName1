@@ -34,13 +34,13 @@ namespace GameName1
 
         public static Magic GetMagicType(GameObject powerUp)
         {
-            if (powerUp is PowerUp)
+            if (powerUp is CheatPowerUp)
             {
                 return new WrathEffect();
             }
             return new WrathEffect();
         }
-        public virtual void GetEffect(List<GameObject>exists)
+        public virtual void GetEffect()
         {
 
         }
@@ -63,15 +63,14 @@ namespace GameName1
             
         }
 
-        public override void GetEffect(List<GameObject> exists)
+        public override void GetEffect()
         {
             //for now hitting the powerup will reset the game
-            foreach (GameObject g in exists)
+            foreach (GameObject g in ObjectManager.AllGameObjects)
             {
                 if (g is Zombie)
                 {
-                    ((Zombie)g).CleanBody();
-                    g.CanDelete = true;
+                    ObjectManager.RemoveObject(g);
                 }
             }
             ObjectManager.itemMade = false;

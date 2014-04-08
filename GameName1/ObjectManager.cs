@@ -54,7 +54,7 @@ namespace GameName1
                     IEnemy temp = ob as IEnemy;
                     if (temp.GetHealth() <= 0)
                     {
-                        ob.CanDelete = true;
+                        RemoveObject(ob);
                     }
                 }
             }
@@ -63,8 +63,9 @@ namespace GameName1
             {
                 SpawnZombie();
             }
-            if (FrameCounter > 5000)
+            if (FrameCounter > 1000)
             {
+                MakeItem();
                 FrameCounter = 0;
             }
             else
@@ -80,10 +81,7 @@ namespace GameName1
                 ((Zombie)obj).CleanBody();
                 --NumZombies;
             }
-            if (AllGameObjects.Contains(obj))
-            {
-                AllGameObjects.Remove(obj);
-            }
+            obj.CanDelete = true;
         }
 
         private void SpawnZombie()
@@ -98,7 +96,7 @@ namespace GameName1
 
                 //don't spawn near player
                 Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
-                if (distanceFromPlayer.LengthSquared() >= (150.0f * 150f))
+                if (distanceFromPlayer.LengthSquared() >= (200.0f * 200f))
                 {
                     nearPlayer = false;
                 }
@@ -139,10 +137,21 @@ namespace GameName1
                     nearPlayer = false;
                 }
             }
-            m_PowerUp = new PowerUp();
+            int powerUpType = ZombieRandom.Next(2);
+            if (powerUpType == 0) 
+            {
+                m_PowerUp = new CheatPowerUp();
+            }
+            else if (powerUpType == 1)
+            {
+                m_PowerUp = new WeaponPowerUp((WeaponPowerUp.WeaponType)ZombieRandom.Next(3));
+                //m_PowerUp = new WeaponPowerUp(WeaponPowerUp.WeaponType.Rifle);
+            }
             Vector2 temp = new Vector2();
-            temp.X = x;
-            temp.Y = y;
+            //temp.X = x;
+            //temp.Y = y;
+            temp.X = MathHelper.Clamp(x, 0 + UI.OFFSET, Game1.GameWidth);
+            temp.Y = MathHelper.Clamp(y, 0, Game1.GameHeight);
             m_PowerUp.Position = temp;
             m_PowerUp.LoadContent();
             ObjectManager.AllGameObjects.Add(m_PowerUp);

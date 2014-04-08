@@ -156,7 +156,7 @@ namespace GameName1
                         FrameCounter = 0;
                         elapsedTime = 0;
                     }
-                    UserInterface.ProcessInput(vec, m_Player, ObjectManager.AllGameObjects);
+                    UserInterface.ProcessInput(vec, m_Player);
 
                     //check if a game reset or zombie hit and save state and do the action here,
                     //so that the game will draw the zombie intersecting the player

@@ -72,7 +72,6 @@ namespace GameName1
         }
         public void CheckCollisions(out bool reset, World _world)
         {
-            List<GameObject> removedAtEnd = new List<GameObject>();
             float nearestLength = float.MaxValue;
 
             reset = false;
@@ -99,7 +98,6 @@ namespace GameName1
                 {
                     if (ob is Zombie)
                     {
-                        removedAtEnd.Add(ob);
                         LifeTotal -= 5;
                         if (LifeTotal <= 0)
                         {
@@ -110,24 +108,23 @@ namespace GameName1
                     }
                     if (ob is Anubis)
                     {
-                        removedAtEnd.Add(ob);
                     }
-                    if (ob is PowerUp)
+                    if (ob is CheatPowerUp)
                     {
                         if (WeaponSlot1Magic == null)
                         {
                             WeaponSlot1Magic = Magic.GetMagicType(ob);
                         }
-                        removedAtEnd.Add(ob);
                     }
+                    if (ob is WeaponPowerUp)
+                    {
+                        Weapon weapon = WeaponPowerUp.GetWeaponType((WeaponPowerUp)ob);
+                        weapon.LoadContent();
+                        m_Weapon = weapon;
+                    }
+                    ObjectManager.RemoveObject(ob);
                 }
             }
-
-            foreach (GameObject g in removedAtEnd)
-            {
-                ObjectManager.RemoveObject(g);
-            }
-            removedAtEnd.Clear();
             //TODO: seriously need to refactor this later
             //its good to find the nearest zombie when i run through entire zombie list, but probably not here
             if (m_Weapon.Firing || m_Weapon.BulletsExist)

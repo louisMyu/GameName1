@@ -24,4 +24,54 @@ namespace GameName1
         }
         public PowerUp() { }
     }
+
+    public class CheatPowerUp : PowerUp
+    {
+        public override void LoadContent()
+        {
+            base.LoadContent();
+        }
+        public override void Load(FarseerPhysics.Dynamics.World world)
+        {
+            base.Load(world);
+        }
+        public CheatPowerUp() { }
+    }
+    public class WeaponPowerUp : PowerUp
+    {
+        public enum WeaponType
+        {
+            Shotgun,
+            Rifle,
+            Plasma
+        }
+        private WeaponType Type;
+        public static Weapon GetWeaponType(WeaponPowerUp p)
+        {
+            switch (p.Type)
+            {
+                case WeaponType.Shotgun :
+                    return new Shotgun();
+                case WeaponType.Rifle:
+                    return new Rifle();
+                case WeaponType.Plasma:
+                    return new Plasma();
+                default:
+                    return new Shotgun();
+            }
+            
+        }
+        public override void LoadContent()
+        {
+            base.LoadContent();
+        }
+        public override void Load(FarseerPhysics.Dynamics.World world)
+        {
+            base.Load(world);
+        }
+        public WeaponPowerUp(WeaponType type)
+        {
+            Type = type;
+        }
+    }
 }

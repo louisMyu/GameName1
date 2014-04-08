@@ -60,7 +60,7 @@ namespace GameName1
             CurrentFPS = fps;
         }
 
-        public void ProcessInput(List<Vector2> vecList, Player p, List<GameObject> AllItems)
+        public void ProcessInput(List<Vector2> vecList, Player p)
         {
             m_FireButtonColor = Color.White;
             m_StopButtonColor = Color.White;
@@ -89,7 +89,7 @@ namespace GameName1
                     {
                         if (p.WeaponSlot1Magic != null)
                         {
-                            p.WeaponSlot1Magic.GetEffect(AllItems);
+                            p.WeaponSlot1Magic.GetEffect();
                         }
                         p.WeaponSlot1Magic = null;
                     }
