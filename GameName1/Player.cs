@@ -142,7 +142,10 @@ namespace GameName1
                 {
                     //this probably should check for collision only when firing
                     //that way the bullet lines wont update to the next person while a shot is going off
-                    m_Weapon.CheckCollision(ob);
+                    if (m_Weapon.CheckCollision(ob))
+                    {
+                        ++Score;
+                    }
                 }
             }
         }
@@ -250,7 +253,8 @@ namespace GameName1
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
             }
-            m_Weapon.Update(elapsedTime, Position, RotationAngle, 10, isFireButtonDown);
+            Vector2 playerVel = m_Moving ? m_MoveToward : new Vector2(0, 0);
+            m_Weapon.Update(elapsedTime, Position, playerVel, RotationAngle, 10, isFireButtonDown);
         }
 
         public override void Draw(SpriteBatch _spriteBatch)

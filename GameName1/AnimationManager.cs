@@ -33,9 +33,12 @@ namespace GameName1
         public int NumberOfBullets;
         [DataMember]
         public float LeftAngle; //left most of a spread shot
-        public SpriteInfo(Vector2 pos, float rot, int numBul, float left)
+        [DataMember]
+        public Vector2 PlayerVelocity;
+        public SpriteInfo(Vector2 pos, Vector2 velocity, float rot, int numBul, float left)
         {
             Position = pos;
+            PlayerVelocity = velocity;
             Rotation = rot;
             NumberOfBullets = numBul;
             LeftAngle = left;
@@ -45,7 +48,7 @@ namespace GameName1
     {
         AnimationInfo[] AnimationArray;
         private SpriteInfo m_SpriteInfo;
-        public SpriteInfo SpriteInfo { set { m_SpriteInfo = value; m_CurrentSprite = 0; FrameCounter = 0;} }
+        public SpriteInfo SpriteInfo { set   { m_SpriteInfo = value; m_CurrentSprite = 0; FrameCounter = 0;} }
         public bool Finished { get; set; }
         private int m_CurrentSprite;
         public int CurrentSprite { get { return m_CurrentSprite; } }
@@ -89,7 +92,7 @@ namespace GameName1
                 Finished = true;
             }
         }
-
+            
         public bool CanStartAnimating()
         {
             return !Animating && Finished;

@@ -78,7 +78,7 @@ namespace GameName1
         {
         }
         //this should be called every update if it exists for the player
-        public virtual void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, bool isFireDown)
+        public virtual void Update(float elapsedTime, Vector2 playerCenter, Vector2 playerVelocity, float rotationAngle, int accuracy, bool isFireDown)
         {
             //decrement unless its ready to fire or is being fired
             if (m_ElapsedFrames > 0 && !Firing)

@@ -40,14 +40,14 @@ namespace GameName1
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
-        public override void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, bool shotFired)
+        public override void Update(float elapsedTime, Vector2 playerCenter, Vector2 playerVelocity, float rotationAngle, int accuracy, bool shotFired)
         {
-            base.Update(elapsedTime, playerCenter, rotationAngle, accuracy, shotFired);
+            base.Update(elapsedTime, playerCenter, playerVelocity, rotationAngle, accuracy, shotFired);
             //float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
             //TODO: add a random so its either plus or minus accuracy
             float centerVector = rotationAngle;
 
-            m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, LeftAngle);
+            m_CurrentShotInfo = new SpriteInfo(playerCenter, playerVelocity, rotationAngle, NumberOfBullets, LeftAngle);
             
             m_Bullets.RemoveAll(x => x.CanDelete || !x.IsAlive());
             foreach (Bullet b in m_Bullets)
@@ -71,6 +71,7 @@ namespace GameName1
                 BulletsExist = false;
             }
         }
+        //returns true if enemy died
         public override bool CheckCollision(GameObject ob)
         {
             bool hit = false;
@@ -80,12 +81,15 @@ namespace GameName1
                 if (hit)
                 {
                     b.CanDelete = true;
-                    if (ob is IEnemy)
+                    IEnemy enemy;
+                    if ((enemy = ob as IEnemy) != null)
                     {
-                        IEnemy temp = ob as IEnemy;
-                        temp.AddToHealth(-10);
+                        enemy.AddToHealth(-10);
+                        if (enemy.GetHealth() <= 0)
+                        {
+                            return true;
+                        }
                     }
-                    return true;
                 }
             }
             return false;
@@ -130,6 +134,7 @@ namespace GameName1
         private Vector2 m_Heading;
         //time in frames that this bullet will exist
         private int Life;
+        private Vector2 playerVelocity;
         public Bullet(Texture2D tex, SpriteInfo info, int vel) : base()
         {
             Texture = tex;
@@ -137,6 +142,7 @@ namespace GameName1
             RotationAngle = info.Rotation;
             m_Heading = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle));
             Velocity = vel;
+            playerVelocity = info.PlayerVelocity;
             Life = 25;
         }
 
@@ -147,7 +153,7 @@ namespace GameName1
         public void Update()
         {
             --Life;
-            Move(Velocity * m_Heading);
+            Move((Velocity * m_Heading)+playerVelocity);
             m_Bounds.X = (int)Position.X - Width / 2;
             m_Bounds.Y = (int)Position.Y - Height / 2;
         }

@@ -57,9 +57,9 @@ namespace GameName1
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
-        public override void Update(float elapsedTime, Vector2 playerCenter, float rotationAngle, int accuracy, bool shotFired)
+        public override void Update(float elapsedTime, Vector2 playerCenter, Vector2 playerVelocity, float rotationAngle, int accuracy, bool shotFired)
         {
-            base.Update(elapsedTime, playerCenter, rotationAngle, accuracy, shotFired);
+            base.Update(elapsedTime, playerCenter, playerVelocity, rotationAngle, accuracy, shotFired);
             if (!Firing)
             {
                 float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
@@ -73,7 +73,7 @@ namespace GameName1
                     line.Update(playerCenter, leftAngle, SightRange);
                     leftAngle += (float)(Spread / (NumberOfBullets - 1));
                 }
-                m_CurrentShotInfo = new SpriteInfo(playerCenter, rotationAngle, NumberOfBullets, leftAngle);
+                m_CurrentShotInfo = new SpriteInfo(playerCenter, playerVelocity, rotationAngle, NumberOfBullets, leftAngle);
             }
             //firing a shot, save the state
             if (!Firing && shotFired && CanFire())
@@ -85,6 +85,7 @@ namespace GameName1
                     m_FireAnimation.Finished = false;
             }
         }
+        //returns true if enemy died
         public override bool CheckCollision(GameObject ob)
         {
             if (!CanDamage)
@@ -97,10 +98,16 @@ namespace GameName1
                 if (check.X != -1)
                 {
                     Vector2 intersectingAngle = new Vector2(line.P2.X - line.P1.X, line.P2.Y - line.P1.Y);
-                    IEnemy enemy = ob as IEnemy;
-                    enemy.ApplyLinearForce(intersectingAngle, Knockback);
-                    enemy.AddToHealth(-10);
-                    return true;
+                    IEnemy enemy;
+                    if ((enemy = ob as IEnemy) != null)
+                    {
+                        enemy.ApplyLinearForce(intersectingAngle, Knockback);
+                        enemy.AddToHealth(-10);
+                        if (enemy.GetHealth() <= 0)
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
             return false;
