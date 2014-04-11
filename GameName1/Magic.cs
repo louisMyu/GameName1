@@ -14,11 +14,9 @@ namespace GameName1
         void GetEffect();
     }
     public class Magic
-    {
-        Texture2D texture;
-        protected Magic(Texture2D tex)
+    {   
+        protected Magic()
         {
-            texture = tex;
         }
     }
     [DataContract]

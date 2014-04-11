@@ -113,6 +113,7 @@ namespace GameName1
                 case WeaponType.Shotgun:
                     break;
                 case WeaponType.Rifle:
+                    Texture = TextureBank.GetTexture("RifleIcon");
                     break;
                 case WeaponType.Plasma:
                     Texture = TextureBank.GetTexture("PlasmaIcon");
