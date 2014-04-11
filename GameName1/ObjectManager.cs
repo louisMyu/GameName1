@@ -140,8 +140,7 @@ namespace GameName1
             int powerUpType = ZombieRandom.Next(2);
             if (powerUpType == 0) 
             {
-                m_PowerUp = new CheatPowerUp("Powerup");
-                m_PowerUp.LoadContent();
+                m_PowerUp = new CheatPowerUp(CheatPowerUp.CheatTypes.Wrath);
             }
             else if (powerUpType == 1)
             {

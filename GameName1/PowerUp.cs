@@ -26,10 +26,15 @@ namespace GameName1
 
     public class CheatPowerUp : PowerUp
     {
-        public string CheatType;
+        public enum CheatTypes
+        {
+            Wrath,
+            Health
+        }
+        public CheatTypes CheatType;
+        public Magic CheatEffect;
         public override void LoadContent()
         {
-            Texture = TextureBank.GetTexture(CheatType);
             base.LoadContent();
         }
         public override void Load(FarseerPhysics.Dynamics.World world)
@@ -37,9 +42,30 @@ namespace GameName1
             base.Load(world);
         }
         public CheatPowerUp() { }
-        public CheatPowerUp(string type)
+        public CheatPowerUp(CheatTypes type)
         {
             CheatType = type;
+            CreateCheat();
+        }
+        private void CreateCheat()
+        {
+            string temp;
+            switch (CheatType)
+            {
+                case CheatTypes.Wrath:
+                    temp = "Powerup";
+                    CheatEffect = new WrathEffect();
+                    break;
+                case CheatTypes.Health:
+                    temp = "MedPack";
+                    CheatEffect = new HealthEffect();
+                    break;
+                default:
+                    temp = "Powerup";
+                    CheatEffect = new WrathEffect();
+                    break;
+            }
+            Texture = TextureBank.GetTexture(temp);
         }
     }
     public class WeaponPowerUp : PowerUp
@@ -69,6 +95,7 @@ namespace GameName1
         public override void LoadContent()
         {
             base.LoadContent();
+            SetWeaponPowerUpTexture(Type);
         }
         public override void Load(FarseerPhysics.Dynamics.World world)
         {
@@ -77,6 +104,23 @@ namespace GameName1
         public WeaponPowerUp(WeaponType type)
         {
             Type = type;
+            
+        }
+        private void SetWeaponPowerUpTexture(WeaponType type)
+        {
+            switch (type)
+            {
+                case WeaponType.Shotgun:
+                    break;
+                case WeaponType.Rifle:
+                    break;
+                case WeaponType.Plasma:
+                    Texture = TextureBank.GetTexture("PlasmaIcon");
+                    break;
+                default :
+                    Texture = TextureBank.GetTexture("PlasmaIcon");
+                    break;
+            }
         }
     }
 }

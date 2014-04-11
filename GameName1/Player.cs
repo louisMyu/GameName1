@@ -115,10 +115,8 @@ namespace GameName1
                         if (WeaponSlot1Magic == null)
                         {
                             CheatPowerUp cheat = ob as CheatPowerUp;
-                            if (cheat.CheatType == "Powerup")
-                            {
-                               
-                            }
+                            IMagic tempMagic = cheat.CheatEffect as IMagic;
+                            tempMagic.GetEffect();
                         }
                     }
                     if (ob is WeaponPowerUp)

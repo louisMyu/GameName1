@@ -37,13 +37,9 @@ namespace GameName1
             ObjectManager.itemMade = false;
             return;
         }
-        public WrathEffect(Texture2D tex) : base(tex)
-        {
-            
-        }
     }
 
-    public class HealthEffect
+    public class HealthEffect : Magic, IMagic
     {
         public void GetEffect()
         {
