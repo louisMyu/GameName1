@@ -28,8 +28,6 @@ namespace GameName1
         public Vector2 m_MoveToward = new Vector2();
         [DataMember]
         public Vector2 MoveToward { get { return m_MoveToward; } set { m_MoveToward = value; } }
-        [DataMember]
-        public int Life { get; set; }
         [IgnoreDataMember]
         private Weapon m_Weapon {get;set;}
         [DataMember]
@@ -40,8 +38,9 @@ namespace GameName1
         public bool Moving { get { return m_Moving; } set { m_Moving = value; } }
         [DataMember]
         public int LifeTotal { get; set; }
+        public int MaxLife { get; set; }
         [DataMember]
-        public Magic WeaponSlot1Magic { get; set; }
+        public IMagic WeaponSlot1Magic { get; set; }
 
         [DataMember]
         public int Score { get; set; }
@@ -62,13 +61,15 @@ namespace GameName1
             Position = player.Position;
             isFireButtonDown = player.isFireButtonDown;
             LifeTotal = player.LifeTotal;
+            MaxLife = player.MaxLife;
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
             m_Weapon = new Plasma();
             Position = pos;
             isFireButtonDown = false;
-            LifeTotal = 100;
+            MaxLife = 100;
+            LifeTotal = MaxLife;
         }
         public void CheckCollisions(out bool reset, World _world)
         {
@@ -113,7 +114,11 @@ namespace GameName1
                     {
                         if (WeaponSlot1Magic == null)
                         {
-                            WeaponSlot1Magic = Magic.GetMagicType(ob);
+                            CheatPowerUp cheat = ob as CheatPowerUp;
+                            if (cheat.CheatType == "Powerup")
+                            {
+                               
+                            }
                         }
                     }
                     if (ob is WeaponPowerUp)

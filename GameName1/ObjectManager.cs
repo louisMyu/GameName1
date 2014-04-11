@@ -17,7 +17,7 @@ namespace GameName1
         public static long FrameCounter = 0;
         public static bool itemMade = false;
         public static bool face = false;
-        private Player m_Player;
+        public static Player m_Player;
         private ContentManager m_Content;
         private World m_World;
         private static int NumZombies = 0;
@@ -140,7 +140,8 @@ namespace GameName1
             int powerUpType = ZombieRandom.Next(2);
             if (powerUpType == 0) 
             {
-                m_PowerUp = new CheatPowerUp();
+                m_PowerUp = new CheatPowerUp("Powerup");
+                m_PowerUp.LoadContent();
             }
             else if (powerUpType == 1)
             {

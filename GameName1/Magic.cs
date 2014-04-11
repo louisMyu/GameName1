@@ -9,61 +9,22 @@ using System.Threading.Tasks;
 
 namespace GameName1
 {
-    [KnownType(typeof(WrathEffect))]
-    [DataContract]
+    public interface IMagic
+    {
+        void GetEffect();
+    }
     public class Magic
     {
-        [IgnoreDataMember]
-        protected static Texture2D WrathTexture;  //have all the textures static, and in the base class, one instance
-        [IgnoreDataMember]
-        private static bool TexturesLoaded = false;
-
-        [DataMember]
-        public string Name { get; set; }
-        
-        //called once
-        public static void TextureInit(ContentManager content)
+        Texture2D texture;
+        protected Magic(Texture2D tex)
         {
-            if (!TexturesLoaded)
-            {
-                if (WrathTexture == null)
-                    WrathTexture = content.Load<Texture2D>("Powerup");
-                TexturesLoaded = true;
-            }
-        }
-
-        public static Magic GetMagicType(GameObject powerUp)
-        {
-            if (powerUp is CheatPowerUp)
-            {
-                return new WrathEffect();
-            }
-            return new WrathEffect();
-        }
-        public virtual void GetEffect()
-        {
-
-        }
-
-        public virtual Texture2D GetTexture()
-        {
-            return WrathTexture;
-        }
-
-        public Magic()
-        {
+            texture = tex;
         }
     }
-
     [DataContract]
-    public class WrathEffect : Magic
+    public class WrathEffect : Magic, IMagic
     {
-        public WrathEffect()
-        {
-            
-        }
-
-        public override void GetEffect()
+        public void GetEffect()
         {
             //for now hitting the powerup will reset the game
             foreach (GameObject g in ObjectManager.AllGameObjects)
@@ -76,10 +37,17 @@ namespace GameName1
             ObjectManager.itemMade = false;
             return;
         }
-
-        public override Texture2D GetTexture()
+        public WrathEffect(Texture2D tex) : base(tex)
         {
-            return WrathTexture;
+            
+        }
+    }
+
+    public class HealthEffect
+    {
+        public void GetEffect()
+        {
+            ObjectManager.m_Player.LifeTotal = ObjectManager.m_Player.MaxLife;
         }
     }
 }

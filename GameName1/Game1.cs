@@ -97,7 +97,6 @@ namespace GameName1
             TextureBank.SetContentManager(Content);
             m_Player.LoadContent(m_World);
             UserInterface.LoadContent(Content, GameWidth, GameHeight);
-            Magic.TextureInit(Content);
             m_Menu.LoadContent(Content);
             GlobalObjectManager.LoadContent();
 

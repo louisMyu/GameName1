@@ -113,7 +113,6 @@ namespace GameName1
             Texture2D tempTex = null;
             if (p.WeaponSlot1Magic != null)
             {
-                tempTex = p.WeaponSlot1Magic.GetTexture();
                 float w_scale = m_FireButton.Width / tempTex.Width;
                 float h_scale = m_FireButton.Height / tempTex.Height;
                 spriteBatch.Draw(tempTex, WeaponSlotPosition, null, m_Weapon1ButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(tempTex.Width / 2, tempTex.Height / 2), new Vector2(w_scale, h_scale), SpriteEffects.None, 0);

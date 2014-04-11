@@ -15,7 +15,6 @@ namespace GameName1
     {
         public override void LoadContent()
         {
-            Texture = TextureBank.GetTexture("Powerup");
             base.LoadContent();
         }
         public override void Load(FarseerPhysics.Dynamics.World world)
@@ -27,8 +26,10 @@ namespace GameName1
 
     public class CheatPowerUp : PowerUp
     {
+        public string CheatType;
         public override void LoadContent()
         {
+            Texture = TextureBank.GetTexture(CheatType);
             base.LoadContent();
         }
         public override void Load(FarseerPhysics.Dynamics.World world)
@@ -36,6 +37,10 @@ namespace GameName1
             base.Load(world);
         }
         public CheatPowerUp() { }
+        public CheatPowerUp(string type)
+        {
+            CheatType = type;
+        }
     }
     public class WeaponPowerUp : PowerUp
     {
