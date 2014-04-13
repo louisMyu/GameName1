@@ -1,25 +1,22 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FarseerPhysics;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-using FarseerPhysics.Factories;
-using FarseerPhysics.Dynamics;
-using FarseerPhysics;
-using System.Runtime.Serialization;
-
 namespace GameName1
 {
-    [KnownType(typeof(Zombie))]
+    [KnownType(typeof(Slime))]
     [KnownType(typeof(GameObject))]
     [DataContract]
-    public class Zombie : GameObject, IEnemy
+    public class Slime : GameObject
     {
-        private const int DAMAGE_AMOUNT = 5;
-
         public enum MotionState
         {
             Wandering,
@@ -31,7 +28,7 @@ namespace GameName1
         [IgnoreDataMember]
         static private Texture2D m_Texture = null;
         [IgnoreDataMember]
-        private float m_Speed = 0.5f;
+        private float m_Speed = 0.6f;
         [DataMember]
         public float Speed { get { return m_Speed; } set { m_Speed = value; } }
 
@@ -46,17 +43,18 @@ namespace GameName1
         public MotionState State { get; set; }
 
 
-        public Zombie() : base()
+        public Slime()
+            : base()
         {
             LifeTotal = 40;
-            
+
         }
-        
+
         public void LoadContent(World world)
         {
             if (m_Texture == null)
             {
-                m_Texture = TextureBank.GetTexture("kevinZombie");
+                m_Texture = TextureBank.GetTexture("Face");
             }
             m_State = MotionState.Wandering;
             RotationAngle = (float)GameObject.RANDOM_GENERATOR.NextDouble();
@@ -97,7 +95,7 @@ namespace GameName1
 
             //get a normalized direction toward the point that was passed in, probably the player
             Vector2 vec = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
-            if (vec.LengthSquared() <= (275.0f*275.0f))
+            if (vec.LengthSquared() <= (275.0f * 275.0f))
             {
                 m_State = MotionState.Locked;
             }
@@ -117,7 +115,7 @@ namespace GameName1
                     m_Direction = vec;
                     RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
                     m_State = MotionState.Locked;
-                    m_Speed = 2.0f;
+                    m_Speed = 1.0f;
                     break;
             }
 
@@ -126,10 +124,8 @@ namespace GameName1
             base.Move(amount);
 
             //Later on, remove the clamp to the edge and despawn when too far out of the screen.
-            //Vector2 temp = new Vector2();
-            //temp.X = MathHelper.Clamp(Position.X, Width + UI.OFFSET, Game1.GameWidth - (Width / 2));
-            //temp.Y = MathHelper.Clamp(Position.Y, Height, Game1.GameHeight - (Height / 2));
-            //Position = temp;
+            //Position.X = MathHelper.Clamp(Position.X, Width + UI.OFFSET, Game1.GameWidth - (Width / 2));
+            //Position.Y = MathHelper.Clamp(Position.Y, Height, Game1.GameHeight - (Height / 2));
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
@@ -160,7 +156,7 @@ namespace GameName1
             if (_circleBody != null)
             {
                 Game1.m_World.RemoveBody(_circleBody);
-                
+
             }
         }
         public void AddToHealth(int amount)
@@ -171,19 +167,16 @@ namespace GameName1
         {
             return LifeTotal;
         }
-        public int GetDamageAmount()
-        {
-            return DAMAGE_AMOUNT;
-        }
+
         public override void Save()
         {
-            Storage.Save<Zombie>("", "", this);
+            Storage.Save<Slime>("", "", this);
         }
         public override void Load(World world)
         {
             if (m_Texture == null)
             {
-                m_Texture = TextureBank.GetTexture("kevinZombie");
+                m_Texture = TextureBank.GetTexture("Slime");
             }
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;

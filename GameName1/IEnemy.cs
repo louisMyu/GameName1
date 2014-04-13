@@ -13,5 +13,6 @@ namespace GameName1
         void AddToHealth(int amount);
         void ApplyLinearForce(Vector2 angle, float amount);
         void CleanBody();
+        int GetDamageAmount();
     }
 }

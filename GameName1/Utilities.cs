@@ -25,6 +25,8 @@ namespace GameName1
             return (point.X >= rec.Left && point.Y >= rec.Top && point.X <= rec.Right && point.Y <= rec.Bottom);
         }
 
+        //The amount of scaling that needs to be applied to a sprite with width and height of baseVec
+        //so that it matches the width and height for result
         public static Vector2 GetSpriteScaling(Vector2 result, Vector2 baseVec)
         {
             Vector2 temp = new Vector2();

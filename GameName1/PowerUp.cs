@@ -23,7 +23,9 @@ namespace GameName1
         }
         public PowerUp() { }
     }
-
+    
+    //when creating new cheat powerups, add to enum, add to createCheat
+    //add to magic for related effect
     public class CheatPowerUp : PowerUp
     {
         public enum CheatTypes
@@ -32,7 +34,7 @@ namespace GameName1
             Health
         }
         public CheatTypes CheatType;
-        public Magic CheatEffect;
+        public IMagic CheatEffect;
         public override void LoadContent()
         {
             base.LoadContent();
@@ -68,6 +70,8 @@ namespace GameName1
             Texture = TextureBank.GetTexture(temp);
         }
     }
+    //when creating new weapon types add to Enum, add to getweapontype, add to
+    //setting the texture for that weapon, add new class for weapon deriving from weapon
     public class WeaponPowerUp : PowerUp
     {
         public enum WeaponType
@@ -111,6 +115,7 @@ namespace GameName1
             switch (type)
             {
                 case WeaponType.Shotgun:
+                    Texture = TextureBank.GetTexture("ShotgunIcon");
                     break;
                 case WeaponType.Rifle:
                     Texture = TextureBank.GetTexture("RifleIcon");

@@ -13,14 +13,8 @@ namespace GameName1
     {
         void GetEffect();
     }
-    public class Magic
-    {   
-        protected Magic()
-        {
-        }
-    }
     [DataContract]
-    public class WrathEffect : Magic, IMagic
+    public class WrathEffect : IMagic
     {
         public void GetEffect()
         {
@@ -37,7 +31,7 @@ namespace GameName1
         }
     }
 
-    public class HealthEffect : Magic, IMagic
+    public class HealthEffect : IMagic
     {
         public void GetEffect()
         {

@@ -145,7 +145,7 @@ namespace GameName1
             else if (powerUpType == 1)
             {
                 m_PowerUp = new WeaponPowerUp((WeaponPowerUp.WeaponType)ZombieRandom.Next(3));
-                //m_PowerUp = new WeaponPowerUp(WeaponPowerUp.WeaponType.Rifle);
+                m_PowerUp.LoadContent();
             }
             Vector2 temp = new Vector2();
             //temp.X = x;

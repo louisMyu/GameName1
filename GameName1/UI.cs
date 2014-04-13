@@ -35,6 +35,8 @@ namespace GameName1
         private Vector2 m_FireButtonScale;
         private Rectangle m_StopButtonRec;
         private Vector2 m_StopButtonScale;
+        private Rectangle WeaponSlotRec;
+        private Vector2 WeaponSlotScale;
         public UI()
         {
         }
@@ -50,13 +52,17 @@ namespace GameName1
             GameWidth = width;
             GameHeight = height;
             m_Background = content.Load<Texture2D>("Louis-game-background");
-            FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2), GameHeight - m_FireButton.Height - 150);
-            StopButtonPosition = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), (m_FireButton.Height / 2));
-            WeaponSlotPosition = new Vector2(FireButtonPosition.X + (m_FireButton.Width / 2), StopButtonPosition.Y + m_FireButton.Height + 150);
-            m_FireButtonRec = new Rectangle((int)FireButtonPosition.X, (int)FireButtonPosition.Y, m_FireButton.Width+20, 300);
+            //FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2), GameHeight - m_FireButton.Height - 150);
+            FireButtonPosition = new Vector2(0, GameHeight - m_FireButton.Height - 150);
+            StopButtonPosition = new Vector2(FireButtonPosition.X, 10);
+            m_FireButtonRec = new Rectangle((int)FireButtonPosition.X, (int)FireButtonPosition.Y, PlayfieldBottom, 300);
             m_FireButtonScale = Utilities.GetSpriteScaling(new Vector2(m_FireButtonRec.Width, m_FireButtonRec.Height), new Vector2(m_FireButton.Width, m_FireButton.Height));
-            m_StopButtonRec = new Rectangle((int)StopButtonPosition.X, (int)StopButtonPosition.Y, m_FireButton.Width + 20, 300);
+            m_StopButtonRec = new Rectangle((int)StopButtonPosition.X, (int)StopButtonPosition.Y, PlayfieldBottom, 300);
             m_StopButtonScale = Utilities.GetSpriteScaling(new Vector2(m_StopButtonRec.Width, m_StopButtonRec.Height), new Vector2(m_FireButton.Width, m_FireButton.Height));
+            //scaling from double playFieldBottom so that it is square
+            WeaponSlotScale = Utilities.GetSpriteScaling(new Vector2(PlayfieldBottom, PlayfieldBottom), new Vector2(m_FireButton.Width, m_FireButton.Height));
+            WeaponSlotPosition = new Vector2(FireButtonPosition.X + ((m_FireButton.Width / 2)*(WeaponSlotScale.X)), StopButtonPosition.Y + m_StopButtonRec.Height + 150 + ((m_FireButton.Height / 2) * WeaponSlotScale.Y));
+            WeaponSlotRec = new Rectangle((int)(WeaponSlotPosition.X - ((m_FireButton.Width / 2) * (WeaponSlotScale.X))), (int)(WeaponSlotPosition.Y - ((m_FireButton.Height / 2) * WeaponSlotScale.Y)), PlayfieldBottom, PlayfieldBottom);
         }
 
         public void Update(Player p, int fps)
@@ -87,12 +93,11 @@ namespace GameName1
                         m_StopButtonColor = Color.Orange;
                         isStopDown = true;
                     }
-                    Rectangle temp = new Rectangle((int)WeaponSlotPosition.X - (m_FireButton.Width / 2), (int)WeaponSlotPosition.Y - (m_FireButton.Height / 2), m_FireButton.Width, m_FireButton.Height);
-                    if (Utilities.PointIntersectsRectangle(vec, temp))
+                    if (Utilities.PointIntersectsRectangle(vec, WeaponSlotRec))
                     {
                         if (p.WeaponSlot1Magic != null)
                         {
-                            p.WeaponSlot1Magic.GetEffect();
+                            p.WeaponSlot1Magic.CheatEffect.GetEffect();
                         }
                         p.WeaponSlot1Magic = null;
                     }
@@ -108,18 +113,17 @@ namespace GameName1
             spriteBatch.DrawString(m_SpriteFont, "Life: " + p.LifeTotal, new Vector2(PlayfieldBottom - 50, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
             spriteBatch.DrawString(m_SpriteFont, "XP: " + p.Score, new Vector2(PlayfieldBottom - 80, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
             spriteBatch.Draw(m_FireButton, FireButtonPosition, null, m_FireButtonColor, 0.0f, new Vector2(0, 0), m_FireButtonScale, SpriteEffects.None, 0);
-            spriteBatch.Draw(m_FireButton, StopButtonPosition, null, m_StopButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), m_StopButtonScale, SpriteEffects.None, 0);
+            spriteBatch.Draw(m_FireButton, StopButtonPosition, null, m_StopButtonColor, 0.0f, new Vector2(0,0), m_StopButtonScale, SpriteEffects.None, 0);
 
-            Texture2D tempTex = null;
             if (p.WeaponSlot1Magic != null)
             {
-                float w_scale = m_FireButton.Width / tempTex.Width;
-                float h_scale = m_FireButton.Height / tempTex.Height;
-                spriteBatch.Draw(tempTex, WeaponSlotPosition, null, m_Weapon1ButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(tempTex.Width / 2, tempTex.Height / 2), new Vector2(w_scale, h_scale), SpriteEffects.None, 0);
+                Texture2D tempTex = p.WeaponSlot1Magic.Texture;
+                Vector2 tempScale = Utilities.GetSpriteScaling(new Vector2(WeaponSlotRec.Width, WeaponSlotRec.Height), new Vector2(tempTex.Width, tempTex.Height));
+                spriteBatch.Draw(tempTex, WeaponSlotPosition, null, m_Weapon1ButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(tempTex.Width / 2, tempTex.Height / 2), tempScale, SpriteEffects.None, 0);
             }
             else
             {
-                spriteBatch.Draw(m_FireButton, WeaponSlotPosition, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), new Vector2(1, 1), SpriteEffects.None, 0);
+                spriteBatch.Draw(m_FireButton, WeaponSlotPosition, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(WeaponSlotRec.Width / 2, WeaponSlotRec.Height / 2), WeaponSlotScale, SpriteEffects.None, 0);
             }
         }
 

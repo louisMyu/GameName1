@@ -40,7 +40,7 @@ namespace GameName1
         public int LifeTotal { get; set; }
         public int MaxLife { get; set; }
         [DataMember]
-        public IMagic WeaponSlot1Magic { get; set; }
+        public CheatPowerUp WeaponSlot1Magic { get; set; }
 
         [DataMember]
         public int Score { get; set; }
@@ -97,9 +97,10 @@ namespace GameName1
                 }
                 if (ob.m_Bounds.Intersects(this.m_Bounds))
                 {
-                    if (ob is Zombie)
+                    if (ob is IEnemy)
                     {
-                        LifeTotal -= 5;
+                        IEnemy enemy = ob as IEnemy;
+                        LifeTotal -= enemy.GetDamageAmount();
                         if (LifeTotal <= 0)
                         {
                             reset = true;
@@ -107,16 +108,12 @@ namespace GameName1
                             return;
                         }
                     }
-                    if (ob is Anubis)
-                    {
-                    }
                     if (ob is CheatPowerUp)
                     {
                         if (WeaponSlot1Magic == null)
                         {
                             CheatPowerUp cheat = ob as CheatPowerUp;
-                            IMagic tempMagic = cheat.CheatEffect as IMagic;
-                            tempMagic.GetEffect();
+                            WeaponSlot1Magic = cheat;
                         }
                     }
                     if (ob is WeaponPowerUp)
