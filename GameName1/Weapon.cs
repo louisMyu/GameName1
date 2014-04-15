@@ -86,7 +86,7 @@ namespace GameName1
                 m_ElapsedFrames -= 1;
             }
         }
-
+        //returns true if enemy died
         public virtual bool CheckCollision(GameObject ob)
         {
             return false;

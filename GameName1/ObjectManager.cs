@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,6 +74,20 @@ namespace GameName1
                 ++FrameCounter;
             }
         }
+        public void Draw(SpriteBatch _spriteBatch)
+        {
+            foreach (GameObject g in AllGameObjects)
+            {
+                if (g is PowerUp)
+                {
+                    _spriteBatch.Draw(g.Texture, g.Position, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(g.Texture.Width / 2, g.Texture.Height / 2), new Vector2(1,1), SpriteEffects.None, 0);
+                }
+                else
+                {
+                    g.Draw(_spriteBatch);
+                }
+            }
+        }
         public static void RemoveObject(GameObject obj)
         {
 
@@ -140,12 +155,11 @@ namespace GameName1
             int powerUpType = ZombieRandom.Next(2);
             if (powerUpType == 0) 
             {
-                m_PowerUp = new CheatPowerUp(CheatPowerUp.CheatTypes.Wrath);
+                m_PowerUp = new CheatPowerUp((CheatPowerUp.CheatTypes)ZombieRandom.Next(2));
             }
             else if (powerUpType == 1)
             {
                 m_PowerUp = new WeaponPowerUp((WeaponPowerUp.WeaponType)ZombieRandom.Next(3));
-                m_PowerUp.LoadContent();
             }
             Vector2 temp = new Vector2();
             //temp.X = x;

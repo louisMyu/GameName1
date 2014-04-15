@@ -95,12 +95,6 @@ namespace GameName1
                 this.Position = simPosition;
             }
 
-            //get a normalized direction toward the point that was passed in, probably the player
-            Vector2 vec = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
-            if (vec.LengthSquared() <= (275.0f*275.0f))
-            {
-                m_State = MotionState.Locked;
-            }
 
             switch (m_State)
             {
@@ -114,8 +108,8 @@ namespace GameName1
                     break;
 
                 case MotionState.Locked:
-                    m_Direction = vec;
-                    RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
+                    m_Direction = loc;
+                    RotationAngle = (float)Math.Atan2(loc.Y, loc.X);
                     m_State = MotionState.Locked;
                     m_Speed = 2.0f;
                     break;
@@ -138,9 +132,16 @@ namespace GameName1
             m_Bounds.X = (int)Position.X - Width / 2;
             m_Bounds.Y = (int)Position.Y - Height / 2;
         }
-        public override void Update(Vector2 playerPosition)
+        public override void Update(Player player)
         {
-            Move(playerPosition);
+            //get a normalized direction toward the point that was passed in, probably the player
+            Vector2 vec = new Vector2(player.Position.X - Position.X, player.Position.Y - Position.Y);
+            if (vec.LengthSquared() <= (275.0f * 275.0f))
+            {
+                m_State = MotionState.Locked;
+            }
+
+            Move(player.Position);
             bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)

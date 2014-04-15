@@ -66,7 +66,7 @@ namespace GameName1
             Position = new Vector2(x, y);
         }
 
-        public virtual void Update(Vector2 playerPos)
+        public virtual void Update(Player player)
         {
         }
         public virtual void LoadContent() 
@@ -98,6 +98,10 @@ namespace GameName1
         }
         public virtual void Load(FarseerPhysics.Dynamics.World world)
         {
+        }
+        public virtual void CheckCollisions(GameObject obj)
+        {
+
         }
     }
     [DataContract]

@@ -160,15 +160,15 @@ namespace GameName1
                     //check if a game reset or zombie hit and save state and do the action here,
                     //so that the game will draw the zombie intersecting the player
                     m_Player.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-                    Vector2 playerPos = new Vector2(m_Player.Position.X, m_Player.Position.Y);
                     foreach (GameObject g in ObjectManager.AllGameObjects)
                     {
-                        g.Update(playerPos);
+                        g.Update(m_Player);
                     }
                     bool b = false;
                     m_Player.CheckCollisions(out b, m_World);
                     if (b) ResetGame();
 
+                    //cleanup dead objects
                     GlobalObjectManager.Update();
 
                     m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
@@ -200,12 +200,8 @@ namespace GameName1
                     // TODO: Add your drawing code here
                     _spriteBatch.Begin();
                     UserInterface.DrawBackground(_spriteBatch);
+                    GlobalObjectManager.Draw(_spriteBatch);
                     m_Player.Draw(_spriteBatch);
-
-                    foreach (GameObject g in ObjectManager.AllGameObjects)
-                    {
-                        g.Draw(_spriteBatch);
-                    }
                     UserInterface.Draw(_spriteBatch, m_Player);
                     _spriteBatch.End();
                     break;

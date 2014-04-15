@@ -73,23 +73,25 @@ namespace GameName1
         }
         public void CheckCollisions(out bool reset, World _world)
         {
-            float nearestLength = float.MaxValue;
+            //float nearestLength = float.MaxValue;
 
             reset = false;
             foreach (GameObject ob in ObjectManager.AllGameObjects)
             {
                 //TODO: seriously need to refactor this later
                 //its good to find the nearest zombie when i run through entire zombie list, but probably not here
-                Vector2 vec = new Vector2(ob.Position.X - Position.X, ob.Position.Y - Position.Y);
-                float temp = vec.LengthSquared();
-                if (temp < nearestLength && ob is Zombie)
-                {
-                    nearestLength = temp;
-                    if (!m_Weapon.Firing)
-                    {
-                        //RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
-                    }
-                }
+                //this code will find the nearest zombie for autoaim
+                //Vector2 vec = new Vector2(ob.Position.X - Position.X, ob.Position.Y - Position.Y);
+                //float temp = vec.LengthSquared();
+                //if (temp < nearestLength && ob is Zombie)
+                //{
+                //    nearestLength = temp;
+                //    if (!m_Weapon.Firing)
+                //    {
+                //        //RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
+                //    }
+                //}
+
                 if (ob == null)
                 {
                     //need to handle null exeception here

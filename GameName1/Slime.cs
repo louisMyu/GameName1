@@ -134,9 +134,9 @@ namespace GameName1
             m_Bounds.X = (int)Position.X - Width / 2;
             m_Bounds.Y = (int)Position.Y - Height / 2;
         }
-        public override void Update(Vector2 playerPosition)
+        public override void Update(Player player)
         {
-            Move(playerPosition);
+            Move(player.Position);
             bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)

@@ -19,10 +19,14 @@ namespace GameName1
     {
         public enum MotionState
         {
-            Wandering,
             Locked,
-            Dead
+            Dead,
+            Attacking
         }
+        //100 frames of spin attacking
+        private const int ATTACK_TIME = 100;
+        [IgnoreDataMember]
+        private int m_FramesLeftAttacking;
         [DataMember]
         public Vector2 bodyPosition { get; set; }
         [IgnoreDataMember]
@@ -56,7 +60,7 @@ namespace GameName1
             {
                 m_Texture = TextureBank.GetTexture("Face");
             }
-            m_State = MotionState.Wandering;
+            m_State = MotionState.Locked;
             RotationAngle = (float)GameObject.RANDOM_GENERATOR.NextDouble();
             m_Direction.X = (float)Math.Cos(RotationAngle);
             m_Direction.Y = (float)Math.Sin(RotationAngle);
@@ -93,28 +97,11 @@ namespace GameName1
                 this.Position = simPosition;
             }
 
-            //get a normalized direction toward the point that was passed in, probably the player
-            Vector2 vec = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
-            if (vec.LengthSquared() <= (275.0f * 275.0f))
-            {
-                m_State = MotionState.Locked;
-            }
-
             switch (m_State)
             {
-                case MotionState.Wandering:
-                    if (RANDOM_GENERATOR.Next(150) % 150 == 1)
-                    {
-                        RotationAngle = (float)RANDOM_GENERATOR.NextDouble() * MathHelper.Pi * 2;
-                        m_Direction.X = (float)Math.Cos(RotationAngle);
-                        m_Direction.Y = (float)Math.Sin(RotationAngle);
-                    }
-                    break;
-
                 case MotionState.Locked:
-                    m_Direction = vec;
-                    RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
-                    m_State = MotionState.Locked;
+                    m_Direction = loc;
+                    RotationAngle = (float)Math.Atan2(loc.Y, loc.X);
                     m_Speed = 1.0f;
                     break;
             }
@@ -134,14 +121,48 @@ namespace GameName1
             m_Bounds.X = (int)Position.X - Width / 2;
             m_Bounds.Y = (int)Position.Y - Height / 2;
         }
-        public override void Update(Vector2 playerPosition)
+        public override void Update(Player player)
         {
-            Move(playerPosition);
+            Vector2 playerPosition = player.Position;
+
+            //get a normalized direction toward the point that was passed in, probably the player
+            Vector2 vec = new Vector2(playerPosition.X - Position.X, playerPosition.Y - Position.Y);
+            if (vec.LengthSquared() <= (275.0f * 275.0f) && m_State != MotionState.Attacking)
+            {
+                if (vec.LengthSquared() <= (20.0f * 20.0f))
+                {
+                    m_State = MotionState.Attacking;
+                }
+                else
+                {
+                    m_State = MotionState.Locked;
+                    m_FramesLeftAttacking = ATTACK_TIME;
+                }
+            }
+            else if (m_State == MotionState.Attacking)
+            {
+                if (m_FramesLeftAttacking <= 0)
+                {
+                    m_State = MotionState.Locked;
+                }
+            }
+
+            if (m_State == MotionState.Locked)
+            {
+                Move(playerPosition);
+            }
+            else if (m_State == MotionState.Attacking)
+            {
+                //will require a separate animation manager object for this specific animation
+                //IDEAL: rotation to a chainsaw rec and check for collision with the player
+                //for now it is just rotating the sprite itself
+                RotationAngle += (float)(2*Math.PI*0.02);
+                --m_FramesLeftAttacking;
+            }
             bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Vector2 temp = ConvertUnits.ToDisplayUnits(_circleBody.Position);
             spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
         }
 
