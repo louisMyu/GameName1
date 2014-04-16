@@ -149,7 +149,7 @@ namespace GameName1
 
             if (m_State == MotionState.Locked)
             {
-                Move(playerPosition);
+                Move(vec);
             }
             else if (m_State == MotionState.Attacking)
             {

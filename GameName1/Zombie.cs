@@ -141,7 +141,7 @@ namespace GameName1
                 m_State = MotionState.Locked;
             }
 
-            Move(player.Position);
+            Move(vec);
             bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)

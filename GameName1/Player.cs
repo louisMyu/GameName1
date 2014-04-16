@@ -50,6 +50,7 @@ namespace GameName1
             get;
             set;
         }
+        public bool IsStopDown { get; set; }
         public Body _circleBody;
         public Player() : base()
         {
@@ -62,6 +63,7 @@ namespace GameName1
             isFireButtonDown = player.isFireButtonDown;
             LifeTotal = player.LifeTotal;
             MaxLife = player.MaxLife;
+            IsStopDown = false;
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
@@ -70,6 +72,7 @@ namespace GameName1
             isFireButtonDown = false;
             MaxLife = 100;
             LifeTotal = MaxLife;
+            IsStopDown = false;
         }
         public void CheckCollisions(out bool reset, World _world)
         {
@@ -206,6 +209,7 @@ namespace GameName1
         {
             isFireButtonDown = firing;
             m_Moving = !stopMoving;
+            IsStopDown = stopMoving;
             //test.Update(m_MoveToward, new Vector2(Position.X, Position.Y));
             
         }
@@ -235,12 +239,23 @@ namespace GameName1
             }
             else
             {
-                Vector3 acceleration = Input.CurrentAccelerometerValues;
-                m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X*50, -(Math.Abs(acceleration.X)*25), Math.Abs(acceleration.X)*25),
-                                            -1*MathHelper.Clamp(acceleration.Y*50, -(Math.Abs(acceleration.Y)*25), Math.Abs(acceleration.Y)*25));
-                if (!m_Weapon.Firing)
+                Vector2 acceleration = new Vector2(Input.CurrentAccelerometerValues.X, Input.CurrentAccelerometerValues.Y);
+                if (acceleration.LengthSquared() > Input.Tilt_Threshold)
                 {
-                    RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
+                    m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X * 50, -(Math.Abs(acceleration.X) * 25), Math.Abs(acceleration.X) * 25),
+                                                -1 * MathHelper.Clamp(acceleration.Y * 50, -(Math.Abs(acceleration.Y) * 25), Math.Abs(acceleration.Y) * 25));
+                    if (!m_Weapon.Firing)
+                    {
+                        //dont apply rotation unless tilt amount is greater than a threshold
+                        if (!IsStopDown)
+                        {
+                            RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
+                        }
+                    }
+                }
+                else
+                {
+                    m_MoveToward = new Vector2(0, 0);
                 }
             }
             if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting && !KickedBack)

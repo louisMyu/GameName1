@@ -98,8 +98,9 @@ namespace GameName1
         }
         public override void LoadContent()
         {
-            base.LoadContent();
+            //need to set texture before calling base loadcontent to create collision bounds
             SetWeaponPowerUpTexture(Type);
+            base.LoadContent();
         }
         public override void Load(FarseerPhysics.Dynamics.World world)
         {

@@ -18,6 +18,7 @@ namespace GameName1
         public static Accelerometer accelerometer;
         public static float AccelerometerAlpha = 0.45f;
         public static Vector3 CurrentAccelerometerValues { get; set; }
+        public static float Tilt_Threshold = 0.0036f;
         static Input()
         {
             //Gestures = new List<GestureSample>();
