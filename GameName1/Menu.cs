@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,23 +54,27 @@ namespace GameName1
         }
 
         //returns true if quitting
-        public GameState Update(List<Vector2> touches, out bool quit)
+        public GameState Update(out bool quit)
         {
             quit = false;
-            foreach (Vector2 loc in touches)
+            foreach (TouchLocation touch in Input.TouchesCollected)
             {
+                if (touch.State == TouchLocationState.Released)
+                {
+                    continue;
+                }
                 switch (State)
                 {
                     case MenuState.Main:
-                        if (Utilities.PointIntersectsRectangle(loc, UpgradeWeaponRec))
+                        if (Utilities.PointIntersectsRectangle(touch.Position, UpgradeWeaponRec))
                         {
                             State = MenuState.Weapon;
                         }
-                        if (Utilities.PointIntersectsRectangle(loc, QuitRec))
+                        if (Utilities.PointIntersectsRectangle(touch.Position, QuitRec))
                         {
                             quit = true;
                         }
-                        if (Utilities.PointIntersectsRectangle(loc, UpgradePowerUpRec))
+                        if (Utilities.PointIntersectsRectangle(touch.Position, UpgradePowerUpRec))
                         {
                             State = MenuState.PowerUp;
                         }
@@ -78,7 +83,7 @@ namespace GameName1
                         return GameState.Playing;
                     case MenuState.PowerUp:
                         Rectangle temp = new Rectangle(200,0, 500, 1280);
-                        if (Utilities.PointIntersectsRectangle(loc, temp))
+                        if (Utilities.PointIntersectsRectangle(touch.Position, temp))
                         {
                             return GameState.Playing;
                         }

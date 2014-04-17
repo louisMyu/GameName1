@@ -138,8 +138,7 @@ namespace GameName1
                     m_Menu.State = MenuState.Main;
                 }
             }
-            List<Vector2> vec = new List<Vector2>();
-            Input.ProcessTouchInput(out vec);
+            Input.ProcessTouchInput();
             switch (CurrentGameState) {
                 case GameState.Playing:
                     // TODO: Add your update logic here
@@ -155,7 +154,7 @@ namespace GameName1
                         FrameCounter = 0;
                         elapsedTime = 0;
                     }
-                    UserInterface.ProcessInput(vec, m_Player);
+                    UserInterface.ProcessInput(m_Player);
 
                     //check if a game reset or zombie hit and save state and do the action here,
                     //so that the game will draw the zombie intersecting the player
@@ -175,7 +174,7 @@ namespace GameName1
                     break;
                 case GameState.Menu:
                     bool toQuit;
-                    CurrentGameState = m_Menu.Update(vec, out toQuit);
+                    CurrentGameState = m_Menu.Update(out toQuit);
                     if (toQuit)
                     {
                         m_Player.Save();

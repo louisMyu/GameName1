@@ -247,10 +247,11 @@ namespace GameName1
                     if (!m_Weapon.Firing)
                     {
                         //dont apply rotation unless tilt amount is greater than a threshold
-                        if (!IsStopDown)
-                        {
-                            RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
-                        }
+                        //if (!IsStopDown)
+                        //{
+                        //    RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
+                        //}
+                        RotationAngle = UI.ThumbStickAngle;
                     }
                 }
                 else

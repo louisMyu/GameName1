@@ -38,7 +38,7 @@ namespace GameName1
             XNAHelper.FauxVector3 temp = new XNAHelper.FauxVector3();
             temp = XNAHelper.XNAHelper.ExtractAccelerometer(e.SensorReading);
             Vector3 tempVector3 = new Vector3();
-            tempVector3.X = temp.X * AccelerometerAlpha + temp.X * (1.0f-AccelerometerAlpha);
+            tempVector3.X = (temp.X * AccelerometerAlpha + temp.X * (1.0f-AccelerometerAlpha)) + 0.25f;
             tempVector3.Y = temp.Y * AccelerometerAlpha + temp.Y * (1.0f-AccelerometerAlpha);
             tempVector3.Z = temp.Z * AccelerometerAlpha + temp.Z * (1.0f-AccelerometerAlpha);
             CurrentAccelerometerValues = tempVector3;
@@ -48,23 +48,16 @@ namespace GameName1
             get;
             set;
         }
-        public static List<int> TouchIDs = new List<int>();
-        public static void ProcessTouchInput(out List<Vector2> touches) 
+        public static List<TouchLocation> TouchesCollected = new List<TouchLocation>();
+        public static void ProcessTouchInput() 
         {
-            touches = new List<Vector2>();
-            TouchCollection col = TouchPanel.GetState();
-            foreach (TouchLocation loc in col)
+            lock (TouchesCollected)
             {
-                if (loc.State == TouchLocationState.Pressed || loc.State == TouchLocationState.Moved)
+                TouchesCollected.Clear();
+                TouchCollection col = TouchPanel.GetState();
+                foreach (TouchLocation touch in col)
                 {
-                    Vector2 touch = new Vector2(loc.Position.X, loc.Position.Y);
-                    touches.Add(touch);
-                    CurrentState = loc.State;
-                    TouchIDs.Add(loc.Id);
-                }
-                if (loc.State == TouchLocationState.Released)
-                {
-                    TouchIDs.Remove(loc.Id);
+                    TouchesCollected.Add(touch);
                 }
             }
         }
