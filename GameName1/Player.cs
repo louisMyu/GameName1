@@ -52,6 +52,10 @@ namespace GameName1
         }
         public bool IsStopDown { get; set; }
         public Body _circleBody;
+
+        private Texture2D ReticuleTexture;
+        private Texture2D AimCircleTexture;
+        private Texture2D AimCircleRedTexture;
         public Player() : base()
         {
 			
@@ -168,6 +172,9 @@ namespace GameName1
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
             }
+            ReticuleTexture = TextureBank.GetTexture("Reticule");
+            AimCircleTexture = TextureBank.GetTexture("AimRing");
+            AimCircleRedTexture = TextureBank.GetTexture("AimRingRed");
         }
 
         private bool KickedBack = false;
@@ -208,7 +215,6 @@ namespace GameName1
         internal void ProcessInput(bool firing, bool stopMoving)
         {
             isFireButtonDown = firing;
-            m_Moving = !stopMoving;
             IsStopDown = stopMoving;
             //test.Update(m_MoveToward, new Vector2(Position.X, Position.Y));
             
@@ -251,12 +257,16 @@ namespace GameName1
                         //{
                         //    RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
                         //}
-                        RotationAngle = UI.ThumbStickAngle;
+                        //RotationAngle = UI.ThumbStickAngle;
                     }
                 }
                 else
                 {
                     m_MoveToward = new Vector2(0, 0);
+                }
+                if (!m_Weapon.Firing)
+                {
+                    RotationAngle = UI.ThumbStickAngle;
                 }
             }
             if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting && !KickedBack)
@@ -277,8 +287,20 @@ namespace GameName1
 
         public override void Draw(SpriteBatch _spriteBatch)
         {
+            Vector2 aimScale = Utilities.GetSpriteScaling(new Vector2(UI.StopButtonRec.Width, UI.StopButtonRec.Height), new Vector2(AimCircleTexture.Width, AimCircleTexture.Height));
             base.Draw(_spriteBatch);
+            Texture2D temp;
+            if (UI.ThumbStickPointOffset.LengthSquared() > (UI.StopButtonRec.Width/2) * (UI.StopButtonRec.Width/2))
+            {
+                temp = AimCircleRedTexture;
+            }
+            else
+            {
+                temp = AimCircleTexture;
+            }
+            _spriteBatch.Draw(temp, Position, null, Color.White, 0.0f, new Vector2(AimCircleTexture.Width / 2, AimCircleTexture.Height / 2), aimScale, SpriteEffects.None, 0);
             m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
+            _spriteBatch.Draw(ReticuleTexture, Position + UI.ThumbStickPointOffset, null, Color.White, 0.0f, new Vector2(7, 7), 1.0f, SpriteEffects.None, 0);
         }
 
         public override void Save()

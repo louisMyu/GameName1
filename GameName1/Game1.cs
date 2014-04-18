@@ -40,7 +40,6 @@ namespace GameName1
         private UI UserInterface = new UI();
         public int FrameCounter = 0;
         public double elapsedTime = 0;
-        Line testLine = new Line(new Vector2(4, 0), new Vector2(0, 4));
         public static Random ZombieRandom = new Random(424242);
 
         GameState CurrentGameState = GameState.Playing;
