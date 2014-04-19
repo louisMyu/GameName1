@@ -18,6 +18,7 @@ namespace GameName1
     public class Slime : GameObject, IEnemy
     {
         private const int DAMAGE_AMOUNT = 5;
+        private static const Random SlimeRandom = new Random();
         public enum MotionState
         {
             Wandering,
@@ -29,7 +30,7 @@ namespace GameName1
         [IgnoreDataMember]
         static private Texture2D m_Texture = null;
         [IgnoreDataMember]
-        private float m_Speed = 0.6f;
+        private float m_Speed = 1.0f;
         [DataMember]
         public float Speed { get { return m_Speed; } set { m_Speed = value; } }
 
@@ -43,24 +44,25 @@ namespace GameName1
         [DataMember]
         public MotionState State { get; set; }
 
-
+        private List<SlimeTrailPiece> m_SlimeTrailList;
         public Slime()
             : base()
         {
             LifeTotal = 40;
 
         }
-
+        private Texture2D m_SlimeTrailTex;
         public void LoadContent(World world)
         {
             if (m_Texture == null)
             {
                 m_Texture = TextureBank.GetTexture("Slime");
             }
+            if (m_SlimeTrailTex == null)
+            {
+                m_SlimeTrailTex = TextureBank.GetTexture("SlimeTrail");
+            }
             m_State = MotionState.Wandering;
-            RotationAngle = (float)GameObject.RANDOM_GENERATOR.NextDouble();
-            m_Direction.X = (float)Math.Cos(RotationAngle);
-            m_Direction.Y = (float)Math.Sin(RotationAngle);
 
             Width = m_Texture != null ? m_Texture.Width : 0;
             Height = m_Texture != null ? m_Texture.Height : 0;
@@ -74,6 +76,8 @@ namespace GameName1
                 m_Origin.X = Width / 2;
                 m_Origin.Y = Height / 2;
             }
+
+            m_SlimeTrailList = new List<SlimeTrailPiece>();
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
             _circleBody.Mass = 0.2f;
@@ -94,32 +98,51 @@ namespace GameName1
                 this.Position = simPosition;
             }
 
-            //get a normalized direction toward the point that was passed in, probably the player
-            Vector2 vec = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
-            if (vec.LengthSquared() <= (275.0f * 275.0f))
+            ////get a normalized direction toward the point that was passed in, probably the player
+            //Vector2 vec = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
+            //if (vec.LengthSquared() <= (275.0f * 275.0f))
+            //{
+            //    m_State = MotionState.Locked;
+            //}
+
+            //switch (m_State)
+            //{
+            //    case MotionState.Wandering:
+            //        if (RANDOM_GENERATOR.Next(150) % 150 == 1)
+            //        {
+            //            RotationAngle = (float)RANDOM_GENERATOR.NextDouble() * MathHelper.Pi * 2;
+            //            m_Direction.X = (float)Math.Cos(RotationAngle);
+            //            m_Direction.Y = (float)Math.Sin(RotationAngle);
+            //        }
+            //        break;
+
+            //    case MotionState.Locked:
+            //        m_Direction = vec;
+            //        RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
+            //        m_State = MotionState.Locked;
+            //        m_Speed = 1.0f;
+            //        break;
+            //}
+            //choose a cardinal direction or dont move
+            int dir = SlimeRandom.Next(5);
+            Vector2 vec = new Vector2(0, 0);
+            switch (dir)
             {
-                m_State = MotionState.Locked;
-            }
-
-            switch (m_State)
-            {
-                case MotionState.Wandering:
-                    if (RANDOM_GENERATOR.Next(150) % 150 == 1)
-                    {
-                        RotationAngle = (float)RANDOM_GENERATOR.NextDouble() * MathHelper.Pi * 2;
-                        m_Direction.X = (float)Math.Cos(RotationAngle);
-                        m_Direction.Y = (float)Math.Sin(RotationAngle);
-                    }
+                case 0:
+                    vec.X = 1;
                     break;
-
-                case MotionState.Locked:
-                    m_Direction = vec;
-                    RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
-                    m_State = MotionState.Locked;
-                    m_Speed = 1.0f;
+                case 1:
+                    vec.X = -1;
+                    break;
+                case 2:
+                    vec.Y = 1;
+                    break;
+                case 3:
+                    vec.Y = -1;
+                    break;
+                default:
                     break;
             }
-
             m_Direction = Vector2.Normalize(m_Direction);
             Vector2 amount = m_Direction * m_Speed;
             base.Move(amount);
@@ -137,6 +160,10 @@ namespace GameName1
         }
         public override void Update(Player player)
         {
+            foreach (SlimeTrailPiece piece in m_SlimeTrailList)
+            {
+                piece.Update();
+            }
             Move(player.Position);
             bodyPosition = _circleBody.Position;
         }
@@ -187,6 +214,37 @@ namespace GameName1
             _circleBody.Mass = 0.2f;
             _circleBody.LinearDamping = 2f;
             _circleBody.Position = bodyPosition;
+        }
+        private class SlimeTrailPiece
+        {
+            Texture2D m_Texture;
+            float m_Rotation;
+            Rectangle m_Bounds;
+            //time left in frames to exist
+            int m_Life;
+            bool isAlive;
+            public SlimeTrailPiece(Rectangle rec, int life, Texture2D texture, float rot)
+            {
+                m_Rotation = rot;
+                m_Bounds = new Rectangle(rec.X, rec.Y, rec.Width, rec.Height);
+                m_Life = 100;
+                isAlive = true;
+            }
+            public void Update()
+            {
+                if (m_Life <= 0)
+                {
+                    isAlive = false;
+                }
+                else
+                {
+                    --m_Life;
+                }
+            }
+            public void Draw(SpriteBatch _spriteBatch)
+            {
+                _spriteBatch.Draw(m_Texture, m_Bounds, null, Color.White, m_Rotation, new Vector2(m_Bounds.Width / 2, m_Bounds.Height / 2), SpriteEffects.None, 0);
+            }
         }
     }
 }
