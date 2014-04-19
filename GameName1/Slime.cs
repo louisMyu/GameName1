@@ -15,8 +15,9 @@ namespace GameName1
     [KnownType(typeof(Slime))]
     [KnownType(typeof(GameObject))]
     [DataContract]
-    public class Slime : GameObject
+    public class Slime : GameObject, IEnemy
     {
+        private const int DAMAGE_AMOUNT = 5;
         public enum MotionState
         {
             Wandering,
@@ -54,7 +55,7 @@ namespace GameName1
         {
             if (m_Texture == null)
             {
-                m_Texture = TextureBank.GetTexture("Face");
+                m_Texture = TextureBank.GetTexture("Slime");
             }
             m_State = MotionState.Wandering;
             RotationAngle = (float)GameObject.RANDOM_GENERATOR.NextDouble();
@@ -167,7 +168,10 @@ namespace GameName1
         {
             return LifeTotal;
         }
-
+        public int GetDamageAmount()
+        {
+            return DAMAGE_AMOUNT;
+        }
         public override void Save()
         {
             Storage.Save<Slime>("", "", this);

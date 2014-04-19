@@ -68,6 +68,7 @@ namespace GameName1
             {
                 MakeItem();
                 FrameCounter = 0;
+                MakeSlime();
             }
             else
             {
@@ -171,5 +172,30 @@ namespace GameName1
             ObjectManager.AllGameObjects.Add(m_PowerUp);
         }
         //probably should add spawn face in here
+        private void MakeSlime()
+        {
+            bool nearPlayer = true;
+            int x = 0;
+            int y = 0;
+            while (nearPlayer)
+            {
+                x = ZombieRandom.Next(Game1.GameWidth);
+                y = ZombieRandom.Next(Game1.GameHeight);
+
+                //don't spawn near player
+                Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
+                if (distanceFromPlayer.LengthSquared() >= (200.0f * 200f))
+                {
+                    nearPlayer = false;
+                }
+            }
+            Slime z = new Slime();
+            Vector2 temp = new Vector2();
+            temp.X = x;
+            temp.Y = y;
+            z.Position = temp;
+            z.LoadContent(m_World);
+            AllGameObjects.Add(z);
+        }
     }
 }
