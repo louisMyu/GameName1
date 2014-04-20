@@ -282,9 +282,13 @@ namespace GameName1
                 float alpha;
                 if (m_Life / TotalLife > 0.5)
                 {
-
+                    temp = 0.5f;
                 }
-                float alpha = ((float)m_Life / TotalLife);
+                else
+                {
+                    temp = m_Life;
+                }
+                alpha = (temp / TotalLife);
                 _spriteBatch.Draw(m_Texture, m_Bounds, null, Color.White * alpha, m_Rotation, new Vector2(m_Bounds.Width / 2, m_Bounds.Height / 2), SpriteEffects.None, 0);
             }
         }
