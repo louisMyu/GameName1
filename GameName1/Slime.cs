@@ -30,7 +30,7 @@ namespace GameName1
         [IgnoreDataMember]
         static private Texture2D m_Texture = null;
         [IgnoreDataMember]
-        private float m_Speed = 1.0f;
+        private float m_Speed = 1.5f;
         [DataMember]
         public float Speed { get { return m_Speed; } set { m_Speed = value; } }
 
@@ -52,7 +52,6 @@ namespace GameName1
 
         }
         private Texture2D m_SlimeTrailTex;
-        private int SplatTime = 50;
         public void LoadContent(World world)
         {
             if (m_Texture == null)
@@ -170,10 +169,10 @@ namespace GameName1
             RotationAngle = (float)Math.Atan2(m_Direction.Y, m_Direction.X);
             Vector2 amount = m_Direction * m_Speed;
             base.Move(amount);
-
-            //Later on, remove the clamp to the edge and despawn when too far out of the screen.
-            //Position.X = MathHelper.Clamp(Position.X, Width + UI.OFFSET, Game1.GameWidth - (Width / 2));
-            //Position.Y = MathHelper.Clamp(Position.Y, Height, Game1.GameHeight - (Height / 2));
+            Vector2 temp = new Vector2();
+            temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth + Width);
+            temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight + Height);
+            Position = temp;
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
@@ -184,12 +183,13 @@ namespace GameName1
         }
         public override void Update(Player player)
         {
-            m_SlimeTrailList.RemoveAll(x => x.isAlive = false);
+            m_SlimeTrailList.RemoveAll(x => !x.isAlive);
             foreach (SlimeTrailPiece piece in m_SlimeTrailList)
             {
                 piece.Update();
             }
             Move(player.Position);
+            AddSlimePiece();
             bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)
@@ -200,7 +200,12 @@ namespace GameName1
             }
             spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
         }
-
+        private void AddSlimePiece()
+        {
+            Rectangle pieceRec = new Rectangle((int)Position.X, (int)Position.Y, (int)m_Texture.Width / 2, (int)m_Texture.Width / 2);
+            SlimeTrailPiece piece = new SlimeTrailPiece(pieceRec, 100, m_SlimeTrailTex, RotationAngle);
+            m_SlimeTrailList.Add(piece);
+        }
         public void ApplyLinearForce(Vector2 angle, float amount)
         {
             Vector2 impulse = Vector2.Normalize(angle) * amount;
@@ -245,6 +250,7 @@ namespace GameName1
         }
         private class SlimeTrailPiece
         {
+            private const int TotalLife = 100;
             Texture2D m_Texture;
             float m_Rotation;
             Rectangle m_Bounds;
@@ -272,7 +278,14 @@ namespace GameName1
             }
             public void Draw(SpriteBatch _spriteBatch)
             {
-                _spriteBatch.Draw(m_Texture, m_Bounds, null, Color.White, m_Rotation, new Vector2(m_Bounds.Width / 2, m_Bounds.Height / 2), SpriteEffects.None, 0);
+                float temp;
+                float alpha;
+                if (m_Life / TotalLife > 0.5)
+                {
+
+                }
+                float alpha = ((float)m_Life / TotalLife);
+                _spriteBatch.Draw(m_Texture, m_Bounds, null, Color.White * alpha, m_Rotation, new Vector2(m_Bounds.Width / 2, m_Bounds.Height / 2), SpriteEffects.None, 0);
             }
         }
     }

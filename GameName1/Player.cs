@@ -288,9 +288,8 @@ namespace GameName1
         public override void Draw(SpriteBatch _spriteBatch)
         {
             Vector2 aimScale = Utilities.GetSpriteScaling(new Vector2(UI.StopButtonRec.Width, UI.StopButtonRec.Height), new Vector2(AimCircleTexture.Width, AimCircleTexture.Height));
-            base.Draw(_spriteBatch);
             Texture2D temp;
-            if (UI.ThumbStickPointOffset.LengthSquared() > (UI.StopButtonRec.Width/2) * (UI.StopButtonRec.Width/2))
+            if (UI.ThumbStickPointOffset.LengthSquared() > (UI.StopButtonRec.Width / 2) * (UI.StopButtonRec.Width / 2))
             {
                 temp = AimCircleRedTexture;
             }
@@ -299,6 +298,8 @@ namespace GameName1
                 temp = AimCircleTexture;
             }
             _spriteBatch.Draw(temp, Position, null, Color.White, 0.0f, new Vector2(AimCircleTexture.Width / 2, AimCircleTexture.Height / 2), aimScale, SpriteEffects.None, 0);
+            base.Draw(_spriteBatch);
+            
             m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
             _spriteBatch.Draw(ReticuleTexture, Position + UI.ThumbStickPointOffset, null, Color.White, 0.0f, new Vector2(7, 7), 1.0f, SpriteEffects.None, 0);
         }
