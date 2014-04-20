@@ -18,7 +18,7 @@ namespace GameName1
     public class Slime : GameObject, IEnemy
     {
         private const int DAMAGE_AMOUNT = 5;
-        private static const Random SlimeRandom = new Random();
+        private static Random SlimeRandom = new Random();
         public enum MotionState
         {
             Wandering,
@@ -52,6 +52,7 @@ namespace GameName1
 
         }
         private Texture2D m_SlimeTrailTex;
+        private int SplatTime = 50;
         public void LoadContent(World world)
         {
             if (m_Texture == null)
@@ -62,7 +63,25 @@ namespace GameName1
             {
                 m_SlimeTrailTex = TextureBank.GetTexture("SlimeTrail");
             }
-            m_State = MotionState.Wandering;
+            int dir = SlimeRandom.Next(4);
+            m_Direction = new Vector2(0, 0);
+            switch (dir)
+            {
+                case 0:
+                    m_Direction.X = 1;
+                    break;
+                case 1:
+                    m_Direction.X = -1;
+                    break;
+                case 2:
+                    m_Direction.Y = 1;
+                    break;
+                case 3:
+                    m_Direction.Y = -1;
+                    break;
+                default:
+                    break;
+            }
 
             Width = m_Texture != null ? m_Texture.Width : 0;
             Height = m_Texture != null ? m_Texture.Height : 0;
@@ -123,27 +142,32 @@ namespace GameName1
             //        m_Speed = 1.0f;
             //        break;
             //}
+            int check = SlimeRandom.Next(100);
             //choose a cardinal direction or dont move
-            int dir = SlimeRandom.Next(5);
-            Vector2 vec = new Vector2(0, 0);
-            switch (dir)
+            if (check == 0)
             {
-                case 0:
-                    vec.X = 1;
-                    break;
-                case 1:
-                    vec.X = -1;
-                    break;
-                case 2:
-                    vec.Y = 1;
-                    break;
-                case 3:
-                    vec.Y = -1;
-                    break;
-                default:
-                    break;
+                int dir = SlimeRandom.Next(4);
+                m_Direction = new Vector2(0, 0);
+                switch (dir)
+                {
+                    case 0:
+                        m_Direction.X = 1;
+                        break;
+                    case 1:
+                        m_Direction.X = -1;
+                        break;
+                    case 2:
+                        m_Direction.Y = 1;
+                        break;
+                    case 3:
+                        m_Direction.Y = -1;
+                        break;
+                    default:
+                        break;
+                }
             }
             m_Direction = Vector2.Normalize(m_Direction);
+            RotationAngle = (float)Math.Atan2(m_Direction.Y, m_Direction.X);
             Vector2 amount = m_Direction * m_Speed;
             base.Move(amount);
 
@@ -160,6 +184,7 @@ namespace GameName1
         }
         public override void Update(Player player)
         {
+            m_SlimeTrailList.RemoveAll(x => x.isAlive = false);
             foreach (SlimeTrailPiece piece in m_SlimeTrailList)
             {
                 piece.Update();
@@ -169,7 +194,10 @@ namespace GameName1
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Vector2 temp = ConvertUnits.ToDisplayUnits(_circleBody.Position);
+            foreach (SlimeTrailPiece p in m_SlimeTrailList)
+            {
+                p.Draw(spriteBatch);
+            }
             spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
         }
 
@@ -222,9 +250,10 @@ namespace GameName1
             Rectangle m_Bounds;
             //time left in frames to exist
             int m_Life;
-            bool isAlive;
+            public bool isAlive;
             public SlimeTrailPiece(Rectangle rec, int life, Texture2D texture, float rot)
             {
+                m_Texture = texture;
                 m_Rotation = rot;
                 m_Bounds = new Rectangle(rec.X, rec.Y, rec.Width, rec.Height);
                 m_Life = 100;
