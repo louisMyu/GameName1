@@ -71,7 +71,7 @@ namespace GameName1
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
-            m_Weapon = new Plasma();
+            m_Weapon = new Shotgun();
             Position = pos;
             isFireButtonDown = false;
             MaxLife = 100;
@@ -138,17 +138,13 @@ namespace GameName1
             //its good to find the nearest zombie when i run through entire zombie list, but probably not here
             if (m_Weapon.Firing || m_Weapon.BulletsExist)
             {
-                if (!KickedBack && isFireButtonDown)
-                {
-                    KickedBack = true;
-                    if (m_Weapon is Shotgun)
-                    {
-                        Vector2 temp = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle)) * -50;
-                        this._circleBody.ApplyLinearImpulse(temp);
-                    }
-                }
+
                 foreach (GameObject ob in ObjectManager.AllGameObjects)
                 {
+                    if (ob is PowerUp)
+                    {
+                        continue;
+                    }
                     //this probably should check for collision only when firing
                     //that way the bullet lines wont update to the next person while a shot is going off
                     if (m_Weapon.CheckCollision(ob))
@@ -217,7 +213,6 @@ namespace GameName1
             isFireButtonDown = firing;
             IsStopDown = stopMoving;
             //test.Update(m_MoveToward, new Vector2(Position.X, Position.Y));
-            
         }
 
         public void Update(float elapsedTime)
@@ -225,6 +220,15 @@ namespace GameName1
             if (!m_Weapon.Firing && KickedBack)
             {
                 KickedBack = false;
+            }
+            if (!KickedBack && isFireButtonDown)
+            {
+                KickedBack = true;
+                if (m_Weapon is Shotgun)
+                {
+                    Vector2 temp = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle)) * -50;
+                    this._circleBody.ApplyLinearImpulse(temp);
+                }
             }
             //should really just use the Sim's position for everything instead of converting from one to another
             Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
@@ -236,6 +240,7 @@ namespace GameName1
             {
                 this.Position = simPosition;
             }
+
             if (!Input.UseAccelerometer)
             {
                 if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
@@ -269,7 +274,7 @@ namespace GameName1
                     RotationAngle = UI.ThumbStickAngle;
                 }
             }
-            if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting && !KickedBack)
+            if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
             {
                 Move(m_MoveToward);
             }
