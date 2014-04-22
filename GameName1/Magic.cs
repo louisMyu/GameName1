@@ -38,4 +38,41 @@ namespace GameName1
             ObjectManager.m_Player.LifeTotal = ObjectManager.m_Player.MaxLife;
         }
     }
+
+    public class HeartEffect : IMagic
+    {
+        public void GetEffect()
+        {
+            ObjectManager.m_Player.LifeTotal += 10;
+        }
+    }
+
+    public class BuzzSawEffect : IMagic
+    {
+        public void GetEffect()
+        {
+            
+        }
+    }
+
+    public class SpeedEffect : IMagic
+    {
+        public void GetEffect()
+        {
+        }
+    }
+
+    public class RandomEffect : IMagic
+    {
+        public void GetEffect()
+        {
+        }
+    }
+
+    public class DamageEffect : IMagic
+    {
+        public void GetEffect()
+        {
+        }
+    }
 }
