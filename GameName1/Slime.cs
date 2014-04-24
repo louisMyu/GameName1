@@ -19,6 +19,8 @@ namespace GameName1
     {
         private const int DAMAGE_AMOUNT = 5;
         private static Random SlimeRandom = new Random();
+        //number of frames to skip between adding a slime piece
+        private const int SLIME_TRAIL_SKIP_TIME = 5;
         public enum MotionState
         {
             Wandering,
@@ -45,12 +47,14 @@ namespace GameName1
         public MotionState State { get; set; }
 
         private List<SlimeTrailPiece> m_SlimeTrailList;
+        private int m_SlimeTrailTimeCounter = 0;
         public Slime()
             : base()
         {
             LifeTotal = 40;
 
         }
+
         private Texture2D m_SlimeTrailTex;
         public void LoadContent(World world)
         {
@@ -189,7 +193,12 @@ namespace GameName1
                 piece.Update();
             }
             Move(player.Position);
-            AddSlimePiece();
+            ++m_SlimeTrailTimeCounter;
+            if (m_SlimeTrailTimeCounter % SLIME_TRAIL_SKIP_TIME == 0)
+            {
+                AddSlimePiece();
+                m_SlimeTrailTimeCounter = 0;
+            }
             bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)
@@ -250,7 +259,7 @@ namespace GameName1
         }
         private class SlimeTrailPiece
         {
-            private const int TotalLife = 100;
+            private const int LIFE_TIME = 500;
             Texture2D m_Texture;
             float m_Rotation;
             Rectangle m_Bounds;
@@ -262,7 +271,7 @@ namespace GameName1
                 m_Texture = texture;
                 m_Rotation = rot;
                 m_Bounds = new Rectangle(rec.X, rec.Y, rec.Width, rec.Height);
-                m_Life = 100;
+                m_Life = 500;
                 isAlive = true;
             }
             public void Update()
@@ -278,9 +287,10 @@ namespace GameName1
             }
             public void Draw(SpriteBatch _spriteBatch)
             {
+
                 float temp;
                 float alpha;
-                if (m_Life / TotalLife > 0.5)
+                if (m_Life / LIFE_TIME > 0.5)
                 {
                     temp = 0.5f;
                 }
@@ -288,7 +298,7 @@ namespace GameName1
                 {
                     temp = m_Life;
                 }
-                alpha = (temp / TotalLife);
+                alpha = (temp / LIFE_TIME);
                 _spriteBatch.Draw(m_Texture, m_Bounds, null, Color.White * alpha, m_Rotation, new Vector2(m_Bounds.Width / 2, m_Bounds.Height / 2), SpriteEffects.None, 0);
             }
         }
