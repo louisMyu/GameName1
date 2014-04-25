@@ -1,4 +1,0 @@
-C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\XNAHelper\Bin\ARM\Debug\XNAHelper.dll
-C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\XNAHelper\Bin\ARM\Debug\XNAHelper.pdb
-C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\XNAHelper\obj\ARM\Debug\XNAHelper.dll
-C:\Users\Louis\Documents\Visual Studio 2012\Projects\GameName1\XNAHelper\obj\ARM\Debug\XNAHelper.pdb
