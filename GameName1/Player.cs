@@ -71,7 +71,7 @@ namespace GameName1
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
-            m_Weapon = new Plasma();
+            m_Weapon = new Shotgun();
             Position = pos;
             isFireButtonDown = false;
             MaxLife = 100;
@@ -138,17 +138,13 @@ namespace GameName1
             //its good to find the nearest zombie when i run through entire zombie list, but probably not here
             if (m_Weapon.Firing || m_Weapon.BulletsExist)
             {
-                if (!KickedBack && isFireButtonDown)
-                {
-                    KickedBack = true;
-                    if (m_Weapon is Shotgun)
-                    {
-                        Vector2 temp = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle)) * -50;
-                        this._circleBody.ApplyLinearImpulse(temp);
-                    }
-                }
+
                 foreach (GameObject ob in ObjectManager.AllGameObjects)
                 {
+                    if (ob is PowerUp)
+                    {
+                        continue;
+                    }
                     //this probably should check for collision only when firing
                     //that way the bullet lines wont update to the next person while a shot is going off
                     if (m_Weapon.CheckCollision(ob))
@@ -217,11 +213,19 @@ namespace GameName1
             isFireButtonDown = firing;
             IsStopDown = stopMoving;
             //test.Update(m_MoveToward, new Vector2(Position.X, Position.Y));
-            
         }
 
         public void Update(float elapsedTime)
         {
+            if (!KickedBack && isFireButtonDown && m_Weapon.CanFire())
+            {
+                KickedBack = true;
+                if (m_Weapon is Shotgun)
+                {
+                    Vector2 temp = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle)) * -50;
+                    this._circleBody.ApplyLinearImpulse(temp);
+                }
+            }
             if (!m_Weapon.Firing && KickedBack)
             {
                 KickedBack = false;
@@ -236,6 +240,7 @@ namespace GameName1
             {
                 this.Position = simPosition;
             }
+
             if (!Input.UseAccelerometer)
             {
                 if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
@@ -269,7 +274,7 @@ namespace GameName1
                     RotationAngle = UI.ThumbStickAngle;
                 }
             }
-            if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting && !KickedBack)
+            if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
             {
                 Move(m_MoveToward);
             }
@@ -287,20 +292,27 @@ namespace GameName1
 
         public override void Draw(SpriteBatch _spriteBatch)
         {
-            Vector2 aimScale = Utilities.GetSpriteScaling(new Vector2(UI.StopButtonRec.Width, UI.StopButtonRec.Height), new Vector2(AimCircleTexture.Width, AimCircleTexture.Height));
+            if (IsStopDown)
+            {
+                Vector2 aimScale = Utilities.GetSpriteScaling(new Vector2(UI.StopButtonRec.Width, UI.StopButtonRec.Height), new Vector2(AimCircleTexture.Width, AimCircleTexture.Height));
+                Texture2D temp;
+                if (UI.ThumbStickPointOffset.LengthSquared() > (UI.StopButtonRec.Width / 2) * (UI.StopButtonRec.Width / 2))
+                {
+                    temp = AimCircleRedTexture;
+                }
+                else
+                {
+                    temp = AimCircleTexture;
+                }
+                _spriteBatch.Draw(temp, Position, null, Color.White, 0.0f, new Vector2(AimCircleTexture.Width / 2, AimCircleTexture.Height / 2), aimScale, SpriteEffects.None, 0);
+            }
             base.Draw(_spriteBatch);
-            Texture2D temp;
-            if (UI.ThumbStickPointOffset.LengthSquared() > (UI.StopButtonRec.Width/2) * (UI.StopButtonRec.Width/2))
-            {
-                temp = AimCircleRedTexture;
-            }
-            else
-            {
-                temp = AimCircleTexture;
-            }
-            _spriteBatch.Draw(temp, Position, null, Color.White, 0.0f, new Vector2(AimCircleTexture.Width / 2, AimCircleTexture.Height / 2), aimScale, SpriteEffects.None, 0);
+            
             m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
-            _spriteBatch.Draw(ReticuleTexture, Position + UI.ThumbStickPointOffset, null, Color.White, 0.0f, new Vector2(7, 7), 1.0f, SpriteEffects.None, 0);
+            if (IsStopDown)
+            {
+                _spriteBatch.Draw(ReticuleTexture, Position + UI.ThumbStickPointOffset, null, Color.White, 0.0f, new Vector2(7, 7), 1.0f, SpriteEffects.None, 0);
+            }
         }
 
         public override void Save()

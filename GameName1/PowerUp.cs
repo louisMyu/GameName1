@@ -31,7 +31,8 @@ namespace GameName1
         public enum CheatTypes
         {
             Wrath,
-            Health
+            Health,
+            Heart
         }
         public CheatTypes CheatType;
         public IMagic CheatEffect;
@@ -61,6 +62,10 @@ namespace GameName1
                 case CheatTypes.Health:
                     temp = "MedPack";
                     CheatEffect = new HealthEffect();
+                    break;
+                case CheatTypes.Heart:
+                    temp = "MedPack";
+                    CheatEffect = new HeartEffect();
                     break;
                 default:
                     temp = "Powerup";

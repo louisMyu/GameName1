@@ -10,6 +10,7 @@ using FarseerPhysics;
 using FarseerPhysics.Factories;
 using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework.Media;
+using GameStateManagement;
 
 namespace GameName1
 {
@@ -51,7 +52,6 @@ namespace GameName1
             Content.RootDirectory = "Content";
             m_Player = new Player();
             GlobalObjectManager = new ObjectManager();
-
         }
 
         /// <summary>
