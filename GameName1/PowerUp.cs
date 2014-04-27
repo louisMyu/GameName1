@@ -30,6 +30,7 @@ namespace GameName1
     {
         public enum CheatTypes
         {
+            Time,
             Wrath,
             Health,
             Heart
@@ -66,6 +67,10 @@ namespace GameName1
                 case CheatTypes.Heart:
                     temp = "MedPack";
                     CheatEffect = new HeartEffect();
+                    break;
+                case CheatTypes.Time:
+                    temp = "Clock";
+                    CheatEffect = new AddTimeEffect();
                     break;
                 default:
                     temp = "Powerup";

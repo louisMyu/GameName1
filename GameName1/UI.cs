@@ -12,6 +12,7 @@ namespace GameName1
 {
     class UI
     {
+        private string m_TimeToDeathString;
         private Texture2D m_StatusBackground;
         public static SpriteFont m_SpriteFont;
         private Texture2D m_FireButton;
@@ -25,7 +26,6 @@ namespace GameName1
         private Vector2 WeaponSlotPosition;
         private Color m_Weapon1ButtonColor = Color.White;
 
-        private int CurrentFPS;
         public static int OFFSET = 175;
         private Vector2 m_StatusBackgroundPosition;
         private Vector2 m_StatusBackGroundScale;
@@ -81,9 +81,9 @@ namespace GameName1
             ThumbStickPoint = StopButtonPosition;
         }
 
-        public void Update(Player p, int fps)
+        public void Update(TimeSpan timeToDeath)
         {
-            CurrentFPS = fps;
+            m_TimeToDeathString = timeToDeath.ToString(@"mm\:ss\:fff");
         }
 
         public void ProcessInput(Player p)
@@ -160,7 +160,7 @@ namespace GameName1
             spriteBatch.Draw(m_StatusBackground, m_StatusBackgroundPosition, null, Color.White, 0.0f, new Vector2(0.0f,0.0f), m_StatusBackGroundScale, SpriteEffects.None, 0.0f);
             //TODO CHANGE THE MAGIC NUMBERS HERE                                                          \/\/\/
             spriteBatch.DrawString(m_SpriteFont, "Life: " + p.LifeTotal, new Vector2(PlayfieldBottom - 50, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
-            spriteBatch.DrawString(m_SpriteFont, "XP: " + p.Score, new Vector2(PlayfieldBottom - 80, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
+            spriteBatch.DrawString(m_SpriteFont, "TimeLeft: " + m_TimeToDeathString, new Vector2(PlayfieldBottom - 80, GameHeight - 650), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
             spriteBatch.Draw(m_FireButton, FireButtonPosition, null, m_FireButtonColor, 0.0f, new Vector2(0, 0), m_FireButtonScale, SpriteEffects.None, 0);
             spriteBatch.Draw(m_ThumbStickBottomTexture, StopButtonPosition, null, m_StopButtonColor, 0.0f, new Vector2(0,0), m_StopButtonScale, SpriteEffects.None, 0);
             

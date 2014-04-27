@@ -10,6 +10,7 @@ using FarseerPhysics;
 using FarseerPhysics.Factories;
 using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework.Media;
+using System.Windows.Threading;
 
 namespace GameName1
 {
@@ -18,6 +19,7 @@ namespace GameName1
     /// </summary>
     public class Game1 : Game
     {
+        TimeSpan TimeToDeath = TimeSpan.FromSeconds(30);
         Song m_song;
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
@@ -131,21 +133,16 @@ namespace GameName1
             Input.ProcessTouchInput();
             switch (CurrentGameState) {
                 case GameState.Playing:
+                    if (TimeToDeath <= TimeSpan.FromSeconds(0))
+                    {
+                        ResetGame();
+                    }
+                    TimeToDeath -= gameTime.ElapsedGameTime;
                     // TODO: Add your update logic here
                     GameWidth = GraphicsDevice.Viewport.Width;
                     GameHeight = GraphicsDevice.Viewport.Height;
-                    GameTimer += gameTime.ElapsedGameTime.TotalSeconds;
-
-                    elapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
-                    ++FrameCounter;
-                    if (elapsedTime > 1)
-                    {
-                        UserInterface.Update(m_Player, FrameCounter);
-                        FrameCounter = 0;
-                        elapsedTime = 0;
-                    }
                     UserInterface.ProcessInput(m_Player);
-
+                    UserInterface.Update(TimeToDeath);
                     //check if a game reset or zombie hit and save state and do the action here,
                     //so that the game will draw the zombie intersecting the player
                     m_Player.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -160,6 +157,7 @@ namespace GameName1
                     //cleanup dead objects
                     GlobalObjectManager.Update();
 
+                    TimeToDeath += AddTimeEffect.TimeToAdd;
                     m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
                     break;
                 case GameState.Menu:
@@ -207,6 +205,7 @@ namespace GameName1
         {
             ObjectManager.AllGameObjects.Clear();
             GlobalObjectManager.ResetGame();
+            TimeToDeath = TimeSpan.FromSeconds(40);
             
         }
         private void SpawnFace()

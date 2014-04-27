@@ -156,7 +156,8 @@ namespace GameName1
             int powerUpType = ZombieRandom.Next(2);
             if (powerUpType == 0) 
             {
-                m_PowerUp = new CheatPowerUp((CheatPowerUp.CheatTypes)ZombieRandom.Next(2));
+                //m_PowerUp = new CheatPowerUp((CheatPowerUp.CheatTypes)ZombieRandom.Next(3));
+                m_PowerUp = new CheatPowerUp(CheatPowerUp.CheatTypes.Time);
             }
             else if (powerUpType == 1)
             {

@@ -21,7 +21,7 @@ namespace GameName1
             //for now hitting the powerup will reset the game
             foreach (GameObject g in ObjectManager.AllGameObjects)
             {
-                if (g is Zombie)
+                if (g is IEnemy)
                 {
                     ObjectManager.RemoveObject(g);
                 }
@@ -73,6 +73,25 @@ namespace GameName1
     {
         public void GetEffect()
         {
+        }
+    }
+
+    public class AddTimeEffect : IMagic
+    {
+        private static TimeSpan TIME_TO_ADD = TimeSpan.FromSeconds(0);
+
+        public static TimeSpan TimeToAdd 
+        { 
+            get 
+            { 
+                TimeSpan temp = TIME_TO_ADD;
+                TIME_TO_ADD = TimeSpan.FromSeconds(0); 
+                return temp; 
+            } 
+        }
+        public void GetEffect()
+        {
+            TIME_TO_ADD = TimeSpan.FromSeconds(60);
         }
     }
 }
