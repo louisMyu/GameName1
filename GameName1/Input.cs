@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-using Microsoft.Devices.Sensors;
+using Microsoft.Xna.Framework;
+using Windows.Devices.Sensors;
 
 namespace GameName1
 {
@@ -22,27 +22,29 @@ namespace GameName1
         static Input()
         {
             //Gestures = new List<GestureSample>();
-            if (Accelerometer.IsSupported)
+            accelerometer = Windows.Devices.Sensors.Accelerometer.GetDefault();
+            if (accelerometer != null)
             {
-                accelerometer = new Accelerometer();
-                accelerometer.TimeBetweenUpdates = TimeSpan.FromMilliseconds(10);
-                accelerometer.CurrentValueChanged += new EventHandler<SensorReadingEventArgs<AccelerometerReading>>(accelerometer_CurrentValueChanged);
+                accelerometer = Windows.Devices.Sensors.Accelerometer.GetDefault();
+                accelerometer.ReadingChanged += ReadingChanged;
+                accelerometer.ReportInterval = 10;
             }
             else
             {
                 UseAccelerometer = false;
             }
         }
-        private static void accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
+
+        private static void ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
-            XNAHelper.FauxVector3 temp = new XNAHelper.FauxVector3();
-            temp = XNAHelper.XNAHelper.ExtractAccelerometer(e.SensorReading);
-            Vector3 tempVector3 = new Vector3();
-            tempVector3.X = (temp.X * AccelerometerAlpha + temp.X * (1.0f-AccelerometerAlpha)) + 0.25f;
-            tempVector3.Y = temp.Y * AccelerometerAlpha + temp.Y * (1.0f-AccelerometerAlpha);
-            tempVector3.Z = temp.Z * AccelerometerAlpha + temp.Z * (1.0f-AccelerometerAlpha);
-            CurrentAccelerometerValues = tempVector3;
+            AccelerometerReading reading = e.Reading;
+            Vector3 newAcceration = new Vector3();
+            newAcceration.X = (float)(reading.AccelerationX * AccelerometerAlpha + reading.AccelerationX * (1.0f - AccelerometerAlpha)) + 0.25f;
+            newAcceration.Y = (float)(reading.AccelerationY * AccelerometerAlpha + reading.AccelerationY * (1.0f - AccelerometerAlpha));
+            newAcceration.Z = (float)(reading.AccelerationZ * AccelerometerAlpha + reading.AccelerationZ * (1.0f - AccelerometerAlpha));
+            CurrentAccelerometerValues = newAcceration;
         }
+
         public static TouchLocationState CurrentState
         {
             get;

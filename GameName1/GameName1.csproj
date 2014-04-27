@@ -25,6 +25,8 @@
     <ValidateXaml>true</ValidateXaml>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -76,6 +78,7 @@
     </Compile>
     <Compile Include="GameObject.cs" />
     <Compile Include="GraphicalLine.cs" />
+    <Compile Include="IEnemy.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="LocalizedStrings.cs" />
@@ -86,6 +89,7 @@
     <Compile Include="Magic.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="ObjectManager.cs" />
+    <Compile Include="Plasma.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PowerUp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,6 +100,7 @@
     </Compile>
     <Compile Include="Rifle.cs" />
     <Compile Include="Shotgun.cs" />
+    <Compile Include="Slime.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="TextureBank.cs" />
     <Compile Include="Triangle.cs" />
@@ -135,6 +140,26 @@
     <Content Include="Content\WhiteTile.xnb" />
     <Content Include="Content\AuraQualic - DATA %28FL Studio Remix%29.xnb" />
     <Content Include="Content\Face.xnb" />
+    <Content Include="Content\AimRing.xnb" />
+    <Content Include="Content\AimRingRed.xnb" />
+    <Content Include="Content\CircleSprite.xnb" />
+    <Content Include="Content\Font.spritefont" />
+    <Content Include="Content\Font.xnb" />
+    <Content Include="Content\GroundSprite.xnb" />
+    <Content Include="Content\MedPack.xnb" />
+    <Content Include="Content\PlasmaBullet.xnb" />
+    <Content Include="Content\PlasmaIcon.xnb" />
+    <Content Include="Content\Reticule.xnb" />
+    <Content Include="Content\rifle1.xnb" />
+    <Content Include="Content\rifle2.xnb" />
+    <Content Include="Content\RifleIcon.xnb" />
+    <Content Include="Content\ShotgunIcon.xnb" />
+    <Content Include="Content\Slime.xnb" />
+    <Content Include="Content\SlimeTrail.xnb" />
+    <Content Include="Content\ThumbstickBottom.xnb" />
+    <Content Include="Content\ThumbstickTop.xnb" />
+    <Content Include="Content\Zombie.xnb" />
+    <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
@@ -168,14 +193,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsPhone.csproj">
-      <Project>{BAA9A6E4-7690-4DE0-9531-DE0EAEEC9739}</Project>
-      <Name>MonoGame.Framework.WindowsPhone</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FarSeerPort\FarSeerPort.csproj">
       <Project>{38C6014A-7647-44B1-AD8C-EDFB75AC5F18}</Project>
       <Name>FarSeerPort</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XNAHelper\XNAHelper.csproj">
+      <Project>{D4F521A5-7066-4EF6-BB85-FF844BF6F750}</Project>
+      <Name>XNAHelper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
@@ -197,4 +225,6 @@
   </Target>
   -->
   <ProjectExtensions />
+  <Import Project="..\packages\MonoGame.Binaries.3.2.0\build\wp8\MonoGame.Binaries.targets" Condition="Exists('..\packages\MonoGame.Binaries.3.2.0\build\wp8\MonoGame.Binaries.targets')" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>
