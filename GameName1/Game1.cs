@@ -19,7 +19,7 @@ namespace GameName1
     /// </summary>
     public class Game1 : Game
     {
-        TimeSpan TimeToDeath = TimeSpan.FromSeconds(30);
+        public static TimeSpan TimeToDeath = TimeSpan.FromSeconds(30);
         Song m_song;
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
@@ -157,7 +157,6 @@ namespace GameName1
                     //cleanup dead objects
                     GlobalObjectManager.Update();
 
-                    TimeToDeath += AddTimeEffect.TimeToAdd;
                     m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
                     break;
                 case GameState.Menu:

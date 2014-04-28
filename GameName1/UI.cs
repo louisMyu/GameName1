@@ -145,11 +145,7 @@ namespace GameName1
                     }
                     if (Utilities.PointIntersectsRectangle(vec, WeaponSlotRec))
                     {
-                        if (p.WeaponSlot1Magic != null)
-                        {
-                            p.WeaponSlot1Magic.CheatEffect.GetEffect();
-                        }
-                        p.WeaponSlot1Magic = null;
+                        p.StartCheatEffect();
                     }
                 }
             }

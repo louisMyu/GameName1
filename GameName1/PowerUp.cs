@@ -36,7 +36,7 @@ namespace GameName1
             Heart
         }
         public CheatTypes CheatType;
-        public IMagic CheatEffect;
+        public Cheat CheatEffect;
         public override void LoadContent()
         {
             base.LoadContent();

@@ -22,8 +22,8 @@ namespace GameName1
         [IgnoreDataMember]
         public static readonly string playerSaveDir = "playerDir";
         [IgnoreDataMember]
-        static float VELOCITY = 5.0F;
-
+        public static float VELOCITY = 50f;
+        public static int CheatEffectFrames;
         [IgnoreDataMember]
         public Vector2 m_MoveToward = new Vector2();
         [DataMember]
@@ -41,7 +41,7 @@ namespace GameName1
         public int MaxLife { get; set; }
         [DataMember]
         public CheatPowerUp WeaponSlot1Magic { get; set; }
-
+        private List<Cheat> m_ActiveEffects = new List<Cheat>();
         [DataMember]
         public int Score { get; set; }
         [DataMember]
@@ -124,9 +124,11 @@ namespace GameName1
                     }
                     if (ob is CheatPowerUp)
                     {
-                        if (((CheatPowerUp)ob).CheatType == CheatPowerUp.CheatTypes.Time)
+                        if (ob is IInstant)
                         {
-                            AddTimeEffect.AddTime(60);
+                            IInstant instantEffect = ob as IInstant;
+                            instantEffect.GetInstantEffect();
+                            WeaponSlot1Magic = null;
                         }
                         else if (WeaponSlot1Magic == null)
                         {
@@ -227,6 +229,21 @@ namespace GameName1
 
         public void Update(float elapsedTime)
         {
+            //must be a better way to do this...
+            foreach (Cheat cheat in m_ActiveEffects)
+            {
+                if (cheat.IsDone())
+                {
+                    cheat.EndEffect(this);
+                }
+            }
+            m_ActiveEffects.RemoveAll(x => x.IsDone() || x == null);
+            foreach (Cheat cheat in m_ActiveEffects)
+            {
+                if (cheat == null) continue;
+                cheat.Update(this);
+            }
+
             if (!KickedBack && isFireButtonDown && m_Weapon.CanFire())
             {
                 KickedBack = true;
@@ -263,8 +280,8 @@ namespace GameName1
                 Vector2 acceleration = new Vector2(Input.CurrentAccelerometerValues.X, Input.CurrentAccelerometerValues.Y);
                 if (acceleration.LengthSquared() > Input.Tilt_Threshold)
                 {
-                    m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X * 50, -(Math.Abs(acceleration.X) * 25), Math.Abs(acceleration.X) * 25),
-                                                -1 * MathHelper.Clamp(acceleration.Y * 50, -(Math.Abs(acceleration.Y) * 25), Math.Abs(acceleration.Y) * 25));
+                    m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X * 50, -(Math.Abs(acceleration.X) * VELOCITY), Math.Abs(acceleration.X) * VELOCITY),
+                                                -1 * MathHelper.Clamp(acceleration.Y * 50, -(Math.Abs(acceleration.Y) * VELOCITY), Math.Abs(acceleration.Y) * VELOCITY));
                     if (!m_Weapon.Firing)
                     {
                         //dont apply rotation unless tilt amount is greater than a threshold
@@ -354,6 +371,15 @@ namespace GameName1
                 p.m_Weapon.LoadWeapon();
             }
             return p;
+        }
+        public void StartCheatEffect()
+        {
+            if (WeaponSlot1Magic != null)
+            {
+                m_ActiveEffects.Add(WeaponSlot1Magic.CheatEffect);
+                WeaponSlot1Magic.CheatEffect.StartEffect(this);
+                WeaponSlot1Magic = null;
+            }
         }
     }
 }
