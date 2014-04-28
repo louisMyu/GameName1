@@ -56,6 +56,9 @@ namespace GameName1
         private Texture2D ReticuleTexture;
         private Texture2D AimCircleTexture;
         private Texture2D AimCircleRedTexture;
+        public Texture2D RedFlashTexture;
+
+        public bool DrawRedFlash;
         public Player() : base()
         {
 			
@@ -77,11 +80,12 @@ namespace GameName1
             MaxLife = 100;
             LifeTotal = MaxLife;
             IsStopDown = false;
+            DrawRedFlash = false;
         }
         public void CheckCollisions(out bool reset, World _world)
         {
             //float nearestLength = float.MaxValue;
-
+            DrawRedFlash = false;
             reset = false;
             foreach (GameObject ob in ObjectManager.AllGameObjects)
             {
@@ -110,6 +114,7 @@ namespace GameName1
                     {
                         IEnemy enemy = ob as IEnemy;
                         LifeTotal -= enemy.GetDamageAmount();
+                        DrawRedFlash = true;
                         if (LifeTotal <= 0)
                         {
                             reset = true;
@@ -119,7 +124,11 @@ namespace GameName1
                     }
                     if (ob is CheatPowerUp)
                     {
-                        if (WeaponSlot1Magic == null)
+                        if (((CheatPowerUp)ob).CheatType == CheatPowerUp.CheatTypes.Time)
+                        {
+                            AddTimeEffect.AddTime(60);
+                        }
+                        else if (WeaponSlot1Magic == null)
                         {
                             CheatPowerUp cheat = ob as CheatPowerUp;
                             WeaponSlot1Magic = cheat;
@@ -171,6 +180,7 @@ namespace GameName1
             ReticuleTexture = TextureBank.GetTexture("Reticule");
             AimCircleTexture = TextureBank.GetTexture("AimRing");
             AimCircleRedTexture = TextureBank.GetTexture("AimRingRed");
+            RedFlashTexture = TextureBank.GetTexture("RED");
         }
 
         private bool KickedBack = false;

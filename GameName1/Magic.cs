@@ -93,5 +93,9 @@ namespace GameName1
         {
             TIME_TO_ADD = TimeSpan.FromSeconds(60);
         }
+        public static void AddTime(int seconds)
+        {
+            TIME_TO_ADD += TimeSpan.FromSeconds(seconds);
+        }
     }
 }

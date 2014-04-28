@@ -58,7 +58,7 @@ namespace GameName1
             {
                 m_Texture = TextureBank.GetTexture("kevinZombie");
             }
-            m_State = MotionState.Wandering;
+            m_State = MotionState.Locked;
             RotationAngle = (float)GameObject.RANDOM_GENERATOR.NextDouble();
             m_Direction.X = (float)Math.Cos(RotationAngle);
             m_Direction.Y = (float)Math.Sin(RotationAngle);

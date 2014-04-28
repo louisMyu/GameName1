@@ -42,7 +42,6 @@ namespace GameName1
         [DataMember]
         public int LifeTotal { get; set; }
 
-        private MotionState m_State;
         [DataMember]
         public MotionState State { get; set; }
 
@@ -120,31 +119,24 @@ namespace GameName1
                 this.Position = simPosition;
             }
 
-            ////get a normalized direction toward the point that was passed in, probably the player
-            //Vector2 vec = new Vector2(loc.X - Position.X, loc.Y - Position.Y);
-            //if (vec.LengthSquared() <= (275.0f * 275.0f))
-            //{
-            //    m_State = MotionState.Locked;
-            //}
+            GetDirection();
+            RotationAngle = (float)Math.Atan2(m_Direction.Y, m_Direction.X);
+            Vector2 amount = m_Direction * m_Speed;
+            base.Move(amount);
+            Vector2 temp = new Vector2();
+            temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth - Width/2);
+            temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight - Height/2);
+            Position = temp;
+            if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
+            {
+                _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
+            }
 
-            //switch (m_State)
-            //{
-            //    case MotionState.Wandering:
-            //        if (RANDOM_GENERATOR.Next(150) % 150 == 1)
-            //        {
-            //            RotationAngle = (float)RANDOM_GENERATOR.NextDouble() * MathHelper.Pi * 2;
-            //            m_Direction.X = (float)Math.Cos(RotationAngle);
-            //            m_Direction.Y = (float)Math.Sin(RotationAngle);
-            //        }
-            //        break;
-
-            //    case MotionState.Locked:
-            //        m_Direction = vec;
-            //        RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
-            //        m_State = MotionState.Locked;
-            //        m_Speed = 1.0f;
-            //        break;
-            //}
+            m_Bounds.X = (int)Position.X - Width / 2;
+            m_Bounds.Y = (int)Position.Y - Height / 2;
+        }
+        private void GetDirection()
+        {
             int check = SlimeRandom.Next(100);
             //choose a cardinal direction or dont move
             if (check == 0)
@@ -170,20 +162,7 @@ namespace GameName1
                 }
             }
             m_Direction = Vector2.Normalize(m_Direction);
-            RotationAngle = (float)Math.Atan2(m_Direction.Y, m_Direction.X);
-            Vector2 amount = m_Direction * m_Speed;
-            base.Move(amount);
-            Vector2 temp = new Vector2();
-            temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth + Width);
-            temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight + Height);
-            Position = temp;
-            if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
-            {
-                _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
-            }
 
-            m_Bounds.X = (int)Position.X - Width / 2;
-            m_Bounds.Y = (int)Position.Y - Height / 2;
         }
         public override void Update(Player player)
         {

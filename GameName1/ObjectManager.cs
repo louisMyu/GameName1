@@ -112,7 +112,7 @@ namespace GameName1
 
                 //don't spawn near player
                 Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
-                if (distanceFromPlayer.LengthSquared() >= (200.0f * 200f))
+                if (distanceFromPlayer.LengthSquared() >= (300.0f * 300f))
                 {
                     nearPlayer = false;
                 }

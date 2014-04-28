@@ -46,7 +46,7 @@ namespace GameName1
         public static Vector2 ThumbStickPointOffset;
         private int ThumbStickPointId;
         private bool ThumbStickPressed;
-
+        private SpriteFont ColunaFont;
         public static float ThumbStickAngle;
         public UI()
         {
@@ -56,6 +56,7 @@ namespace GameName1
         {
             m_StatusBackground = content.Load<Texture2D>("Line");
             m_SpriteFont = content.Load<SpriteFont>("Retrofont");
+            ColunaFont = content.Load<SpriteFont>("ColunaFont");
             m_FireButton = content.Load<Texture2D>("FireBtn");
             m_ThumbStickBottomTexture = content.Load<Texture2D>("ThumbstickBottom");
             m_ThumbStickTopTexture = content.Load<Texture2D>("ThumbstickTop");
@@ -83,7 +84,7 @@ namespace GameName1
 
         public void Update(TimeSpan timeToDeath)
         {
-            m_TimeToDeathString = timeToDeath.ToString(@"mm\:ss\:fff");
+            m_TimeToDeathString = timeToDeath.ToString(@"mm\:ss\:ff");
         }
 
         public void ProcessInput(Player p)
@@ -160,7 +161,6 @@ namespace GameName1
             spriteBatch.Draw(m_StatusBackground, m_StatusBackgroundPosition, null, Color.White, 0.0f, new Vector2(0.0f,0.0f), m_StatusBackGroundScale, SpriteEffects.None, 0.0f);
             //TODO CHANGE THE MAGIC NUMBERS HERE                                                          \/\/\/
             spriteBatch.DrawString(m_SpriteFont, "Life: " + p.LifeTotal, new Vector2(PlayfieldBottom - 50, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
-            spriteBatch.DrawString(m_SpriteFont, "TimeLeft: " + m_TimeToDeathString, new Vector2(PlayfieldBottom - 80, GameHeight - 650), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
             spriteBatch.Draw(m_FireButton, FireButtonPosition, null, m_FireButtonColor, 0.0f, new Vector2(0, 0), m_FireButtonScale, SpriteEffects.None, 0);
             spriteBatch.Draw(m_ThumbStickBottomTexture, StopButtonPosition, null, m_StopButtonColor, 0.0f, new Vector2(0,0), m_StopButtonScale, SpriteEffects.None, 0);
             
@@ -176,11 +176,16 @@ namespace GameName1
             {
                 spriteBatch.Draw(m_FireButton, WeaponSlotPosition, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), WeaponSlotScale, SpriteEffects.None, 0);
             }
+            if (p.DrawRedFlash)
+            {
+                spriteBatch.Draw(p.RedFlashTexture, new Vector2(PlayfieldBottom, 0), null, Color.White, 0, new Vector2(0,0),Utilities.GetSpriteScaling(new Vector2(GameWidth-PlayfieldBottom, GameHeight), new Vector2(p.RedFlashTexture.Width, p.RedFlashTexture.Height)) ,SpriteEffects.None, 0);
+            }
         }
 
         public void DrawBackground(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(m_Background, new Vector2(OFFSET, 0), Color.White);
+            spriteBatch.DrawString(ColunaFont, m_TimeToDeathString, new Vector2(GameWidth - 125, 0 + 25), Color.Red * 0.45f, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(5,3), SpriteEffects.None, 0.0f);
         }
     }
 }
