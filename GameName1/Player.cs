@@ -22,7 +22,7 @@ namespace GameName1
         [IgnoreDataMember]
         public static readonly string playerSaveDir = "playerDir";
         [IgnoreDataMember]
-        public static float VELOCITY = 50f;
+        public static float VELOCITY = 40f;
         public static int CheatEffectFrames;
         [IgnoreDataMember]
         public Vector2 m_MoveToward = new Vector2();
@@ -124,9 +124,10 @@ namespace GameName1
                     }
                     if (ob is CheatPowerUp)
                     {
-                        if (ob is IInstant)
+                        CheatPowerUp temp = ob as CheatPowerUp;
+                        if (temp.CheatEffect is IInstant)
                         {
-                            IInstant instantEffect = ob as IInstant;
+                            IInstant instantEffect = temp.CheatEffect as IInstant;
                             instantEffect.GetInstantEffect();
                             WeaponSlot1Magic = null;
                         }
@@ -280,8 +281,8 @@ namespace GameName1
                 Vector2 acceleration = new Vector2(Input.CurrentAccelerometerValues.X, Input.CurrentAccelerometerValues.Y);
                 if (acceleration.LengthSquared() > Input.Tilt_Threshold)
                 {
-                    m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X * 50, -(Math.Abs(acceleration.X) * VELOCITY), Math.Abs(acceleration.X) * VELOCITY),
-                                                -1 * MathHelper.Clamp(acceleration.Y * 50, -(Math.Abs(acceleration.Y) * VELOCITY), Math.Abs(acceleration.Y) * VELOCITY));
+                    m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X * 30, -(Math.Abs(acceleration.X) * VELOCITY), Math.Abs(acceleration.X) * VELOCITY),
+                                                -1 * MathHelper.Clamp(acceleration.Y * 30, -(Math.Abs(acceleration.Y) * VELOCITY), Math.Abs(acceleration.Y) * VELOCITY));
                     if (!m_Weapon.Firing)
                     {
                         //dont apply rotation unless tilt amount is greater than a threshold

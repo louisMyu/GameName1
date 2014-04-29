@@ -91,7 +91,7 @@ namespace GameName1
 
         public virtual void Move(Vector2 amount, TimeSpan elapsedTime)
         {
-            Position += amount * 6 / 100 * elapsedTime.Milliseconds;
+            Position += amount * 60 / 1000 * elapsedTime.Milliseconds;
         }
         public virtual void Save()
         {

@@ -31,7 +31,7 @@ namespace GameName1
         [IgnoreDataMember]
         static private Texture2D m_Texture = null;
         [IgnoreDataMember]
-        private float m_Speed = 0.5f;
+        private float m_Speed = 1.0f;
         [DataMember]
         public float Speed { get { return m_Speed; } set { m_Speed = value; } }
 
