@@ -106,7 +106,7 @@ namespace GameName1
         }
 
         //moves a set amount per frame toward a certain location
-        public override void Move(Microsoft.Xna.Framework.Vector2 loc)
+        public override void Move(Microsoft.Xna.Framework.Vector2 loc, TimeSpan elapsedTime)
         {
             //should really just use the Sim's position for everything instead of converting from one to another
             Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
@@ -122,7 +122,7 @@ namespace GameName1
             GetDirection();
             RotationAngle = (float)Math.Atan2(m_Direction.Y, m_Direction.X);
             Vector2 amount = m_Direction * m_Speed;
-            base.Move(amount);
+            base.Move(amount, elapsedTime);
             Vector2 temp = new Vector2();
             temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth - Width/2);
             temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight - Height/2);
@@ -164,14 +164,14 @@ namespace GameName1
             m_Direction = Vector2.Normalize(m_Direction);
 
         }
-        public override void Update(Player player)
+        public override void Update(Player player, TimeSpan elapsedTime)
         {
             m_SlimeTrailList.RemoveAll(x => !x.isAlive);
             foreach (SlimeTrailPiece piece in m_SlimeTrailList)
             {
                 piece.Update();
             }
-            Move(player.Position);
+            Move(player.Position, elapsedTime);
             ++m_SlimeTrailTimeCounter;
             if (m_SlimeTrailTimeCounter % SLIME_TRAIL_SKIP_TIME == 0)
             {

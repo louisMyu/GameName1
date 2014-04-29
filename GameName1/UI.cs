@@ -82,7 +82,7 @@ namespace GameName1
             ThumbStickPoint = StopButtonPosition;
         }
 
-        public void Update(TimeSpan timeToDeath)
+        public void Update(TimeSpan timeToDeath, TimeSpan elapsedTime)
         {
             m_TimeToDeathString = timeToDeath.ToString(@"mm\:ss\:ff");
         }

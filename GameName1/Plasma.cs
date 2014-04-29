@@ -40,9 +40,9 @@ namespace GameName1
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
-        public override void Update(float elapsedTime, Vector2 playerCenter, Vector2 playerVelocity, float rotationAngle, int accuracy, bool shotFired)
+        public override void Update(Vector2 playerCenter, Vector2 playerVelocity, float rotationAngle, int accuracy, bool shotFired, TimeSpan elapsedTime)
         {
-            base.Update(elapsedTime, playerCenter, playerVelocity, rotationAngle, accuracy, shotFired);
+            base.Update(playerCenter, playerVelocity, rotationAngle, accuracy, shotFired, elapsedTime);
             //float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);
             //TODO: add a random so its either plus or minus accuracy
             float centerVector = rotationAngle;
@@ -52,7 +52,7 @@ namespace GameName1
             m_Bullets.RemoveAll(x => x.CanDelete || !x.IsAlive());
             foreach (Bullet b in m_Bullets)
             {
-                b.Update();
+                b.Update(elapsedTime);
             }
             //firing a shot, save the state
             if (shotFired && CanFire())
@@ -150,10 +150,10 @@ namespace GameName1
         {
             base.LoadContent();
         }
-        public void Update()
+        public void Update(TimeSpan elapsedTime)
         {
             --Life;
-            Move((Velocity * m_Heading)+playerVelocity);
+            Move((Velocity * m_Heading)+playerVelocity, elapsedTime);
             m_Bounds.X = (int)Position.X - Width / 2;
             m_Bounds.Y = (int)Position.Y - Height / 2;
         }

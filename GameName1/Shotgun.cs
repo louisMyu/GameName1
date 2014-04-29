@@ -57,9 +57,9 @@ namespace GameName1
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
-        public override void Update(float elapsedTime, Vector2 playerCenter, Vector2 playerVelocity, float rotationAngle, int accuracy, bool shotFired)
+        public override void Update(Vector2 playerCenter, Vector2 playerVelocity, float rotationAngle, int accuracy, bool shotFired, TimeSpan elapsedTime)
         {
-            base.Update(elapsedTime, playerCenter, playerVelocity, rotationAngle, accuracy, shotFired);
+            base.Update(playerCenter, playerVelocity, rotationAngle, accuracy, shotFired, elapsedTime);
             if (!Firing)
             {
                 float accuracyInRadians = WEAPON_RANDOM.Next(0, accuracy) * ((float)Math.PI / 180);

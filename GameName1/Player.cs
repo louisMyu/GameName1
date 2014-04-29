@@ -187,12 +187,12 @@ namespace GameName1
 
         private bool KickedBack = false;
         //moves a set amount per frame toward a certain location
-        public override void Move(Microsoft.Xna.Framework.Vector2 loc)
+        public override void Move(Microsoft.Xna.Framework.Vector2 loc, TimeSpan elapsedTime)
         {
             
             if (Input.UseAccelerometer)
             {
-                base.Move(loc);
+                base.Move(loc, elapsedTime);
                 Vector2 temp = new Vector2();
                 temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth);
                 temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight);
@@ -209,7 +209,7 @@ namespace GameName1
                     amount = Vector2.Normalize(amount);
                     amount *= VELOCITY;
                 }
-                base.Move(amount);
+                base.Move(amount, elapsedTime);
                 Vector2 temp = new Vector2();
                 temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth + Width);
                 temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight + Height);
@@ -227,7 +227,7 @@ namespace GameName1
             //test.Update(m_MoveToward, new Vector2(Position.X, Position.Y));
         }
 
-        public void Update(float elapsedTime)
+        public void Update(TimeSpan elapsedTime)
         {
             //must be a better way to do this...
             foreach (Cheat cheat in m_ActiveEffects)
@@ -303,18 +303,18 @@ namespace GameName1
             }
             if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
             {
-                Move(m_MoveToward);
+                Move(m_MoveToward, elapsedTime);
             }
             else if (m_Moving && !m_Weapon.Firing)
             {
-                Move(m_MoveToward);
+                Move(m_MoveToward, elapsedTime);
             }
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
             }
             Vector2 playerVel = m_Moving ? m_MoveToward : new Vector2(0, 0);
-            m_Weapon.Update(elapsedTime, Position, playerVel, RotationAngle, 10, isFireButtonDown);
+            m_Weapon.Update(Position, playerVel, RotationAngle, 10, isFireButtonDown, elapsedTime);
         }
 
         public override void Draw(SpriteBatch _spriteBatch)

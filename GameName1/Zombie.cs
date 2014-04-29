@@ -82,7 +82,7 @@ namespace GameName1
         }
 
         //moves a set amount per frame toward a certain location
-        public override void Move(Microsoft.Xna.Framework.Vector2 loc)
+        public override void Move(Microsoft.Xna.Framework.Vector2 loc, TimeSpan elapsedTime)
         {
             //should really just use the Sim's position for everything instead of converting from one to another
             Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
@@ -117,7 +117,7 @@ namespace GameName1
 
             m_Direction = Vector2.Normalize(m_Direction);
             Vector2 amount = m_Direction * m_Speed;
-            base.Move(amount);
+            base.Move(amount, elapsedTime);
 
             //Later on, remove the clamp to the edge and despawn when too far out of the screen.
             //Vector2 temp = new Vector2();
@@ -132,7 +132,7 @@ namespace GameName1
             m_Bounds.X = (int)Position.X - Width / 2;
             m_Bounds.Y = (int)Position.Y - Height / 2;
         }
-        public override void Update(Player player)
+        public override void Update(Player player, TimeSpan elapsedTime)
         {
             //get a normalized direction toward the point that was passed in, probably the player
             Vector2 vec = new Vector2(player.Position.X - Position.X, player.Position.Y - Position.Y);
@@ -141,7 +141,7 @@ namespace GameName1
                 m_State = MotionState.Locked;
             }
 
-            Move(vec);
+            Move(vec, elapsedTime);
             bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)

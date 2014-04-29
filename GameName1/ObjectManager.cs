@@ -46,7 +46,7 @@ namespace GameName1
                 }
             }
         }
-        public void Update()
+        public void Update(TimeSpan elapsedTime)
         {
             foreach (GameObject ob in AllGameObjects)
             {

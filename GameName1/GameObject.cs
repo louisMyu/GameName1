@@ -66,7 +66,7 @@ namespace GameName1
             Position = new Vector2(x, y);
         }
 
-        public virtual void Update(Player player)
+        public virtual void Update(Player player, TimeSpan elapsedTime)
         {
         }
         public virtual void LoadContent() 
@@ -89,9 +89,9 @@ namespace GameName1
             spriteBatch.Draw(Texture, Position, null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
         }
 
-        public virtual void Move(Vector2 amount)
+        public virtual void Move(Vector2 amount, TimeSpan elapsedTime)
         {
-            Position += amount;
+            Position += amount * 6 / 100 * elapsedTime.Milliseconds;
         }
         public virtual void Save()
         {

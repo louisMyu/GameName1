@@ -43,7 +43,7 @@ namespace GameName1
         public int FrameCounter = 0;
         public double elapsedTime = 0;
         public static Random ZombieRandom = new Random(424242);
-
+        public bool SlowMotion = false;
         GameState CurrentGameState = GameState.Playing;
 
         public int NumZombies = 0;
@@ -120,6 +120,11 @@ namespace GameName1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            TimeSpan customElapsedTime = gameTime.ElapsedGameTime;
+            if (SlowMotion)
+            {
+                customElapsedTime = new TimeSpan((long)(customElapsedTime.Ticks * 0.5));
+            }
             if (CurrentGameState == GameState.Playing)
             {
                 if (GamePad.GetState(0).Buttons.Back == ButtonState.Pressed)
@@ -142,20 +147,20 @@ namespace GameName1
                     GameWidth = GraphicsDevice.Viewport.Width;
                     GameHeight = GraphicsDevice.Viewport.Height;
                     UserInterface.ProcessInput(m_Player);
-                    UserInterface.Update(TimeToDeath);
+                    UserInterface.Update(TimeToDeath, customElapsedTime);
                     //check if a game reset or zombie hit and save state and do the action here,
                     //so that the game will draw the zombie intersecting the player
-                    m_Player.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                    m_Player.Update(customElapsedTime);
                     foreach (GameObject g in ObjectManager.AllGameObjects)
                     {
-                        g.Update(m_Player);
+                        g.Update(m_Player, customElapsedTime);
                     }
                     bool b = false;
                     m_Player.CheckCollisions(out b, m_World);
                     if (b) ResetGame();
 
                     //cleanup dead objects
-                    GlobalObjectManager.Update();
+                    GlobalObjectManager.Update(customElapsedTime);
 
                     m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
                     break;
