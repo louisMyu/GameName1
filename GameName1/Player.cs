@@ -258,6 +258,7 @@ namespace GameName1
             {
                 KickedBack = false;
             }
+            ObjectManager.GetCell(Position).Remove(this);
             //should really just use the Sim's position for everything instead of converting from one to another
             Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
             if (float.IsNaN(simPosition.X) || float.IsNaN(simPosition.Y))
@@ -314,6 +315,7 @@ namespace GameName1
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
             }
+            ObjectManager.GetCell(Position).Add(this);
             Vector2 playerVel = m_Moving ? m_MoveToward : new Vector2(0, 0);
             m_Weapon.Update(Position, playerVel, RotationAngle, 10, isFireButtonDown, elapsedTime);
         }

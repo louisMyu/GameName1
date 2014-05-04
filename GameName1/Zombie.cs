@@ -140,8 +140,10 @@ namespace GameName1
             {
                 m_State = MotionState.Locked;
             }
-
+            ObjectManager.GetCell(Position).Remove(this);
             Move(vec, elapsedTime);
+            ObjectManager.GetCell(Position).Add(this);
+
             bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)
