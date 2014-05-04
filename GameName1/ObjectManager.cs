@@ -13,8 +13,8 @@ namespace GameName1
     public class ObjectManager
     {
         public static List<GameObject> AllGameObjects = new List<GameObject>();
+        public static List<GameObject>[][] GameObjectGrid;
         public static Random ZombieRandom = new Random(424242);
-
         public static long FrameCounter = 0;
         public static bool itemMade = false;
         public static bool face = false;
@@ -45,6 +45,23 @@ namespace GameName1
                     g.Load(m_World);
                 }
             }
+            GameObjectGrid = new List<GameObject>[Game1.GameWidth / 50][];
+            for (int x = 0; x < GameObjectGrid.Length; ++x )
+            {
+                GameObjectGrid[x] = new List<GameObject>[Game1.GameHeight / 50];
+                for (int y = 0; y < GameObjectGrid[x].Length; ++y)
+                {
+                    GameObjectGrid[x][y] = new List<GameObject>();
+                }
+            }
+        }
+
+        public static List<GameObject> GetCell(Vector2 position)
+        {
+            int x = (int) position.X / Game1.GameWidth;
+            int y = (int) position.Y / Game1.GameHeight;
+
+            return GameObjectGrid[x][y];
         }
         public void Update(TimeSpan elapsedTime)
         {
@@ -92,9 +109,9 @@ namespace GameName1
         public static void RemoveObject(GameObject obj)
         {
 
-            if (obj is Zombie)
+            if (obj is IEnemy)
             {
-                ((Zombie)obj).CleanBody();
+                ((IEnemy)obj).CleanBody();
                 --NumZombies;
             }
             obj.CanDelete = true;

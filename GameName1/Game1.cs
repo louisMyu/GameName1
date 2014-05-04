@@ -163,7 +163,7 @@ namespace GameName1
                     //cleanup dead objects
                     GlobalObjectManager.Update(customElapsedTime);
 
-                    m_World.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.002f);
+                    m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
                     break;
                 case GameState.Menu:
                     bool toQuit;
