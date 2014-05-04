@@ -164,8 +164,6 @@ namespace GameName1
                 m_PowerUp = new WeaponPowerUp((WeaponPowerUp.WeaponType)ZombieRandom.Next(3));
             }
             Vector2 temp = new Vector2();
-            //temp.X = x;
-            //temp.Y = y;
             temp.X = MathHelper.Clamp(x, 0 + UI.OFFSET, Game1.GameWidth-15);
             temp.Y = MathHelper.Clamp(y, 0, Game1.GameHeight-15);
             m_PowerUp.Position = temp;
