@@ -118,9 +118,16 @@ namespace GameName1
                     IEnemy temp = ob as IEnemy;
                     if (temp.GetHealth() <= 0)
                     {
+                        cellsToClean.Add(ObjectManager.GetCell(ob.Position));
                         RemoveObject(ob);
                     }
-                    cellsToClean.Add(ObjectManager.GetCell(ob.Position));
+                }
+                if (ob is PowerUp)
+                {
+                    if (ob.CanDelete)
+                    {
+                        cellsToClean.Add(ObjectManager.GetCell(ob.Position));
+                    }
                 }
             }
             foreach (List<GameObject> cell in cellsToClean)
@@ -224,7 +231,7 @@ namespace GameName1
                     nearPlayer = false;
                 }
             }
-            int powerUpType = ZombieRandom.Next(2);
+            int powerUpType = ZombieRandom.Next(1);
             if (powerUpType == 0) 
             {
                 //m_PowerUp = new CheatPowerUp((CheatPowerUp.CheatTypes)ZombieRandom.Next(3));
@@ -240,6 +247,7 @@ namespace GameName1
             m_PowerUp.Position = temp;
             m_PowerUp.LoadContent();
             ObjectManager.AllGameObjects.Add(m_PowerUp);
+            GetCell(m_PowerUp.Position).Add(m_PowerUp);
         }
         //probably should add spawn face in here
         private void MakeSlime()

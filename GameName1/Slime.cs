@@ -171,7 +171,9 @@ namespace GameName1
             {
                 piece.Update();
             }
+            ObjectManager.GetCell(Position).Remove(this);
             Move(player.Position, elapsedTime);
+            ObjectManager.GetCell(Position).Add(this);
             ++m_SlimeTrailTimeCounter;
             if (m_SlimeTrailTimeCounter % SLIME_TRAIL_SKIP_TIME == 0)
             {

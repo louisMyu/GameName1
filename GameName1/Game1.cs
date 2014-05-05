@@ -140,7 +140,7 @@ namespace GameName1
                 case GameState.Playing:
                     if (TimeToDeath <= TimeSpan.FromSeconds(0))
                     {
-                        SlowMotion = true;
+                        //SlowMotion = true;
                         ResetGame();
                     }
                     TimeToDeath -= gameTime.ElapsedGameTime;

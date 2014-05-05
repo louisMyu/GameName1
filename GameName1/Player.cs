@@ -150,23 +150,21 @@ namespace GameName1
                         ObjectManager.RemoveObject(ob);
                     }
                 }
-                //TODO: seriously need to refactor this later
-                //its good to find the nearest zombie when i run through entire zombie list, but probably not here
-                if (m_Weapon.Firing || m_Weapon.BulletsExist)
-                {
+            }
+            if (m_Weapon.Firing || m_Weapon.BulletsExist)
+            {
 
-                    foreach (GameObject ob in ObjectManager.AllGameObjects)
+                foreach (GameObject ob in ObjectManager.AllGameObjects)
+                {
+                    if (ob is PowerUp)
                     {
-                        if (ob is PowerUp)
-                        {
-                            continue;
-                        }
-                        //this probably should check for collision only when firing
-                        //that way the bullet lines wont update to the next person while a shot is going off
-                        if (m_Weapon.CheckCollision(ob))
-                        {
-                            ++Score;
-                        }
+                        continue;
+                    }
+                    //this probably should check for collision only when firing
+                    //that way the bullet lines wont update to the next person while a shot is going off
+                    if (m_Weapon.CheckCollision(ob))
+                    {
+                        ++Score;
                     }
                 }
             }
