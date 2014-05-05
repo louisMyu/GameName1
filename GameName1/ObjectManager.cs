@@ -12,6 +12,8 @@ namespace GameName1
 {
     public class ObjectManager
     {
+        private const int GRID_DIVISIONS_X = 50;
+        private const int GRID_DIVISIONS_Y = 50;
         public static List<GameObject> AllGameObjects = new List<GameObject>();
         public static List<GameObject>[][] GameObjectGrid;
         public static Random ZombieRandom = new Random(424242);
@@ -45,10 +47,10 @@ namespace GameName1
                     g.Load(m_World);
                 }
             }
-            GameObjectGrid = new List<GameObject>[Game1.GameWidth / 50][];
+            GameObjectGrid = new List<GameObject>[(Game1.GameWidth / GRID_DIVISIONS_X)+1][];
             for (int x = 0; x < GameObjectGrid.Length; ++x )
             {
-                GameObjectGrid[x] = new List<GameObject>[Game1.GameHeight / 50];
+                GameObjectGrid[x] = new List<GameObject>[(Game1.GameHeight / GRID_DIVISIONS_Y)+1];
                 for (int y = 0; y < GameObjectGrid[x].Length; ++y)
                 {
                     GameObjectGrid[x][y] = new List<GameObject>();
@@ -58,23 +60,72 @@ namespace GameName1
 
         public static List<GameObject> GetCell(Vector2 position)
         {
-            int x = (int) position.X / Game1.GameWidth;
-            int y = (int) position.Y / Game1.GameHeight;
+            int x = (int)position.X / GRID_DIVISIONS_X;
+            int y = (int)position.Y / GRID_DIVISIONS_Y;
 
             return GameObjectGrid[x][y];
         }
+
+        public static List<List<GameObject>> GetCellsOfRectangle(Rectangle rec)
+        {
+            //the logic here should work as long as the rectangle passed in is =< half the size of the
+            //grid tiles
+            List<List<GameObject>> temp = new List<List<GameObject>>();
+            List<GameObject> curCell = GetCell(new Vector2(rec.X, rec.Y));
+            if (!temp.Contains(curCell))
+            {
+                temp.Add(curCell);
+            }
+            curCell = GetCell(new Vector2(rec.X, rec.Y+rec.Height));
+            if (!temp.Contains(curCell))
+            {
+                temp.Add(curCell);
+            }
+            curCell = GetCell(new Vector2(rec.X+rec.Width, rec.Y));
+            if (!temp.Contains(curCell))
+            {
+                temp.Add(curCell);
+            }
+            curCell = GetCell(new Vector2(rec.X+rec.Width, rec.Y+rec.Height));
+            if (!temp.Contains(curCell))
+            {
+                temp.Add(curCell);
+            }
+            return temp;
+        }
+        public static void ClearGrid()
+        {
+            for (int x = 0; x < GameObjectGrid.Length; ++x)
+            {
+                for (int y = 0; y < GameObjectGrid[0].Length; ++y)
+                {
+                    GameObjectGrid[x][y].Clear();
+                }
+            }
+        }
         public void Update(TimeSpan elapsedTime)
         {
+            List<List<GameObject>> cellsToClean = new List<List<GameObject>>();
             foreach (GameObject ob in AllGameObjects)
             {
                 if (ob is IEnemy)
                 {
+                    if (((GameObject)ob).CanDelete)
+                    {
+                        cellsToClean.Add(ObjectManager.GetCell(ob.Position));
+                        continue;
+                    }
                     IEnemy temp = ob as IEnemy;
                     if (temp.GetHealth() <= 0)
                     {
                         RemoveObject(ob);
                     }
+                    cellsToClean.Add(ObjectManager.GetCell(ob.Position));
                 }
+            }
+            foreach (List<GameObject> cell in cellsToClean)
+            {
+                cell.RemoveAll(x => x.CanDelete);
             }
             AllGameObjects.RemoveAll(x => x.CanDelete);
             if (FrameCounter % 100 == 0 && NumZombies < MaxZombies)
@@ -112,7 +163,10 @@ namespace GameName1
             if (obj is IEnemy)
             {
                 ((IEnemy)obj).CleanBody();
-                --NumZombies;
+                if (obj is Zombie)
+                {
+                    --NumZombies;
+                }
             }
             obj.CanDelete = true;
         }

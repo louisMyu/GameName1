@@ -208,10 +208,10 @@ namespace GameName1
 
         private void ResetGame()
         {
+            ObjectManager.ClearGrid();
             ObjectManager.AllGameObjects.Clear();
             GlobalObjectManager.ResetGame();
             TimeToDeath = TimeSpan.FromSeconds(40);
-            
         }
         private void SpawnFace()
         {

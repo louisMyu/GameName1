@@ -87,81 +87,86 @@ namespace GameName1
             //float nearestLength = float.MaxValue;
             DrawRedFlash = false;
             reset = false;
-            foreach (GameObject ob in ObjectManager.AllGameObjects)
+            List<List<GameObject>> objectsToCheck = ObjectManager.GetCellsOfRectangle(Bounds);
+            foreach (List<GameObject> gameObjectList in objectsToCheck)
             {
+                foreach (GameObject ob in gameObjectList)
+                {
+                    if (ob is Player) { continue; }
+                    //TODO: seriously need to refactor this later
+                    //its good to find the nearest zombie when i run through entire zombie list, but probably not here
+                    //this code will find the nearest zombie for autoaim
+                    //Vector2 vec = new Vector2(ob.Position.X - Position.X, ob.Position.Y - Position.Y);
+                    //float temp = vec.LengthSquared();
+                    //if (temp < nearestLength && ob is Zombie)
+                    //{
+                    //    nearestLength = temp;
+                    //    if (!m_Weapon.Firing)
+                    //    {
+                    //        //RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
+                    //    }
+                    //}
+
+                    if (ob == null)
+                    {
+                        //need to handle null exeception here
+                        return;
+                    }
+                    if (ob.m_Bounds.Intersects(this.m_Bounds))
+                    {
+                        if (ob is IEnemy)
+                        {
+                            IEnemy enemy = ob as IEnemy;
+                            LifeTotal -= enemy.GetDamageAmount();
+                            DrawRedFlash = true;
+                            if (LifeTotal <= 0)
+                            {
+                                reset = true;
+                                LifeTotal = 100;
+                                return;
+                            }
+                        }
+                        if (ob is CheatPowerUp)
+                        {
+                            CheatPowerUp temp = ob as CheatPowerUp;
+                            if (temp.CheatEffect is IInstant)
+                            {
+                                IInstant instantEffect = temp.CheatEffect as IInstant;
+                                instantEffect.GetInstantEffect();
+                                WeaponSlot1Magic = null;
+                            }
+                            else if (WeaponSlot1Magic == null)
+                            {
+                                CheatPowerUp cheat = ob as CheatPowerUp;
+                                WeaponSlot1Magic = cheat;
+                            }
+                        }
+                        if (ob is WeaponPowerUp)
+                        {
+                            Weapon weapon = WeaponPowerUp.GetWeaponType((WeaponPowerUp)ob);
+                            weapon.LoadContent();
+                            m_Weapon = weapon;
+                        }
+                        ObjectManager.RemoveObject(ob);
+                    }
+                }
                 //TODO: seriously need to refactor this later
                 //its good to find the nearest zombie when i run through entire zombie list, but probably not here
-                //this code will find the nearest zombie for autoaim
-                //Vector2 vec = new Vector2(ob.Position.X - Position.X, ob.Position.Y - Position.Y);
-                //float temp = vec.LengthSquared();
-                //if (temp < nearestLength && ob is Zombie)
-                //{
-                //    nearestLength = temp;
-                //    if (!m_Weapon.Firing)
-                //    {
-                //        //RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
-                //    }
-                //}
+                if (m_Weapon.Firing || m_Weapon.BulletsExist)
+                {
 
-                if (ob == null)
-                {
-                    //need to handle null exeception here
-                    return;
-                }
-                if (ob.m_Bounds.Intersects(this.m_Bounds))
-                {
-                    if (ob is IEnemy)
+                    foreach (GameObject ob in ObjectManager.AllGameObjects)
                     {
-                        IEnemy enemy = ob as IEnemy;
-                        LifeTotal -= enemy.GetDamageAmount();
-                        DrawRedFlash = true;
-                        if (LifeTotal <= 0)
+                        if (ob is PowerUp)
                         {
-                            reset = true;
-                            LifeTotal = 100;
-                            return;
+                            continue;
                         }
-                    }
-                    if (ob is CheatPowerUp)
-                    {
-                        CheatPowerUp temp = ob as CheatPowerUp;
-                        if (temp.CheatEffect is IInstant)
+                        //this probably should check for collision only when firing
+                        //that way the bullet lines wont update to the next person while a shot is going off
+                        if (m_Weapon.CheckCollision(ob))
                         {
-                            IInstant instantEffect = temp.CheatEffect as IInstant;
-                            instantEffect.GetInstantEffect();
-                            WeaponSlot1Magic = null;
+                            ++Score;
                         }
-                        else if (WeaponSlot1Magic == null)
-                        {
-                            CheatPowerUp cheat = ob as CheatPowerUp;
-                            WeaponSlot1Magic = cheat;
-                        }
-                    }
-                    if (ob is WeaponPowerUp)
-                    {
-                        Weapon weapon = WeaponPowerUp.GetWeaponType((WeaponPowerUp)ob);
-                        weapon.LoadContent();
-                        m_Weapon = weapon;
-                    }
-                    ObjectManager.RemoveObject(ob);
-                }
-            }
-            //TODO: seriously need to refactor this later
-            //its good to find the nearest zombie when i run through entire zombie list, but probably not here
-            if (m_Weapon.Firing || m_Weapon.BulletsExist)
-            {
-
-                foreach (GameObject ob in ObjectManager.AllGameObjects)
-                {
-                    if (ob is PowerUp)
-                    {
-                        continue;
-                    }
-                    //this probably should check for collision only when firing
-                    //that way the bullet lines wont update to the next person while a shot is going off
-                    if (m_Weapon.CheckCollision(ob))
-                    {
-                        ++Score;
                     }
                 }
             }
