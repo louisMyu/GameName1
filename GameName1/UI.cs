@@ -51,7 +51,11 @@ namespace GameName1
 
         private int BackGroundHueCounter = -250;
         private Color BackGroundHueColor = new Color(255,0,0);
-        private const int PERIOD = 50;
+        private const int MAX_PERIOD = 600;
+        private const int MIN_PERIOD = 40;
+        private int m_Period;
+        //start increasing oscillation at 30 seconds
+        private const int OSCILLATE_START = 10;
         private const int SCALE = 200;
         public UI()
         {
@@ -90,11 +94,20 @@ namespace GameName1
         public void Update(TimeSpan timeToDeath, TimeSpan elapsedTime)
         {
             m_TimeToDeathString = timeToDeath.ToString(@"mm\:ss\:ff");
-            if (BackGroundHueCounter >= PERIOD + 1)
+            m_Period = MAX_PERIOD;
+            //if (timeToDeath.Seconds <= OSCILLATE_START)
+            //{
+            //    m_Period = (int)(timeToDeath.TotalSeconds / OSCILLATE_START * (MAX_PERIOD - MIN_PERIOD)) + MIN_PERIOD;
+            //}
+            if (timeToDeath.TotalSeconds <= OSCILLATE_START)
+            {
+                m_Period = MIN_PERIOD;
+            }
+            if (BackGroundHueCounter >= m_Period + 1)
             {
                 BackGroundHueCounter = 0;
             }
-            int delta = (int)(Math.Sin(BackGroundHueCounter * 2 * Math.PI / PERIOD) * (SCALE / 2) + (SCALE / 2));
+            int delta = (int)(Math.Sin(BackGroundHueCounter * 2 * Math.PI / m_Period) * (SCALE / 2) + (SCALE / 2));
             ++BackGroundHueCounter;
             BackGroundHueColor = new Color(255 - delta, delta, 0);
         }
