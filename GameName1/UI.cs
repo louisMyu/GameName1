@@ -48,6 +48,11 @@ namespace GameName1
         private bool ThumbStickPressed;
         private SpriteFont ColunaFont;
         public static float ThumbStickAngle;
+
+        private int BackGroundHueCounter = -250;
+        private Color BackGroundHueColor = new Color(255,0,0);
+        private const int PERIOD = 50;
+        private const int SCALE = 200;
         public UI()
         {
         }
@@ -85,6 +90,13 @@ namespace GameName1
         public void Update(TimeSpan timeToDeath, TimeSpan elapsedTime)
         {
             m_TimeToDeathString = timeToDeath.ToString(@"mm\:ss\:ff");
+            if (BackGroundHueCounter >= PERIOD + 1)
+            {
+                BackGroundHueCounter = 0;
+            }
+            int delta = (int)(Math.Sin(BackGroundHueCounter * 2 * Math.PI / PERIOD) * (SCALE / 2) + (SCALE / 2));
+            ++BackGroundHueCounter;
+            BackGroundHueColor = new Color(255 - delta, delta, 0);
         }
 
         public void ProcessInput(Player p)
@@ -181,7 +193,7 @@ namespace GameName1
 
         public void DrawBackground(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(m_Background, new Vector2(OFFSET, 0), Color.White);
+            spriteBatch.Draw(m_Background, new Vector2(OFFSET, 0), BackGroundHueColor);
             spriteBatch.DrawString(ColunaFont, m_TimeToDeathString, new Vector2(GameWidth - 175, 300), Color.Red * 0.45f, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3,2), SpriteEffects.None, 0.0f);
         }
     }

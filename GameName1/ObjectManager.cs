@@ -47,10 +47,10 @@ namespace GameName1
                     g.Load(m_World);
                 }
             }
-            GameObjectGrid = new List<GameObject>[(Game1.GameWidth / GRID_DIVISIONS_X)+1][];
+            GameObjectGrid = new List<GameObject>[(Game1.GameWidth / GRID_DIVISIONS_X)+2][];
             for (int x = 0; x < GameObjectGrid.Length; ++x )
             {
-                GameObjectGrid[x] = new List<GameObject>[(Game1.GameHeight / GRID_DIVISIONS_Y)+1];
+                GameObjectGrid[x] = new List<GameObject>[(Game1.GameHeight / GRID_DIVISIONS_Y)+2];
                 for (int y = 0; y < GameObjectGrid[x].Length; ++y)
                 {
                     GameObjectGrid[x][y] = new List<GameObject>();
