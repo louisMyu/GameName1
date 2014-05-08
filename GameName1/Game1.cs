@@ -137,33 +137,42 @@ namespace GameName1
             }
             Input.ProcessTouchInput();
             switch (CurrentGameState) {
+
                 case GameState.Playing:
-                    if (TimeToDeath <= TimeSpan.FromSeconds(0))
+                    try
                     {
-                        //SlowMotion = true;
-                        ResetGame();
+                        if (TimeToDeath <= TimeSpan.FromSeconds(0))
+                        {
+                            //SlowMotion = true;
+                            ResetGame();
+                        }
+                        TimeToDeath -= gameTime.ElapsedGameTime;
+                        // TODO: Add your update logic here
+                        GameWidth = GraphicsDevice.Viewport.Width;
+                        GameHeight = GraphicsDevice.Viewport.Height;
+                        UserInterface.ProcessInput(m_Player);
+                        UserInterface.Update(TimeToDeath, customElapsedTime);
+                        //check if a game reset or zombie hit and save state and do the action here,
+                        //so that the game will draw the zombie intersecting the player
+                        m_Player.Update(customElapsedTime);
+                        foreach (GameObject g in ObjectManager.AllGameObjects)
+                        {
+                            g.Update(m_Player, customElapsedTime);
+                        }
+                        bool b = false;
+                        m_Player.CheckCollisions(out b, m_World);
+                        if (b) ResetGame();
+
+                        //cleanup dead objects
+                        GlobalObjectManager.Update(customElapsedTime);
+
+                        m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
                     }
-                    TimeToDeath -= gameTime.ElapsedGameTime;
-                    // TODO: Add your update logic here
-                    GameWidth = GraphicsDevice.Viewport.Width;
-                    GameHeight = GraphicsDevice.Viewport.Height;
-                    UserInterface.ProcessInput(m_Player);
-                    UserInterface.Update(TimeToDeath, customElapsedTime);
-                    //check if a game reset or zombie hit and save state and do the action here,
-                    //so that the game will draw the zombie intersecting the player
-                    m_Player.Update(customElapsedTime);
-                    foreach (GameObject g in ObjectManager.AllGameObjects)
+                        //until i figure out why my code isnt breaking on exceptions i put a break in here.
+                        //this is horrible
+                    catch (Exception e)
                     {
-                        g.Update(m_Player, customElapsedTime);
                     }
-                    bool b = false;
-                    m_Player.CheckCollisions(out b, m_World);
-                    if (b) ResetGame();
-
-                    //cleanup dead objects
-                    GlobalObjectManager.Update(customElapsedTime);
-
-                    m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
                     break;
                 case GameState.Menu:
                     bool toQuit;

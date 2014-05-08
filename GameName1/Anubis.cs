@@ -124,7 +124,7 @@ namespace GameName1
         public override void Update(Player player, TimeSpan elapsedTime)
         {
             Vector2 playerPosition = player.Position;
-
+            ObjectManager.GetCell(Position).Remove(this);
             //get a normalized direction toward the point that was passed in, probably the player
             Vector2 vec = new Vector2(playerPosition.X - Position.X, playerPosition.Y - Position.Y);
             if (vec.LengthSquared() <= (275.0f * 275.0f) && m_State != MotionState.Attacking)
@@ -159,6 +159,7 @@ namespace GameName1
                 RotationAngle += (float)(2*Math.PI*0.02);
                 --m_FramesLeftAttacking;
             }
+            ObjectManager.GetCell(Position).Add(this);
             bodyPosition = _circleBody.Position;
         }
         public override void Draw(SpriteBatch spriteBatch)

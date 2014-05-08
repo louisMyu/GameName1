@@ -62,7 +62,10 @@ namespace GameName1
         {
             int x = (int)position.X / GRID_DIVISIONS_X;
             int y = (int)position.Y / GRID_DIVISIONS_Y;
-
+            if (x >= GameObjectGrid.Length || x < 0 || y >= GameObjectGrid[0].Length || y < 0)
+            {
+                return new List<GameObject>();
+            }
             return GameObjectGrid[x][y];
         }
 
