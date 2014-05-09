@@ -50,6 +50,7 @@ namespace GameName1
         public override void LoadContent()
         {
             LoadTextures();
+            LoadSounds();
             for (int i = 0; i < NumberOfBullets; ++i)
             {
                 m_BulletLines.Add(new Line());
@@ -155,6 +156,11 @@ namespace GameName1
             array[2] = new AnimationInfo(TextureBank.GetTexture(blast3String), 12);
             array[3] = new AnimationInfo(TextureBank.GetTexture(blast4String), -1);
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 15);
+        }
+
+        protected override void LoadSounds()
+        {
+            m_ShotSound = 
         }
     }
 }

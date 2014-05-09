@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace GameName1
     [DataContract]
     public class Weapon
     {
+        protected SoundEffect m_ShotSound;
         [DataMember]
         public bool CanMoveWhileShooting { get; set; }
         [DataMember]
@@ -113,6 +115,10 @@ namespace GameName1
         }
 
         protected virtual void LoadTextures()
+        {
+        }
+
+        protected virtual void LoadSounds()
         {
         }
     }
