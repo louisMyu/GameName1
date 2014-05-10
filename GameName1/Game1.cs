@@ -92,15 +92,22 @@ namespace GameName1
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            TextureBank.SetContentManager(Content);
-            m_Player.LoadContent(m_World);
-            UserInterface.LoadContent(Content, GameWidth, GameHeight);
-            m_Menu.LoadContent(Content);
-            GlobalObjectManager.LoadContent();
+            try
+            {
+                // Create a new SpriteBatch, which can be used to draw textures.
+                _spriteBatch = new SpriteBatch(GraphicsDevice);
+                TextureBank.SetContentManager(Content);
+                SoundBank.SetContentManager(Content);
+                m_Player.LoadContent(m_World);
+                UserInterface.LoadContent(Content, GameWidth, GameHeight);
+                m_Menu.LoadContent(Content);
+                GlobalObjectManager.LoadContent();
 
-            m_song = Content.Load<Song>("AuraQualic - DATA (FL Studio Remix)");
+                m_song = Content.Load<Song>("AuraQualic - DATA (FL Studio Remix)");
+            }
+            catch (Exception e)
+            {
+            }
             // TODO: use this.Content to load your game content here
         }
 

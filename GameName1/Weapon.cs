@@ -13,7 +13,7 @@ namespace GameName1
     [DataContract]
     public class Weapon
     {
-        protected SoundEffect m_ShotSound;
+        protected SoundEffectInstance m_ShotSound;
         [DataMember]
         public bool CanMoveWhileShooting { get; set; }
         [DataMember]

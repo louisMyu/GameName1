@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace GameName1
         [DataMember]
         public SpriteInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
 
+        private SoundEffectInstance m_ReloadSound;
         private AnimationManager m_FireAnimation;
         public Shotgun() : base()
         {
@@ -79,6 +81,13 @@ namespace GameName1
             //firing a shot, save the state
             if (!Firing && shotFired && CanFire())
             {
+                if (m_ShotSound != null)
+                {
+                    m_ShotSound.Stop();
+                    m_ShotSound.Dispose();
+                    m_ShotSound = SoundBank.GetSoundInstance("ShotgunSound");
+                }
+                m_ShotSound.Play();
                 Firing = true;
                 m_FireAnimation.SpriteInfo = m_CurrentShotInfo;
                 CanDamage = true;
@@ -160,7 +169,8 @@ namespace GameName1
 
         protected override void LoadSounds()
         {
-            m_ShotSound = 
+            m_ShotSound = SoundBank.GetSoundInstance("ShotgunSound");
+            m_ReloadSound = SoundBank.GetSoundInstance("ShotgunReloadSound");
         }
     }
 }
