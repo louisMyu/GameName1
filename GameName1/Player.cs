@@ -126,28 +126,32 @@ namespace GameName1
                                 return;
                             }
                         }
-                        if (ob is CheatPowerUp)
+                        if (ob is PowerUp)
                         {
-                            CheatPowerUp temp = ob as CheatPowerUp;
-                            if (temp.CheatEffect is IInstant)
+                            ((PowerUp)ob).GetPickupSound().Play();
+                            if (ob is CheatPowerUp)
                             {
-                                IInstant instantEffect = temp.CheatEffect as IInstant;
-                                instantEffect.GetInstantEffect();
-                                WeaponSlot1Magic = null;
+                                CheatPowerUp temp = ob as CheatPowerUp;
+                                if (temp.CheatEffect is IInstant)
+                                {
+                                    IInstant instantEffect = temp.CheatEffect as IInstant;
+                                    instantEffect.GetInstantEffect();
+                                    WeaponSlot1Magic = null;
+                                }
+                                else if (WeaponSlot1Magic == null)
+                                {
+                                    CheatPowerUp cheat = ob as CheatPowerUp;
+                                    WeaponSlot1Magic = cheat;
+                                }
                             }
-                            else if (WeaponSlot1Magic == null)
+                            if (ob is WeaponPowerUp)
                             {
-                                CheatPowerUp cheat = ob as CheatPowerUp;
-                                WeaponSlot1Magic = cheat;
+                                Weapon weapon = WeaponPowerUp.GetWeaponType((WeaponPowerUp)ob);
+                                weapon.LoadContent();
+                                m_Weapon = weapon;
                             }
+                            ObjectManager.RemoveObject(ob);
                         }
-                        if (ob is WeaponPowerUp)
-                        {
-                            Weapon weapon = WeaponPowerUp.GetWeaponType((WeaponPowerUp)ob);
-                            weapon.LoadContent();
-                            m_Weapon = weapon;
-                        }
-                        ObjectManager.RemoveObject(ob);
                     }
                 }
             }

@@ -61,6 +61,14 @@ namespace GameName1
                 temp.LoadContent();
                 m_Bullets.Add(temp);
                 m_ElapsedFrames = FireRate;
+
+                if (m_ShotSound != null)
+                {
+                    m_ShotSound.Stop();
+                    m_ShotSound.Dispose();
+                }
+                m_ShotSound = SoundBank.GetSoundInstance("PlasmaShotSound");
+                m_ShotSound.Play();
             }
             if (m_Bullets.Count > 0)
             {

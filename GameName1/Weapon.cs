@@ -117,9 +117,5 @@ namespace GameName1
         protected virtual void LoadTextures()
         {
         }
-
-        protected virtual void LoadSounds()
-        {
-        }
     }
 }

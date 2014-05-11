@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace GameName1
     [DataContract]
     public class Rifle : Weapon
     {
+        private static const int CHARGE_TIME = 20;
         [DataMember]
         public string shotString1 { get; set; }
         [DataMember]
@@ -30,6 +32,7 @@ namespace GameName1
         public SpriteInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
 
         private AnimationManager m_FireAnimation;
+        private SoundEffectInstance m_ChargeSound;
         public Rifle() : base()
         {
             Spread = (float)Math.PI / 6;
@@ -84,7 +87,31 @@ namespace GameName1
                 m_FireAnimation.SpriteInfo = m_CurrentShotInfo;
                 CanDamage = false;
                 if (m_FireAnimation.CanStartAnimating())
+                {
                     m_FireAnimation.Finished = false;
+                }
+                if (m_ChargeSound != null)
+                {
+                    m_ChargeSound.Stop();
+                    m_ChargeSound.Dispose();
+                }
+                m_ChargeSound = SoundBank.GetSoundInstance("RifleChargeSound");
+                m_ChargeSound.Play();
+            }
+            if (m_FireAnimation.Animating && m_FireAnimation.FrameCounter == CHARGE_TIME)
+            {
+                if (m_ShotSound != null)
+                {
+                    m_ShotSound.Stop();
+                    m_ShotSound.Dispose();
+                }
+                if (m_ChargeSound != null)
+                {
+                    m_ChargeSound.Stop();
+                    m_ChargeSound.Dispose();
+                }
+                m_ShotSound = SoundBank.GetSoundInstance("RifleShotSound");
+                m_ShotSound.Play();
             }
         }
         //returns true if enemy died
@@ -157,7 +184,7 @@ namespace GameName1
         protected override void LoadTextures()
         {
             AnimationInfo[] array = new AnimationInfo[2];
-            array[0] = new AnimationInfo(TextureBank.GetTexture(shotString1), 20);
+            array[0] = new AnimationInfo(TextureBank.GetTexture(shotString1), CHARGE_TIME);
             array[1] = new AnimationInfo(TextureBank.GetTexture(shotString2), -1);
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 60);
         }

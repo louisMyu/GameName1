@@ -87,6 +87,11 @@ namespace GameName1
                     m_ShotSound.Dispose();
                     m_ShotSound = SoundBank.GetSoundInstance("ShotgunSound");
                 }
+                if (m_ReloadSound != null)
+                {
+                    m_ReloadSound.Stop();
+                    m_ReloadSound.Dispose();
+                }
                 m_ShotSound.Play();
                 Firing = true;
                 m_FireAnimation.SpriteInfo = m_CurrentShotInfo;
@@ -146,6 +151,13 @@ namespace GameName1
             {
                 Firing = false;
                 m_ElapsedFrames = FireRate;
+                if (m_ReloadSound != null)
+                {
+                    m_ReloadSound.Stop();
+                    m_ReloadSound.Dispose();
+                }
+                m_ReloadSound = SoundBank.GetSoundInstance("ShotgunReloadSound");
+                m_ReloadSound.Play();
             }
         }
         public override void LoadWeapon()
@@ -165,12 +177,6 @@ namespace GameName1
             array[2] = new AnimationInfo(TextureBank.GetTexture(blast3String), 12);
             array[3] = new AnimationInfo(TextureBank.GetTexture(blast4String), -1);
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 15);
-        }
-
-        protected override void LoadSounds()
-        {
-            m_ShotSound = SoundBank.GetSoundInstance("ShotgunSound");
-            m_ReloadSound = SoundBank.GetSoundInstance("ShotgunReloadSound");
         }
     }
 }

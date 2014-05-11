@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace GameName1
     [DataContract]
     public class PowerUp : GameObject
     {
+        protected SoundEffectInstance m_PickupSound;
         public override void LoadContent()
         {
             base.LoadContent();
@@ -22,6 +24,11 @@ namespace GameName1
             Texture = TextureBank.GetTexture("Powerup");
         }
         public PowerUp() { }
+
+        public virtual SoundEffectInstance GetPickupSound()
+        {
+            return SoundBank.GetSoundInstance("WeaponPickupSound");
+        }
     }
     
     //when creating new cheat powerups, add to enum, add to createCheat
@@ -50,6 +57,11 @@ namespace GameName1
         {
             CheatType = type;
             CreateCheat();
+        }
+        public override SoundEffectInstance GetPickupSound()
+        {
+            m_PickupSound = SoundBank.GetSoundInstance("CheatPickupSound");
+            return m_PickupSound;
         }
         private void CreateCheat()
         {
@@ -138,6 +150,11 @@ namespace GameName1
                     Texture = TextureBank.GetTexture("PlasmaIcon");
                     break;
             }
+        }
+        public override SoundEffectInstance GetPickupSound()
+        {
+            m_PickupSound = SoundBank.GetSoundInstance("WeaponPickupSound");
+            return m_PickupSound;
         }
     }
 }
