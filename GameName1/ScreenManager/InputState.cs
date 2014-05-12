@@ -12,9 +12,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System.Collections.Generic;
+using Windows.Devices.Sensors;
 #endregion
 
-namespace GameStateManagement
+namespace GameName1
 {
     /// <summary>
     /// Helper for reading input from keyboard, gamepad, and touch input. This class 
@@ -26,8 +27,6 @@ namespace GameStateManagement
     {
         #region Fields
 
-        public const int MaxInputs = 4;
-
         public readonly KeyboardState[] CurrentKeyboardStates;
         public readonly GamePadState[] CurrentGamePadStates;
 
@@ -36,6 +35,11 @@ namespace GameStateManagement
 
         public readonly bool[] GamePadWasConnected;
 
+        public static bool UseAccelerometer = true;
+        public static Accelerometer accelerometer;
+        public static float AccelerometerAlpha = 0.45f;
+        public static Vector3 CurrentAccelerometerValues { get; set; }
+        public static float Tilt_Threshold = 0.0036f;
         public TouchCollection TouchState;
 
         public readonly List<GestureSample> Gestures = new List<GestureSample>();
@@ -50,18 +54,29 @@ namespace GameStateManagement
         /// </summary>
         public InputState()
         {
-            CurrentKeyboardStates = new KeyboardState[MaxInputs];
-            CurrentGamePadStates = new GamePadState[MaxInputs];
-
-            LastKeyboardStates = new KeyboardState[MaxInputs];
-            LastGamePadStates = new GamePadState[MaxInputs];
-
-            GamePadWasConnected = new bool[MaxInputs];
+            //Gestures = new List<GestureSample>();
+            accelerometer = Windows.Devices.Sensors.Accelerometer.GetDefault();
+            if (accelerometer != null)
+            {
+                accelerometer = Windows.Devices.Sensors.Accelerometer.GetDefault();
+                accelerometer.ReadingChanged += ReadingChanged;
+                accelerometer.ReportInterval = 10;
+            }
+            else
+            {
+                UseAccelerometer = false;
+            }
         }
-
-
         #endregion
-
+        private static void ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
+        {
+            AccelerometerReading reading = e.Reading;
+            Vector3 newAcceration = new Vector3();
+            newAcceration.X = (float)(reading.AccelerationX * AccelerometerAlpha + reading.AccelerationX * (1.0f - AccelerometerAlpha)) + 0.25f;
+            newAcceration.Y = (float)(reading.AccelerationY * AccelerometerAlpha + reading.AccelerationY * (1.0f - AccelerometerAlpha));
+            newAcceration.Z = (float)(reading.AccelerationZ * AccelerometerAlpha + reading.AccelerationZ * (1.0f - AccelerometerAlpha));
+            CurrentAccelerometerValues = newAcceration;
+        }
         #region Public Methods
 
 

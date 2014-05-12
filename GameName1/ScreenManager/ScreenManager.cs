@@ -17,10 +17,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System.IO;
 using System.IO.IsolatedStorage;
-using GameName1;
 #endregion
 
-namespace GameStateManagement
+namespace GameName1
 {
     /// <summary>
     /// The screen manager is a component which manages one or more GameScreen
@@ -35,7 +34,7 @@ namespace GameStateManagement
         List<GameScreen> screens = new List<GameScreen>();
         List<GameScreen> screensToUpdate = new List<GameScreen>();
 
-        InputState input = new InputState();
+        Input input = new Input();
 
         SpriteBatch spriteBatch;
         SpriteFont font;

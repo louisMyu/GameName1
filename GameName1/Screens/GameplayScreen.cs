@@ -14,9 +14,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using FarseerPhysics.Dynamics;
+using GameName1;
+using FarseerPhysics;
+using Microsoft.Xna.Framework.Media;
 #endregion
 
-namespace GameStateManagement
+namespace GameName1
 {
     /// <summary>
     /// This screen implements the actual game logic. It is just a
@@ -29,8 +33,15 @@ namespace GameStateManagement
 
         ContentManager content;
         SpriteFont gameFont;
-
-
+        public static World m_World;
+        public Player m_Player;
+        public ObjectManager GlobalObjectManager;
+        private Menu m_Menu = new Menu();
+        private UI UserInterface = new UI();
+        public bool SlowMotion = false;
+        public static TimeSpan TimeToDeath = TimeSpan.FromSeconds(30);
+        public static Random ZombieRandom = new Random(424242);
+        Song m_song;
         Random random = new Random();
 
         #endregion
@@ -45,6 +56,8 @@ namespace GameStateManagement
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
+            m_Player = new Player();
+            GlobalObjectManager = new ObjectManager();
         }
 
 
@@ -58,10 +71,31 @@ namespace GameStateManagement
 
             gameFont = content.Load<SpriteFont>("gamefont");
 
-            // A real game would probably have more content than this sample, so
-            // it would take longer to load. We simulate that by delaying for a
-            // while, giving you a chance to admire the beautiful loading screen.
-            Thread.Sleep(1000);
+            m_World = new World(new Vector2(0, 0));
+            ConvertUnits.SetDisplayUnitToSimUnitRatio(5);
+
+            Player p = Player.Load(content);
+            if (p == null)
+            {
+                Vector2 playerPosition = new Vector2(Game1.GameWidth / 2, Game1.GameHeight / 2);
+                m_Player.Init(content, playerPosition);
+            }
+            else
+            {
+                m_Player = p;
+            }
+            //init object manager and set objects for it
+            GlobalObjectManager.Init(m_Player, content, m_World);
+
+
+            TextureBank.SetContentManager(content);
+            SoundBank.SetContentManager(content);
+            m_Player.LoadContent(m_World);
+            UserInterface.LoadContent(content, Game1.GameWidth, Game1.GameHeight);
+            m_Menu.LoadContent(content);
+            GlobalObjectManager.LoadContent();
+
+            m_song = SoundBank.GetSong("AuraQualic - DATA (FL Studio Remix)");
 
             // once the load has finished, we use ResetElapsedTime to tell the game's
             // timing mechanism that we have just finished a very long frame, and that
@@ -96,39 +130,81 @@ namespace GameStateManagement
 
             if (IsActive)
             {
-                
+                TimeSpan customElapsedTime = gameTime.ElapsedGameTime;
+                if (SlowMotion)
+                {
+                    customElapsedTime = new TimeSpan((long)(customElapsedTime.Ticks * 0.5));
+                }
 
+                if (TimeToDeath <= TimeSpan.FromSeconds(0))
+                {
+                    //SlowMotion = true;
+                    ResetGame();
+                }
+                TimeToDeath -= gameTime.ElapsedGameTime;
+                // TODO: Add your update logic here
+                UserInterface.ProcessInput(m_Player);
+                UserInterface.Update(TimeToDeath, customElapsedTime);
+                //check if a game reset or zombie hit and save state and do the action here,
+                //so that the game will draw the zombie intersecting the player
+                m_Player.Update(customElapsedTime);
+                foreach (GameObject g in ObjectManager.AllGameObjects)
+                {
+                    g.Update(m_Player, customElapsedTime);
+                }
+                bool b = false;
+                m_Player.CheckCollisions(out b, m_World);
+                if (b) ResetGame();
+
+                //cleanup dead objects
+                GlobalObjectManager.Update(customElapsedTime);
+
+                m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
                 // TODO: this game isn't very fun! You could probably improve
                 // it by inserting something more interesting in this space :-)
             }
         }
+        private void ResetGame()
+        {
+            ObjectManager.ClearGrid();
+            ObjectManager.AllGameObjects.Clear();
+            GlobalObjectManager.ResetGame();
+            TimeToDeath = TimeSpan.FromSeconds(40);
+        }
+        private void SpawnFace()
+        {
+            bool nearPlayer = true;
+            int x = 0;
+            int y = 0;
+            while (nearPlayer)
+            {
+                x = ZombieRandom.Next(Game1.GameWidth);
+                y = ZombieRandom.Next(Game1.GameHeight);
 
+                //don't spawn near player
+                Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
+                if (distanceFromPlayer.LengthSquared() >= (150.0f * 150f))
+                {
+                    nearPlayer = false;
+                }
+            }
+            Anubis z = new Anubis();
+            Vector2 temp = new Vector2();
+            temp.X = x;
+            temp.Y = y;
+            z.Position = temp;
+            z.LoadContent(m_World);
+            ObjectManager.AllGameObjects.Add(z);
+        }
 
         /// <summary>
         /// Lets the game respond to player input. Unlike the Update method,
         /// this will only be called when the gameplay screen is active.
         /// </summary>
-        public override void HandleInput(InputState input)
+        public override void HandleInput(Input input)
         {
             if (input == null)
                 throw new ArgumentNullException("input");
-
-            // Look up inputs for the active player profile.
-            int playerIndex = (int)ControllingPlayer.Value;
-
-            KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
-            GamePadState gamePadState = input.CurrentGamePadStates[playerIndex];
-
-            // if the user pressed the back button, we return to the main menu
-            PlayerIndex player;
-            if (input.IsNewButtonPress(Buttons.Back, ControllingPlayer, out player))
-            {
-                LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new BackgroundScreen(), new MainMenuScreen());
-            }
-            else
-            {
-                
-            }
         }
 
 

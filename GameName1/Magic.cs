@@ -140,14 +140,14 @@ namespace GameName1
     {
         public override void StartEffect(Player p)
         {
-            Game1.TimeToDeath += TimeSpan.FromSeconds(60);
+            GameplayScreen.TimeToDeath += TimeSpan.FromSeconds(60);
         }
         public override void EndEffect(Player p)
         {
         }
         public void AddTime(int seconds)
         {
-            Game1.TimeToDeath += TimeSpan.FromSeconds(seconds);
+            GameplayScreen.TimeToDeath += TimeSpan.FromSeconds(seconds);
         }
         public void GetInstantEffect()
         {

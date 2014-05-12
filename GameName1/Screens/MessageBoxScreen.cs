@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace GameStateManagement
+namespace GameName1
 {
     /// <summary>
     /// A popup message box screen, used to display "are you sure?"
@@ -91,7 +91,7 @@ namespace GameStateManagement
         /// <summary>
         /// Responds to user input, accepting or cancelling the message box.
         /// </summary>
-        public override void HandleInput(InputState input)
+        public override void HandleInput(Input input)
         {
             PlayerIndex playerIndex;
 
@@ -100,22 +100,22 @@ namespace GameStateManagement
             // controlling player, the InputState helper returns to us which player
             // actually provided the input. We pass that through to our Accepted and
             // Cancelled events, so they can tell which player triggered them.
-            if (input.IsMenuSelect(ControllingPlayer, out playerIndex))
-            {
-                // Raise the accepted event, then exit the message box.
-                if (Accepted != null)
-                    Accepted(this, new PlayerIndexEventArgs(playerIndex));
+            //if (input.IsMenuSelect(ControllingPlayer, out playerIndex))
+            //{
+            //    // Raise the accepted event, then exit the message box.
+            //    if (Accepted != null)
+            //        Accepted(this, new PlayerIndexEventArgs(playerIndex));
 
-                ExitScreen();
-            }
-            else if (input.IsMenuCancel(ControllingPlayer, out playerIndex))
-            {
-                // Raise the cancelled event, then exit the message box.
-                if (Cancelled != null)
-                    Cancelled(this, new PlayerIndexEventArgs(playerIndex));
+            //    ExitScreen();
+            //}
+            //else if (input.IsMenuCancel(ControllingPlayer, out playerIndex))
+            //{
+            //    // Raise the cancelled event, then exit the message box.
+            //    if (Cancelled != null)
+            //        Cancelled(this, new PlayerIndexEventArgs(playerIndex));
 
-                ExitScreen();
-            }
+            //    ExitScreen();
+            //}
         }
 
 

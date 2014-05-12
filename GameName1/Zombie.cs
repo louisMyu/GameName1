@@ -162,7 +162,7 @@ namespace GameName1
         {
             if (_circleBody != null)
             {
-                Game1.m_World.RemoveBody(_circleBody);
+                GameplayScreen.m_World.RemoveBody(_circleBody);
                 
             }
         }

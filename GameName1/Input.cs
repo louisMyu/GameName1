@@ -12,13 +12,16 @@ using Windows.Devices.Sensors;
 namespace GameName1
 {
 
-    static class Input
+    public class Input
     {
         public static bool UseAccelerometer = true;
         public static Accelerometer accelerometer;
         public static float AccelerometerAlpha = 0.45f;
         public static Vector3 CurrentAccelerometerValues { get; set; }
         public static float Tilt_Threshold = 0.0036f;
+        public TouchCollection TouchState;
+
+        public readonly List<GestureSample> Gestures = new List<GestureSample>();
         static Input()
         {
             //Gestures = new List<GestureSample>();
@@ -61,6 +64,20 @@ namespace GameName1
                 {
                     TouchesCollected.Add(touch);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Reads the latest state of the keyboard and gamepad.
+        /// </summary>
+        public void Update()
+        {
+            TouchState = TouchPanel.GetState();
+
+            Gestures.Clear();
+            while (TouchPanel.IsGestureAvailable)
+            {
+                Gestures.Add(TouchPanel.ReadGesture());
             }
         }
     }
