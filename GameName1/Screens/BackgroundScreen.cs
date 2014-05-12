@@ -55,7 +55,7 @@ namespace GameName1
             if (content == null)
                 content = ScreenManager.Game.Content;
 
-            backgroundTexture = content.Load<Texture2D>("background");
+            backgroundTexture = content.Load<Texture2D>("GSMbackground");
         }
 
 

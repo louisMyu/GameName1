@@ -57,7 +57,7 @@ namespace GameName1
         public GameState Update(out bool quit)
         {
             quit = false;
-            foreach (TouchLocation touch in Input.TouchesCollected)
+            foreach (TouchLocation touch in new TouchCollection())
             {
                 if (touch.State == TouchLocationState.Released)
                 {

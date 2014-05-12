@@ -112,14 +112,14 @@ namespace GameName1
             BackGroundHueColor = new Color(255 - delta, delta, 0);
         }
 
-        public void ProcessInput(Player p)
+        public void ProcessInput(Player p, TouchCollection input)
         {
             m_FireButtonColor = Color.White;
             m_StopButtonColor = Color.White;
             p.Moving = true;
             bool isFireDown = false;
             bool isStopDown = false;
-            foreach (TouchLocation touch in Input.TouchesCollected) {
+            foreach (TouchLocation touch in input) {
                 if (touch.Id == ThumbStickPointId)
                 {
                     if (touch.State == TouchLocationState.Released)

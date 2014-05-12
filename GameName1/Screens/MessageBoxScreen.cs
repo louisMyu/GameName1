@@ -79,7 +79,7 @@ namespace GameName1
         {
             ContentManager content = ScreenManager.Game.Content;
 
-            gradientTexture = content.Load<Texture2D>("gradient");
+            gradientTexture = content.Load<Texture2D>("GSMgradient");
         }
 
 
@@ -93,8 +93,6 @@ namespace GameName1
         /// </summary>
         public override void HandleInput(Input input)
         {
-            PlayerIndex playerIndex;
-
             // We pass in our ControllingPlayer, which may either be null (to
             // accept input from any player) or a specific index. If we pass a null
             // controlling player, the InputState helper returns to us which player

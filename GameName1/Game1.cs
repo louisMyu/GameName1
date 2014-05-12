@@ -30,6 +30,7 @@ namespace GameName1
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             m_ScreenManager = new ScreenManager(this);
+            m_ScreenManager.Initialize();
         }
 
         /// <summary>
@@ -72,6 +73,7 @@ namespace GameName1
         {
                 // Create a new SpriteBatch, which can be used to draw textures.
                 _spriteBatch = new SpriteBatch(GraphicsDevice);
+                m_ScreenManager.LoadContent(GraphicsDevice, _spriteBatch);
             // TODO: use this.Content to load your game content here
         }
 
@@ -82,6 +84,7 @@ namespace GameName1
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            m_ScreenManager.UnloadContent();
             ObjectManager.AllGameObjects.Clear();
         }
         /// <summary>

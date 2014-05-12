@@ -113,14 +113,14 @@ namespace GameName1
         /// <summary>
         /// Load your graphics content.
         /// </summary>
-        protected void LoadContent(GraphicsDevice device, SpriteBatch _spriteBatch)
+        public void LoadContent(GraphicsDevice device, SpriteBatch _spriteBatch)
         {
             // Load content belonging to the screen manager.
             ContentManager content = Game.Content;
             GraphicsDevice = device;
             spriteBatch = _spriteBatch;
-            font = content.Load<SpriteFont>("menufont");
-            blankTexture = content.Load<Texture2D>("blank");
+            font = content.Load<SpriteFont>("GSMmenufont");
+            blankTexture = content.Load<Texture2D>("GSMblank");
 
             // Tell each of the screens to load their content.
             foreach (GameScreen screen in screens)
@@ -133,7 +133,7 @@ namespace GameName1
         /// <summary>
         /// Unload your graphics content.
         /// </summary>
-        protected void UnloadContent()
+        public void UnloadContent()
         {
             // Tell each of the screens to unload their content.
             foreach (GameScreen screen in screens)
@@ -248,7 +248,13 @@ namespace GameName1
             // If we have a graphics device, tell the screen to load content.
             if (isInitialized)
             {
-                screen.LoadContent();
+                try
+                {
+                    screen.LoadContent();
+                }
+                catch (Exception e)
+                {
+                }
             }
 
             screens.Add(screen);

@@ -18,6 +18,7 @@ using FarseerPhysics.Dynamics;
 using GameName1;
 using FarseerPhysics;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Input.Touch;
 #endregion
 
 namespace GameName1
@@ -41,6 +42,7 @@ namespace GameName1
         public bool SlowMotion = false;
         public static TimeSpan TimeToDeath = TimeSpan.FromSeconds(30);
         public static Random ZombieRandom = new Random(424242);
+        private TouchCollection TouchesCollected;
         Song m_song;
         Random random = new Random();
 
@@ -69,7 +71,7 @@ namespace GameName1
             if (content == null)
                 content = ScreenManager.Game.Content;
 
-            gameFont = content.Load<SpriteFont>("gamefont");
+            gameFont = content.Load<SpriteFont>("GSMgamefont");
 
             m_World = new World(new Vector2(0, 0));
             ConvertUnits.SetDisplayUnitToSimUnitRatio(5);
@@ -130,36 +132,42 @@ namespace GameName1
 
             if (IsActive)
             {
-                TimeSpan customElapsedTime = gameTime.ElapsedGameTime;
-                if (SlowMotion)
+                try
                 {
-                    customElapsedTime = new TimeSpan((long)(customElapsedTime.Ticks * 0.5));
-                }
+                    TimeSpan customElapsedTime = gameTime.ElapsedGameTime;
+                    if (SlowMotion)
+                    {
+                        customElapsedTime = new TimeSpan((long)(customElapsedTime.Ticks * 0.5));
+                    }
 
-                if (TimeToDeath <= TimeSpan.FromSeconds(0))
+                    if (TimeToDeath <= TimeSpan.FromSeconds(0))
+                    {
+                        //SlowMotion = true;
+                        ResetGame();
+                    }
+                    TimeToDeath -= gameTime.ElapsedGameTime;
+                    // TODO: Add your update logic here
+                    UserInterface.ProcessInput(m_Player, TouchesCollected);
+                    UserInterface.Update(TimeToDeath, customElapsedTime);
+                    //check if a game reset or zombie hit and save state and do the action here,
+                    //so that the game will draw the zombie intersecting the player
+                    m_Player.Update(customElapsedTime);
+                    foreach (GameObject g in ObjectManager.AllGameObjects)
+                    {
+                        g.Update(m_Player, customElapsedTime);
+                    }
+                    bool b = false;
+                    m_Player.CheckCollisions(out b, m_World);
+                    if (b) ResetGame();
+
+                    //cleanup dead objects
+                    GlobalObjectManager.Update(customElapsedTime);
+
+                    m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
+                }
+                catch (Exception e)
                 {
-                    //SlowMotion = true;
-                    ResetGame();
                 }
-                TimeToDeath -= gameTime.ElapsedGameTime;
-                // TODO: Add your update logic here
-                UserInterface.ProcessInput(m_Player);
-                UserInterface.Update(TimeToDeath, customElapsedTime);
-                //check if a game reset or zombie hit and save state and do the action here,
-                //so that the game will draw the zombie intersecting the player
-                m_Player.Update(customElapsedTime);
-                foreach (GameObject g in ObjectManager.AllGameObjects)
-                {
-                    g.Update(m_Player, customElapsedTime);
-                }
-                bool b = false;
-                m_Player.CheckCollisions(out b, m_World);
-                if (b) ResetGame();
-
-                //cleanup dead objects
-                GlobalObjectManager.Update(customElapsedTime);
-
-                m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
                 // TODO: this game isn't very fun! You could probably improve
                 // it by inserting something more interesting in this space :-)
             }
@@ -203,8 +211,7 @@ namespace GameName1
         /// </summary>
         public override void HandleInput(Input input)
         {
-            if (input == null)
-                throw new ArgumentNullException("input");
+            TouchesCollected = input.TouchState;
         }
 
 
@@ -218,13 +225,20 @@ namespace GameName1
                                                Color.CornflowerBlue, 0, 0);
 
             // Our player and enemy are both actually just text strings.
-            SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
+            SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
 
-            spriteBatch.Begin();
-
-            
-
-            spriteBatch.End();
+            _spriteBatch.Begin();
+            try
+            {
+                UserInterface.DrawBackground(_spriteBatch);
+                GlobalObjectManager.Draw(_spriteBatch);
+                m_Player.Draw(_spriteBatch);
+                UserInterface.Draw(_spriteBatch, m_Player);
+            }
+            catch (Exception e)
+            {
+            }
+            _spriteBatch.End();
 
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0)

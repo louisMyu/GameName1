@@ -92,36 +92,35 @@ namespace GameName1
         /// </summary>
         public override void HandleInput(Input input)
         {
-            //// we cancel the current menu screen if the user presses the back button
-            //PlayerIndex player;
-            //if (input.IsNewButtonPress(Buttons.Back, ControllingPlayer, out player))
-            //{
-            //    OnCancel(player);
-            //}
+            // we cancel the current menu screen if the user presses the back button
+            if (input.IsNewKeyPress(Buttons.Back))
+            {
+                OnCancel();
+            }
 
-            //// look for any taps that occurred and select any entries that were tapped
-            //foreach (GestureSample gesture in input.Gestures)
-            //{
-            //    if (gesture.GestureType == GestureType.Tap)
-            //    {
-            //        // convert the position to a Point that we can test against a Rectangle
-            //        Point tapLocation = new Point((int)gesture.Position.X, (int)gesture.Position.Y);
+            // look for any taps that occurred and select any entries that were tapped
+            foreach (GestureSample gesture in input.Gestures)
+            {
+                if (gesture.GestureType == GestureType.Tap)
+                {
+                    // convert the position to a Point that we can test against a Rectangle
+                    Point tapLocation = new Point((int)gesture.Position.X, (int)gesture.Position.Y);
 
-            //        // iterate the entries to see if any were tapped
-            //        for (int i = 0; i < menuEntries.Count; i++)
-            //        {
-            //            MenuEntry menuEntry = menuEntries[i];
+                    // iterate the entries to see if any were tapped
+                    for (int i = 0; i < menuEntries.Count; i++)
+                    {
+                        MenuEntry menuEntry = menuEntries[i];
 
-            //            if (GetMenuEntryHitBounds(menuEntry).Contains(tapLocation))
-            //            {
-            //                // select the entry. since gestures are only available on Windows Phone,
-            //                // we can safely pass PlayerIndex.One to all entries since there is only
-            //                // one player on Windows Phone.
-            //                OnSelectEntry(i, PlayerIndex.One);
-            //            }
-            //        }
-            //    }
-            //}
+                        if (GetMenuEntryHitBounds(menuEntry).Contains(tapLocation))
+                        {
+                            // select the entry. since gestures are only available on Windows Phone,
+                            // we can safely pass PlayerIndex.One to all entries since there is only
+                            // one player on Windows Phone.
+                            OnSelectEntry(i, PlayerIndex.One);
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -141,7 +140,13 @@ namespace GameName1
         {
             ExitScreen();
         }
-
+        /// <summary>
+        /// Handler for when the user has cancelled the menu.
+        /// </summary>
+        protected virtual void OnCancel()
+        {
+            ExitScreen();
+        }
 
         /// <summary>
         /// Helper overload makes it easy to use OnCancel as a MenuEntry event handler.
