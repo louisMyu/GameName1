@@ -11,6 +11,7 @@ using FarseerPhysics.Factories;
 using System.IO.IsolatedStorage;
 using Microsoft.Xna.Framework.Media;
 using System.Windows.Threading;
+using GameStateManagement;
 
 namespace GameName1
 {
@@ -46,13 +47,14 @@ namespace GameName1
         public bool SlowMotion = false;
         GameState CurrentGameState = GameState.Playing;
 
-        public int NumZombies = 0;
+        private ScreenManager m_ScreenManager;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             m_Player = new Player();
             GlobalObjectManager = new ObjectManager();
+            m_ScreenManager = new ScreenManager(this);
         }
 
         /// <summary>
@@ -103,7 +105,7 @@ namespace GameName1
                 m_Menu.LoadContent(Content);
                 GlobalObjectManager.LoadContent();
 
-                m_song = Content.Load<Song>("AuraQualic - DATA (FL Studio Remix)");
+                m_song = SoundBank.GetSong("AuraQualic - DATA (FL Studio Remix)");
             }
             catch (Exception e)
             {
@@ -202,23 +204,23 @@ namespace GameName1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            switch (CurrentGameState) {
-                case GameState.Playing:
-                    // TODO: Add your drawing code here
-                    _spriteBatch.Begin();
-                    UserInterface.DrawBackground(_spriteBatch);
-                    GlobalObjectManager.Draw(_spriteBatch);
-                    m_Player.Draw(_spriteBatch);
-                    UserInterface.Draw(_spriteBatch, m_Player);
-                    _spriteBatch.End();
-                    break;
-                case GameState.Menu:
-                    _spriteBatch.Begin();
-                    m_Menu.Draw(_spriteBatch, m_Player);
-                    _spriteBatch.End();
-                    break;
-            }
+            //GraphicsDevice.Clear(Color.CornflowerBlue);
+            //switch (CurrentGameState) {
+            //    case GameState.Playing:
+            //        // TODO: Add your drawing code here
+            //        _spriteBatch.Begin();
+            //        UserInterface.DrawBackground(_spriteBatch);
+            //        GlobalObjectManager.Draw(_spriteBatch);
+            //        m_Player.Draw(_spriteBatch);
+            //        UserInterface.Draw(_spriteBatch, m_Player);
+            //        _spriteBatch.End();
+            //        break;
+            //    case GameState.Menu:
+            //        _spriteBatch.Begin();
+            //        m_Menu.Draw(_spriteBatch, m_Player);
+            //        _spriteBatch.End();
+            //        break;
+            //}
             base.Draw(gameTime);
         }
 

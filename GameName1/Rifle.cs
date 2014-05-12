@@ -13,7 +13,7 @@ namespace GameName1
     [DataContract]
     public class Rifle : Weapon
     {
-        private static const int CHARGE_TIME = 20;
+        private const int CHARGE_TIME = 20;
         [DataMember]
         public string shotString1 { get; set; }
         [DataMember]

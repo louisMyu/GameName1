@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System.IO;
 using System.IO.IsolatedStorage;
+using GameName1;
 #endregion
 
 namespace GameStateManagement
@@ -27,7 +28,7 @@ namespace GameStateManagement
     /// methods at the appropriate times, and automatically routes input to the
     /// topmost active screen.
     /// </summary>
-    public class ScreenManager : DrawableGameComponent
+    public class ScreenManager
     {
         #region Fields
 
@@ -39,6 +40,8 @@ namespace GameStateManagement
         SpriteBatch spriteBatch;
         SpriteFont font;
         Texture2D blankTexture;
+        public static Game Game;
+        public static GraphicsDevice GraphicsDevice;
 
         bool isInitialized;
 
@@ -90,21 +93,20 @@ namespace GameStateManagement
         /// Constructs a new screen manager component.
         /// </summary>
         public ScreenManager(Game game)
-            : base(game)
+            
         {
             // we must set EnabledGestures before we can query for them, but
             // we don't assume the game wants to read them.
             TouchPanel.EnabledGestures = GestureType.None;
+            Game = game;
         }
 
 
         /// <summary>
         /// Initializes the screen manager component.
         /// </summary>
-        public override void Initialize()
+        public void Initialize()
         {
-            base.Initialize();
-
             isInitialized = true;
         }
 
@@ -112,12 +114,12 @@ namespace GameStateManagement
         /// <summary>
         /// Load your graphics content.
         /// </summary>
-        protected override void LoadContent()
+        protected void LoadContent(GraphicsDevice device, SpriteBatch _spriteBatch)
         {
             // Load content belonging to the screen manager.
             ContentManager content = Game.Content;
-
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            GraphicsDevice = device;
+            spriteBatch = _spriteBatch;
             font = content.Load<SpriteFont>("menufont");
             blankTexture = content.Load<Texture2D>("blank");
 
@@ -132,7 +134,7 @@ namespace GameStateManagement
         /// <summary>
         /// Unload your graphics content.
         /// </summary>
-        protected override void UnloadContent()
+        protected void UnloadContent()
         {
             // Tell each of the screens to unload their content.
             foreach (GameScreen screen in screens)
@@ -150,7 +152,7 @@ namespace GameStateManagement
         /// <summary>
         /// Allows each screen to run logic.
         /// </summary>
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             // Read the keyboard and gamepad.
             input.Update();
@@ -218,7 +220,7 @@ namespace GameStateManagement
         /// <summary>
         /// Tells each screen to draw itself.
         /// </summary>
-        public override void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             foreach (GameScreen screen in screens)
             {

@@ -70,22 +70,6 @@ namespace GameStateManagement
         /// </summary>
         public void Update()
         {
-            for (int i = 0; i < MaxInputs; i++)
-            {
-                LastKeyboardStates[i] = CurrentKeyboardStates[i];
-                LastGamePadStates[i] = CurrentGamePadStates[i];
-
-                CurrentKeyboardStates[i] = Keyboard.GetState((PlayerIndex)i);
-                CurrentGamePadStates[i] = GamePad.GetState((PlayerIndex)i);
-
-                // Keep track of whether a gamepad has ever been
-                // connected, so we can detect if it is unplugged.
-                if (CurrentGamePadStates[i].IsConnected)
-                {
-                    GamePadWasConnected[i] = true;
-                }
-            }
-
             TouchState = TouchPanel.GetState();
 
             Gestures.Clear();

@@ -12,6 +12,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 using System.IO;
+using Microsoft.Xna.Framework.Content;
 #endregion
 
 namespace GameStateManagement
@@ -231,7 +232,7 @@ namespace GameStateManagement
         /// <summary>
         /// Load graphics content for the screen.
         /// </summary>
-        public virtual void LoadContent() { }
+        public virtual void LoadContent(){ }
 
 
         /// <summary>

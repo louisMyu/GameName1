@@ -52,7 +52,6 @@ namespace GameName1
         public override void LoadContent()
         {
             LoadTextures();
-            LoadSounds();
             for (int i = 0; i < NumberOfBullets; ++i)
             {
                 m_BulletLines.Add(new Line());

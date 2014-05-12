@@ -22,6 +22,15 @@ namespace GameName1
             return Bank[key].CreateInstance();
         }
 
+        public static Dictionary<string, Song> SongBank = new Dictionary<string, Song>();
+        public static Song GetSong(string key)
+        {
+            if (!Bank.ContainsKey(key))
+            {
+                SongBank[key] = Content.Load<Song>(key);
+            }
+            return SongBank[key];
+        }
         public static void SetContentManager(ContentManager content)
         {
             Content = content;
