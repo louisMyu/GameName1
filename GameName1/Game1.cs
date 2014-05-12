@@ -59,7 +59,8 @@ namespace GameName1
             //}
             ////init object manager and set objects for it
             //GlobalObjectManager.Init(m_Player, Content, m_World);
-
+            m_ScreenManager.AddScreen(new BackgroundScreen(), null);
+            m_ScreenManager.AddScreen(new MainMenuScreen(), null);
             base.Initialize();
         }
 
