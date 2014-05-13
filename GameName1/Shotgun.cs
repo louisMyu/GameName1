@@ -84,13 +84,13 @@ namespace GameName1
                 {
                     m_ShotSound.Stop();
                     m_ShotSound.Dispose();
-                    m_ShotSound = SoundBank.GetSoundInstance("ShotgunSound");
                 }
                 if (m_ReloadSound != null)
                 {
                     m_ReloadSound.Stop();
                     m_ReloadSound.Dispose();
                 }
+                m_ShotSound = SoundBank.GetSoundInstance("SoundShotgun");
                 m_ShotSound.Play();
                 Firing = true;
                 m_FireAnimation.SpriteInfo = m_CurrentShotInfo;
@@ -155,7 +155,7 @@ namespace GameName1
                     m_ReloadSound.Stop();
                     m_ReloadSound.Dispose();
                 }
-                m_ReloadSound = SoundBank.GetSoundInstance("ShotgunReloadSound");
+                m_ReloadSound = SoundBank.GetSoundInstance("SoundShotgunReload");
                 m_ReloadSound.Play();
             }
         }

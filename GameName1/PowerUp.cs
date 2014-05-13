@@ -27,7 +27,7 @@ namespace GameName1
 
         public virtual SoundEffectInstance GetPickupSound()
         {
-            return SoundBank.GetSoundInstance("WeaponPickupSound");
+            return SoundBank.GetSoundInstance("SoundWeaponPickup");
         }
     }
     
@@ -60,7 +60,7 @@ namespace GameName1
         }
         public override SoundEffectInstance GetPickupSound()
         {
-            m_PickupSound = SoundBank.GetSoundInstance("CheatPickupSound");
+            m_PickupSound = SoundBank.GetSoundInstance("SoundCheatPickup");
             return m_PickupSound;
         }
         private void CreateCheat()

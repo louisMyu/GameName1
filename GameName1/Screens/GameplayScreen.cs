@@ -37,12 +37,13 @@ namespace GameName1
         public static World m_World;
         public Player m_Player;
         public ObjectManager GlobalObjectManager;
-        private Menu m_Menu = new Menu();
         private UI UserInterface = new UI();
         public bool SlowMotion = false;
         public static TimeSpan TimeToDeath = TimeSpan.FromSeconds(30);
         public static Random ZombieRandom = new Random(424242);
         private TouchCollection TouchesCollected;
+        private bool isLoaded;
+        private bool isUpdated;
         Song m_song;
         Random random = new Random();
 
@@ -60,6 +61,8 @@ namespace GameName1
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
             m_Player = new Player();
             GlobalObjectManager = new ObjectManager();
+            isLoaded = false;
+            isUpdated = false;
         }
 
 
@@ -94,11 +97,10 @@ namespace GameName1
             SoundBank.SetContentManager(content);
             m_Player.LoadContent(m_World);
             UserInterface.LoadContent(content, Game1.GameWidth, Game1.GameHeight);
-            m_Menu.LoadContent(content);
             GlobalObjectManager.LoadContent();
 
             m_song = SoundBank.GetSong("AuraQualic - DATA (FL Studio Remix)");
-
+            isLoaded = true;
             // once the load has finished, we use ResetElapsedTime to tell the game's
             // timing mechanism that we have just finished a very long frame, and that
             // it should not try to catch up.
@@ -164,6 +166,7 @@ namespace GameName1
                     GlobalObjectManager.Update(customElapsedTime);
 
                     m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
+                    isUpdated = true;
                 }
                 catch (Exception e)
                 {
@@ -223,7 +226,10 @@ namespace GameName1
             // This game has a blue background. Why? Because!
             ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
                                                Color.CornflowerBlue, 0, 0);
-
+            if (!isLoaded || !isUpdated)
+            {
+                return;
+            }
             // Our player and enemy are both actually just text strings.
             SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
 

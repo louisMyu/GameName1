@@ -95,7 +95,7 @@ namespace GameName1
                     m_ChargeSound.Stop();
                     m_ChargeSound.Dispose();
                 }
-                m_ChargeSound = SoundBank.GetSoundInstance("RifleChargeSound");
+                m_ChargeSound = SoundBank.GetSoundInstance("SoundRifleCharge");
                 m_ChargeSound.Play();
             }
             if (m_FireAnimation.Animating && m_FireAnimation.FrameCounter == CHARGE_TIME)
@@ -110,7 +110,7 @@ namespace GameName1
                     m_ChargeSound.Stop();
                     m_ChargeSound.Dispose();
                 }
-                m_ShotSound = SoundBank.GetSoundInstance("RifleShotSound");
+                m_ShotSound = SoundBank.GetSoundInstance("SoundRifleShot");
                 m_ShotSound.Play();
             }
         }

@@ -11,6 +11,7 @@ using System.Runtime.Serialization;
 using System.IO.IsolatedStorage;
 using FarseerPhysics.Factories;
 using FarseerPhysics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace GameName1
 {
@@ -42,6 +43,8 @@ namespace GameName1
         [DataMember]
         public CheatPowerUp WeaponSlot1Magic { get; set; }
         private List<Cheat> m_ActiveEffects = new List<Cheat>();
+
+        private SoundEffectInstance m_PowerupPickupSound;
         [DataMember]
         public int Score { get; set; }
         [DataMember]
@@ -128,7 +131,13 @@ namespace GameName1
                         }
                         if (ob is PowerUp)
                         {
-                            ((PowerUp)ob).GetPickupSound().Play();
+                            if (m_PowerupPickupSound != null)
+                            {
+                                m_PowerupPickupSound.Stop();
+                                m_PowerupPickupSound.Dispose();
+                            }
+                            m_PowerupPickupSound = ((PowerUp)ob).GetPickupSound();
+                            m_PowerupPickupSound.Play();
                             if (ob is CheatPowerUp)
                             {
                                 CheatPowerUp temp = ob as CheatPowerUp;
@@ -150,8 +159,8 @@ namespace GameName1
                                 weapon.LoadContent();
                                 m_Weapon = weapon;
                             }
-                            ObjectManager.RemoveObject(ob);
                         }
+                        ObjectManager.RemoveObject(ob);
                     }
                 }
             }

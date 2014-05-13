@@ -67,7 +67,7 @@ namespace GameName1
                     m_ShotSound.Stop();
                     m_ShotSound.Dispose();
                 }
-                m_ShotSound = SoundBank.GetSoundInstance("PlasmaShotSound");
+                m_ShotSound = SoundBank.GetSoundInstance("SoundPlasmaShot");
                 m_ShotSound.Play();
             }
             if (m_Bullets.Count > 0)
