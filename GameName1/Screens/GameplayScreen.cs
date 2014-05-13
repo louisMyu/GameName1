@@ -44,6 +44,7 @@ namespace GameName1
         private TouchCollection TouchesCollected;
         private bool isLoaded;
         private bool isUpdated;
+        private bool isGamePaused;
         Song m_song;
         Random random = new Random();
 
@@ -214,6 +215,12 @@ namespace GameName1
         /// </summary>
         public override void HandleInput(Input input)
         {
+            if (input.IsNewKeyPress(Buttons.Back))
+            {
+                isGamePaused = true;
+                ScreenManager.Game.Exit();
+                return;
+            }
             TouchesCollected = input.TouchState;
         }
 
@@ -223,29 +230,25 @@ namespace GameName1
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
-            // This game has a blue background. Why? Because!
-            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
-                                               Color.CornflowerBlue, 0, 0);
-            if (!isLoaded || !isUpdated)
+            if (!isGamePaused)
             {
-                return;
-            }
-            // Our player and enemy are both actually just text strings.
-            SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
+                // This game has a blue background. Why? Because!
+                ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
+                                                   Color.CornflowerBlue, 0, 0);
+                if (!isLoaded || !isUpdated)
+                {
+                    return;
+                }
+                // Our player and enemy are both actually just text strings.
+                SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
 
-            _spriteBatch.Begin();
-            try
-            {
+                _spriteBatch.Begin();
                 UserInterface.DrawBackground(_spriteBatch);
                 GlobalObjectManager.Draw(_spriteBatch);
                 m_Player.Draw(_spriteBatch);
                 UserInterface.Draw(_spriteBatch, m_Player);
+                _spriteBatch.End();
             }
-            catch (Exception e)
-            {
-            }
-            _spriteBatch.End();
-
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0)
                 ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
