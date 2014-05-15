@@ -220,6 +220,8 @@ namespace GameName1
                 isGamePaused = true;
                 ScreenManager.Game.Exit();
                 return;
+                //this should actually create a menu overlay with the game underneathe
+                //this should involve adding a new menu screen for the pause
             }
             TouchesCollected = input.TouchState;
         }
@@ -235,11 +237,11 @@ namespace GameName1
                 // This game has a blue background. Why? Because!
                 ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
                                                    Color.CornflowerBlue, 0, 0);
+                //make sure the game has loaded and has updated at least one frame
                 if (!isLoaded || !isUpdated)
                 {
                     return;
                 }
-                // Our player and enemy are both actually just text strings.
                 SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
 
                 _spriteBatch.Begin();
