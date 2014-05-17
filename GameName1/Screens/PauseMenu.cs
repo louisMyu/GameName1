@@ -29,6 +29,7 @@ namespace GameName1
             // Add entries to the menu.
             MenuEntries.Add(playGameMenuEntry);
             MenuEntries.Add(optionsMenuEntry);
+            IsPopup = true;
         }
 
 
@@ -51,7 +52,6 @@ namespace GameName1
         /// </summary>
         void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            ScreenManager.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
         }
 
 

@@ -39,18 +39,17 @@ namespace GameName1
         #region Fields
 
         ContentManager content;
-        SpriteFont gameFont;
         public static World m_World;
         public Player m_Player;
         public ObjectManager GlobalObjectManager;
         private UI UserInterface = new UI();
         public bool SlowMotion = false;
         public static TimeSpan TimeToDeath = TimeSpan.FromSeconds(30);
-        public static Random ZombieRandom = new Random(424242);
         private TouchCollection TouchesCollected;
         private bool isLoaded;
         private bool isUpdated;
-        private bool isGamePaused;
+
+        private TimeSpan m_CountdownTime;
         Song m_song;
         Random random = new Random();
         private GameState m_GameState;
@@ -71,6 +70,7 @@ namespace GameName1
             isLoaded = false;
             isUpdated = false;
             m_GameState = GameState.Countdown;
+            m_CountdownTime = TimeSpan.FromSeconds(5.5);
         }
 
 
@@ -147,6 +147,11 @@ namespace GameName1
                     switch (m_GameState)
                     {
                         case GameState.Countdown:
+                            m_CountdownTime -= customElapsedTime;
+                            if (m_CountdownTime <= TimeSpan.FromTicks(0))
+                            {
+                                m_GameState = GameState.Playing;
+                            }
                             break;
                         case GameState.Playing:
                             if (SlowMotion)
@@ -172,7 +177,12 @@ namespace GameName1
                             }
                             bool b = false;
                             m_Player.CheckCollisions(out b, m_World);
-                            if (b) ResetGame();
+                            if (b)
+                            {
+                                ResetGame();
+                                m_CountdownTime = TimeSpan.FromSeconds(5);
+                                m_GameState = GameState.Countdown;
+                            }
 
                             //cleanup dead objects
                             GlobalObjectManager.Update(customElapsedTime);
@@ -194,35 +204,8 @@ namespace GameName1
         }
         private void ResetGame()
         {
-            ObjectManager.ClearGrid();
-            ObjectManager.AllGameObjects.Clear();
             GlobalObjectManager.ResetGame();
             TimeToDeath = TimeSpan.FromSeconds(40);
-        }
-        private void SpawnFace()
-        {
-            bool nearPlayer = true;
-            int x = 0;
-            int y = 0;
-            while (nearPlayer)
-            {
-                x = ZombieRandom.Next(Game1.GameWidth);
-                y = ZombieRandom.Next(Game1.GameHeight);
-
-                //don't spawn near player
-                Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
-                if (distanceFromPlayer.LengthSquared() >= (150.0f * 150f))
-                {
-                    nearPlayer = false;
-                }
-            }
-            Anubis z = new Anubis();
-            Vector2 temp = new Vector2();
-            temp.X = x;
-            temp.Y = y;
-            z.Position = temp;
-            z.LoadContent(m_World);
-            ObjectManager.AllGameObjects.Add(z);
         }
 
         /// <summary>
@@ -271,9 +254,13 @@ namespace GameName1
                     break;
                 case GameState.Countdown:
                     _spriteBatch.Begin();
+                    UserInterface.DrawBackground(_spriteBatch);
+                    //GlobalObjectManager.Draw(_spriteBatch);
+                    //m_Player.Draw(_spriteBatch);
+                    UserInterface.Draw(_spriteBatch, m_Player);
+                    UserInterface.DrawCountdown(_spriteBatch, m_CountdownTime);
                     _spriteBatch.End();
                     break;
-
             }
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0)

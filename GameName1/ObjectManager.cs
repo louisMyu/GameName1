@@ -210,6 +210,8 @@ namespace GameName1
 
         public void ResetGame()
         {
+            ClearGrid();
+            AllGameObjects.Clear();
             FrameCounter = 0;
             itemMade = false;
             face = false;
@@ -277,6 +279,31 @@ namespace GameName1
             z.Position = temp;
             z.LoadContent(m_World);
             AllGameObjects.Add(z);
+        }
+        private void SpawnFace()
+        {
+            bool nearPlayer = true;
+            int x = 0;
+            int y = 0;
+            while (nearPlayer)
+            {
+                x = ZombieRandom.Next(Game1.GameWidth);
+                y = ZombieRandom.Next(Game1.GameHeight);
+
+                //don't spawn near player
+                Vector2 distanceFromPlayer = new Vector2(x - m_Player.Position.X, y - m_Player.Position.Y);
+                if (distanceFromPlayer.LengthSquared() >= (150.0f * 150f))
+                {
+                    nearPlayer = false;
+                }
+            }
+            Anubis z = new Anubis();
+            Vector2 temp = new Vector2();
+            temp.X = x;
+            temp.Y = y;
+            z.Position = temp;
+            z.LoadContent(m_World);
+            ObjectManager.AllGameObjects.Add(z);
         }
     }
 }
