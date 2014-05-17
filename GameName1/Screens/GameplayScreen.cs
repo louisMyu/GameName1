@@ -233,11 +233,12 @@ namespace GameName1
         {
             if (input.IsNewKeyPress(Buttons.Back))
             {
-                isGamePaused = true;
-                ScreenManager.Game.Exit();
-                return;
+                m_GameState = GameState.Paused;
+                //ScreenManager.Game.Exit();
+                //return;
                 //this should actually create a menu overlay with the game underneathe
                 //this should involve adding a new menu screen for the pause
+                ScreenManager.AddScreen(new PauseMenu(), null);
             }
             TouchesCollected = input.TouchState;
         }
@@ -248,24 +249,31 @@ namespace GameName1
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
-            if (!isGamePaused)
+            //make sure the game has loaded and has updated at least one frame
+            if (!isLoaded || !isUpdated)
             {
-                // This game has a blue background. Why? Because!
-                ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
-                                                   Color.CornflowerBlue, 0, 0);
-                //make sure the game has loaded and has updated at least one frame
-                if (!isLoaded || !isUpdated)
-                {
-                    return;
-                }
-                SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
+                return;
+            }
+            // This game has a blue background. Why? Because!
+            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
+                                               Color.CornflowerBlue, 0, 0);
+            SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
+            switch (m_GameState)
+            {
+                case GameState.Paused:
+                case GameState.Playing:
+                    _spriteBatch.Begin();
+                    UserInterface.DrawBackground(_spriteBatch);
+                    GlobalObjectManager.Draw(_spriteBatch);
+                    m_Player.Draw(_spriteBatch);
+                    UserInterface.Draw(_spriteBatch, m_Player);
+                    _spriteBatch.End();
+                    break;
+                case GameState.Countdown:
+                    _spriteBatch.Begin();
+                    _spriteBatch.End();
+                    break;
 
-                _spriteBatch.Begin();
-                UserInterface.DrawBackground(_spriteBatch);
-                GlobalObjectManager.Draw(_spriteBatch);
-                m_Player.Draw(_spriteBatch);
-                UserInterface.Draw(_spriteBatch, m_Player);
-                _spriteBatch.End();
             }
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0)

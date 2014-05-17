@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameName1.Screens
+namespace GameName1
 {
     class PauseMenu : MenuScreen
     {
