@@ -99,8 +99,6 @@ namespace GameName1
             }
             //init object manager and set objects for it
             GlobalObjectManager.Init(m_Player, content, m_World);
-
-
             TextureBank.SetContentManager(content);
             SoundBank.SetContentManager(content);
             m_Player.LoadContent(m_World);
@@ -180,8 +178,6 @@ namespace GameName1
                             if (b)
                             {
                                 ResetGame();
-                                m_CountdownTime = TimeSpan.FromSeconds(5);
-                                m_GameState = GameState.Countdown;
                             }
 
                             //cleanup dead objects
@@ -206,6 +202,8 @@ namespace GameName1
         {
             GlobalObjectManager.ResetGame();
             TimeToDeath = TimeSpan.FromSeconds(40);
+            m_CountdownTime = TimeSpan.FromSeconds(5);
+            m_GameState = GameState.Countdown;
         }
 
         /// <summary>
@@ -266,8 +264,6 @@ namespace GameName1
             if (TransitionPosition > 0)
                 ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
         }
-
-
         #endregion
     }
 }

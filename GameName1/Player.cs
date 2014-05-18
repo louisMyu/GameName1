@@ -20,11 +20,20 @@ namespace GameName1
     [DataContract]
     public class Player : GameObject
     {
+        private enum PlayerState
+        {
+            Normal,
+            Damaged
+        }
         [IgnoreDataMember]
         public static readonly string playerSaveDir = "playerDir";
         [IgnoreDataMember]
         public static float VELOCITY = 40f;
-        public static int CheatEffectFrames;
+
+        //how many frames of invincible to occur when player is damaged
+        private const int INVINCIBLE_FRAMES = 100;
+        //how many frames to wait until a flash occurs when being hit, done via modulo
+        private const int INVINCIBLE_FLASH_FRAME = 5;
         [IgnoreDataMember]
         public Vector2 m_MoveToward = new Vector2();
         [DataMember]
@@ -43,7 +52,7 @@ namespace GameName1
         [DataMember]
         public CheatPowerUp WeaponSlot1Magic { get; set; }
         private List<Cheat> m_ActiveEffects = new List<Cheat>();
-
+        private PlayerState m_PlayerState;
         private SoundEffectInstance m_PowerupPickupSound;
         [DataMember]
         public int Score { get; set; }
@@ -62,6 +71,8 @@ namespace GameName1
         public Texture2D RedFlashTexture;
 
         public bool DrawRedFlash;
+        private int m_HowLongInvincible = 0;
+        
         public Player() : base()
         {
 			
@@ -117,7 +128,7 @@ namespace GameName1
                     }
                     if (ob.m_Bounds.Intersects(this.m_Bounds))
                     {
-                        if (ob is IEnemy)
+                        if (ob is IEnemy && m_PlayerState != PlayerState.Damaged)
                         {
                             IEnemy enemy = ob as IEnemy;
                             LifeTotal -= enemy.GetDamageAmount();
@@ -128,6 +139,7 @@ namespace GameName1
                                 LifeTotal = 100;
                                 return;
                             }
+                            m_PlayerState = PlayerState.Damaged;
                         }
                         if (ob is PowerUp)
                         {
@@ -352,9 +364,12 @@ namespace GameName1
                 }
                 _spriteBatch.Draw(temp, Position, null, Color.White, 0.0f, new Vector2(AimCircleTexture.Width / 2, AimCircleTexture.Height / 2), aimScale, SpriteEffects.None, 0);
             }
-            base.Draw(_spriteBatch);
+            if ((m_PlayerState != PlayerState.Damaged) || (m_PlayerState == PlayerState.Damaged && CanDrawWhenFlashing())) 
+            {
+                base.Draw(_spriteBatch);
             
-            m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
+                m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
+            }
             if (IsStopDown)
             {
                 _spriteBatch.Draw(ReticuleTexture, Position + UI.ThumbStickPointOffset, null, Color.White, 0.0f, new Vector2(7, 7), 1.0f, SpriteEffects.None, 0);
@@ -399,6 +414,23 @@ namespace GameName1
                 WeaponSlot1Magic.CheatEffect.StartEffect(this);
                 WeaponSlot1Magic = null;
             }
+        }
+        private void UpdatePlayerState()
+        {
+            if (m_PlayerState == PlayerState.Damaged)
+            {
+                if (m_HowLongInvincible >= INVINCIBLE_FRAMES)
+                {
+                    m_HowLongInvincible = 0;
+                    m_PlayerState = PlayerState.Normal;
+                    return;
+                }
+                ++m_HowLongInvincible;
+            }
+        }
+        private bool CanDrawWhenFlashing()
+        {
+            return m_HowLongInvincible % INVINCIBLE_FLASH_FRAME != 0;
         }
     }
 }
