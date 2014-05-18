@@ -95,7 +95,7 @@ namespace GameName1
 
         public void Update(TimeSpan timeToDeath, TimeSpan elapsedTime)
         {
-            m_TimeToDeathString = timeToDeath.ToString(@"mm\:ss\:ff");
+            SetTimeToDeath(timeToDeath);
             m_Period = MAX_PERIOD;
             //if (timeToDeath.Seconds <= OSCILLATE_START)
             //{
@@ -209,13 +209,21 @@ namespace GameName1
         public void DrawBackground(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(m_Background, new Vector2(OFFSET, 0), BackGroundHueColor);
-            spriteBatch.DrawString(ColunaFont, m_TimeToDeathString, new Vector2(GameWidth - 175, 300), Color.Red * 0.45f, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3,2), SpriteEffects.None, 0.0f);
+        }
+        public void DrawDeathTimer(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawString(ColunaFont, m_TimeToDeathString, new Vector2(GameWidth - 175, 300), Color.Red * 0.45f, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
         }
 
         public void DrawCountdown(SpriteBatch spriteBatch, TimeSpan countdown)
         {
             string countdownString = countdown.ToString(@"ss");
             spriteBatch.DrawString(ColunaFont, countdownString, new Vector2(GameWidth - 175, 300), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
+        }
+
+        public void SetTimeToDeath(TimeSpan time)
+        {
+            m_TimeToDeathString = time.ToString(@"mm\:ss\:ff");
         }
     }
 }
