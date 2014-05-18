@@ -106,6 +106,7 @@ namespace GameName1
             GlobalObjectManager.LoadContent();
 
             m_song = SoundBank.GetSong("AuraQualic - DATA (FL Studio Remix)");
+            UserInterface.SetTimeToDeath(TimeToDeath);
             isLoaded = true;
             // once the load has finished, we use ResetElapsedTime to tell the game's
             // timing mechanism that we have just finished a very long frame, and that
@@ -146,7 +147,7 @@ namespace GameName1
                     {
                         case GameState.Countdown:
                             m_CountdownTime -= customElapsedTime;
-                            if (m_CountdownTime <= TimeSpan.FromTicks(0))
+                            if (m_CountdownTime < TimeSpan.FromSeconds(1))
                             {
                                 m_GameState = GameState.Playing;
                             }
@@ -157,7 +158,7 @@ namespace GameName1
                                 customElapsedTime = new TimeSpan((long)(customElapsedTime.Ticks * 0.5));
                             }
 
-                            if (TimeToDeath <= TimeSpan.FromSeconds(0))
+                            if (TimeToDeath < TimeSpan.FromSeconds(0))
                             {
                                 //SlowMotion = true;
                                 ResetGame();
@@ -202,7 +203,7 @@ namespace GameName1
         {
             GlobalObjectManager.ResetGame();
             TimeToDeath = TimeSpan.FromSeconds(40);
-            m_CountdownTime = TimeSpan.FromSeconds(5);
+            m_CountdownTime = TimeSpan.FromSeconds(5.5);
             m_GameState = GameState.Countdown;
         }
 
@@ -245,6 +246,7 @@ namespace GameName1
                 case GameState.Playing:
                     _spriteBatch.Begin();
                     UserInterface.DrawBackground(_spriteBatch);
+                    UserInterface.DrawDeathTimer(_spriteBatch);
                     GlobalObjectManager.Draw(_spriteBatch);
                     m_Player.Draw(_spriteBatch);
                     UserInterface.Draw(_spriteBatch, m_Player);
