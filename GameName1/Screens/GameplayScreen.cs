@@ -33,7 +33,8 @@ namespace GameName1
         private enum GameState
         {
             Countdown,
-            Playing
+            Playing,
+            Dying
         }
         #region Fields
 
@@ -43,7 +44,7 @@ namespace GameName1
         public ObjectManager GlobalObjectManager;
         private UI UserInterface = new UI();
         public bool SlowMotion = false;
-        public static TimeSpan TimeToDeath = TimeSpan.FromSeconds(30);
+        public static TimeSpan TimeToDeath;
         private TouchCollection TouchesCollected;
         private bool isLoaded;
         private bool isUpdated;
@@ -105,6 +106,7 @@ namespace GameName1
             GlobalObjectManager.LoadContent();
 
             m_song = SoundBank.GetSong("AuraQualic - DATA (FL Studio Remix)");
+            TimeToDeath = TimeSpan.FromSeconds(30);
             UserInterface.SetTimeToDeath(TimeToDeath);
             isLoaded = true;
             // once the load has finished, we use ResetElapsedTime to tell the game's
@@ -168,7 +170,10 @@ namespace GameName1
                             if (TimeToDeath < TimeSpan.FromSeconds(0))
                             {
                                 //SlowMotion = true;
-                                ResetGame();
+                                //ResetGame();
+                                m_GameState = GameState.Dying;
+                                m_Player.SetPlayerToDyingState();
+                                return;
                             }
                             TimeToDeath -= gameTime.ElapsedGameTime;
                             // TODO: Add your update logic here
@@ -185,7 +190,10 @@ namespace GameName1
                             m_Player.CheckCollisions(out b, m_World);
                             if (b)
                             {
-                                ResetGame();
+                                m_GameState = GameState.Dying;
+                                //lets throw one update in here so we draw with the updated state
+                                m_Player.Update(customElapsedTime);
+                                return;
                             }
 
                             //cleanup dead objects
@@ -193,8 +201,15 @@ namespace GameName1
 
                             m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
                             break;
+                        case GameState.Dying:
+                            if (m_Player.isDead)
+                            {
+                                PushDeathScreen();
+                                return;
+                            }
+                            m_Player.Update(customElapsedTime);
+                            break;
                     }
-                    
                     isUpdated = true;
                 }
                 catch (Exception e)
@@ -210,6 +225,7 @@ namespace GameName1
             TimeToDeath = TimeSpan.FromSeconds(40);
             m_CountdownTime = TimeSpan.FromSeconds(5.5);
             m_GameState = GameState.Countdown;
+            m_Player.ResetPlayer();
         }
 
         /// <summary>
@@ -265,10 +281,23 @@ namespace GameName1
                     UserInterface.DrawCountdown(_spriteBatch, m_CountdownTime);
                     _spriteBatch.End();
                     break;
+                case GameState.Dying:
+                    _spriteBatch.Begin();
+                    UserInterface.DrawBackground(_spriteBatch);
+                    GlobalObjectManager.Draw(_spriteBatch);
+                    m_Player.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    break;
             }
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0)
                 ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
+        }
+        //push the death screen
+        private void PushDeathScreen()
+        {
+            isPaused = true;
+            ScreenManager.AddScreen(new DeathMenu(), null);
         }
         #endregion
     }

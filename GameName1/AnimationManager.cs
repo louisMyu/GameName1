@@ -10,7 +10,6 @@ using System.Runtime.Serialization;
 namespace GameName1
 {
     //got new state setup on refreshed system, checking from refresh
-    //got new state setup on refreshed system, checking from refresh
     //a texture, how many frames the animation should play for, 
     public class AnimationInfo
     {

@@ -23,7 +23,8 @@ namespace GameName1
         private enum PlayerState
         {
             Normal,
-            Damaged
+            Damaged,
+            Dead
         }
         [IgnoreDataMember]
         public static readonly string playerSaveDir = "playerDir";
@@ -72,7 +73,7 @@ namespace GameName1
 
         public bool DrawRedFlash;
         private int m_HowLongInvincible = 0;
-        
+        private Vector2 m_InitialPosition;
         public Player() : base()
         {
 			
@@ -96,11 +97,11 @@ namespace GameName1
             IsStopDown = false;
             DrawRedFlash = false;
         }
-        public void CheckCollisions(out bool reset, World _world)
+        public void CheckCollisions(out bool isDead, World _world)
         {
             //float nearestLength = float.MaxValue;
             DrawRedFlash = false;
-            reset = false;
+            isDead = false;
             List<List<GameObject>> objectsToCheck = ObjectManager.GetCellsOfRectangle(Bounds);
             foreach (List<GameObject> gameObjectList in objectsToCheck)
             {
@@ -135,8 +136,9 @@ namespace GameName1
                             DrawRedFlash = true;
                             if (LifeTotal <= 0)
                             {
-                                reset = true;
-                                LifeTotal = 100;
+                                isDead = true;
+                                //LifeTotal = 100;
+                                m_PlayerState = PlayerState.Dead;
                                 return;
                             }
                             m_PlayerState = PlayerState.Damaged;
@@ -196,6 +198,7 @@ namespace GameName1
         }
         public void LoadContent(World world)
         {
+            m_InitialPosition = Position;
             Texture = TextureBank.GetTexture("Player");
             base.LoadContent();
             m_Weapon.LoadContent();
@@ -258,121 +261,139 @@ namespace GameName1
 
         public void Update(TimeSpan elapsedTime)
         {
-            //must be a better way to do this...
-            foreach (Cheat cheat in m_ActiveEffects)
+            switch (m_PlayerState)
             {
-                if (cheat.IsDone())
-                {
-                    cheat.EndEffect(this);
-                }
-            }
-            m_ActiveEffects.RemoveAll(x => x.IsDone() || x == null);
-            foreach (Cheat cheat in m_ActiveEffects)
-            {
-                if (cheat == null) continue;
-                cheat.Update(this);
-            }
-            UpdatePlayerState();
-            if (!KickedBack && isFireButtonDown && m_Weapon.CanFire())
-            {
-                KickedBack = true;
-                if (m_Weapon is Shotgun)
-                {
-                    Vector2 temp = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle)) * -50;
-                    this._circleBody.ApplyLinearImpulse(temp);
-                }
-            }
-            if (!m_Weapon.Firing && KickedBack)
-            {
-                KickedBack = false;
-            }
-            ObjectManager.GetCell(Position).Remove(this);
-            //should really just use the Sim's position for everything instead of converting from one to another
-            Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
-            if (float.IsNaN(simPosition.X) || float.IsNaN(simPosition.Y))
-            {
-                return;
-            }
-            else
-            {
-                this.Position = simPosition;
-            }
-
-            if (!Input.UseAccelerometer)
-            {
-                if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
-                {
-                    m_Moving = false;
-                }
-            }
-            else
-            {
-                Vector2 acceleration = new Vector2(Input.CurrentAccelerometerValues.X, Input.CurrentAccelerometerValues.Y);
-                if (acceleration.LengthSquared() > Input.Tilt_Threshold)
-                {
-                    m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X * 30, -(Math.Abs(acceleration.X) * VELOCITY), Math.Abs(acceleration.X) * VELOCITY),
-                                                -1 * MathHelper.Clamp(acceleration.Y * 30, -(Math.Abs(acceleration.Y) * VELOCITY), Math.Abs(acceleration.Y) * VELOCITY));
-                    if (!m_Weapon.Firing)
+                case PlayerState.Damaged:
+                case PlayerState.Normal:
+                    UpdatePlayerState();
+                    //must be a better way to do this...
+                    foreach (Cheat cheat in m_ActiveEffects)
                     {
-                        //dont apply rotation unless tilt amount is greater than a threshold
-                        //if (!IsStopDown)
-                        //{
-                        //    RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
-                        //}
-                        //RotationAngle = UI.ThumbStickAngle;
+                        if (cheat.IsDone())
+                        {
+                            cheat.EndEffect(this);
+                        }
                     }
-                }
-                else
-                {
-                    m_MoveToward = new Vector2(0, 0);
-                }
-                if (!m_Weapon.Firing)
-                {
-                    RotationAngle = UI.ThumbStickAngle;
-                }
+                    m_ActiveEffects.RemoveAll(x => x.IsDone() || x == null);
+                    foreach (Cheat cheat in m_ActiveEffects)
+                    {
+                        if (cheat == null) continue;
+                        cheat.Update(this);
+                    }
+                    if (!KickedBack && isFireButtonDown && m_Weapon.CanFire())
+                    {
+                        KickedBack = true;
+                        if (m_Weapon is Shotgun)
+                        {
+                            Vector2 temp = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle)) * -50;
+                            this._circleBody.ApplyLinearImpulse(temp);
+                        }
+                    }
+                    if (!m_Weapon.Firing && KickedBack)
+                    {
+                        KickedBack = false;
+                    }
+                    ObjectManager.GetCell(Position).Remove(this);
+                    //should really just use the Sim's position for everything instead of converting from one to another
+                    Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
+                    if (float.IsNaN(simPosition.X) || float.IsNaN(simPosition.Y))
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        this.Position = simPosition;
+                    }
+
+                    if (!Input.UseAccelerometer)
+                    {
+                        if ((m_MoveToward.X == Position.X && m_MoveToward.Y == Position.Y))
+                        {
+                            m_Moving = false;
+                        }
+                    }
+                    else
+                    {
+                        Vector2 acceleration = new Vector2(Input.CurrentAccelerometerValues.X, Input.CurrentAccelerometerValues.Y);
+                        if (acceleration.LengthSquared() > Input.Tilt_Threshold)
+                        {
+                            m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X * 30, -(Math.Abs(acceleration.X) * VELOCITY), Math.Abs(acceleration.X) * VELOCITY),
+                                                        -1 * MathHelper.Clamp(acceleration.Y * 30, -(Math.Abs(acceleration.Y) * VELOCITY), Math.Abs(acceleration.Y) * VELOCITY));
+                            if (!m_Weapon.Firing)
+                            {
+                                //dont apply rotation unless tilt amount is greater than a threshold
+                                //if (!IsStopDown)
+                                //{
+                                //    RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
+                                //}
+                                //RotationAngle = UI.ThumbStickAngle;
+                            }
+                        }
+                        else
+                        {
+                            m_MoveToward = new Vector2(0, 0);
+                        }
+                        if (!m_Weapon.Firing)
+                        {
+                            RotationAngle = UI.ThumbStickAngle;
+                        }
+                    }
+                    if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
+                    {
+                        Move(m_MoveToward, elapsedTime);
+                    }
+                    else if (m_Moving && !m_Weapon.Firing)
+                    {
+                        Move(m_MoveToward, elapsedTime);
+                    }
+                    if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
+                    {
+                        _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
+                    }
+                    ObjectManager.GetCell(Position).Add(this);
+                    Vector2 playerVel = m_Moving ? m_MoveToward : new Vector2(0, 0);
+                    m_Weapon.Update(Position, playerVel, RotationAngle, 10, isFireButtonDown, elapsedTime);
+                    break;
+                case PlayerState.Dead:
+                    //update animation logic for playing death animation
+                    break;
             }
-            if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
-            {
-                Move(m_MoveToward, elapsedTime);
-            }
-            else if (m_Moving && !m_Weapon.Firing)
-            {
-                Move(m_MoveToward, elapsedTime);
-            }
-            if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
-            {
-                _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
-            }
-            ObjectManager.GetCell(Position).Add(this);
-            Vector2 playerVel = m_Moving ? m_MoveToward : new Vector2(0, 0);
-            m_Weapon.Update(Position, playerVel, RotationAngle, 10, isFireButtonDown, elapsedTime);
         }
 
         public override void Draw(SpriteBatch _spriteBatch)
         {
-            if (IsStopDown)
+            switch (m_PlayerState)
             {
-                Vector2 aimScale = Utilities.GetSpriteScaling(new Vector2(UI.StopButtonRec.Width, UI.StopButtonRec.Height), new Vector2(AimCircleTexture.Width, AimCircleTexture.Height));
-                Texture2D temp;
-                if (UI.ThumbStickPointOffset.LengthSquared() > (UI.StopButtonRec.Width / 2) * (UI.StopButtonRec.Width / 2))
-                {
-                    temp = AimCircleRedTexture;
-                }
-                else
-                {
-                    temp = AimCircleTexture;
-                }
-                _spriteBatch.Draw(temp, Position, null, Color.White, 0.0f, new Vector2(AimCircleTexture.Width / 2, AimCircleTexture.Height / 2), aimScale, SpriteEffects.None, 0);
-            }
-            if ((m_PlayerState != PlayerState.Damaged) || (m_PlayerState == PlayerState.Damaged && CanDrawWhenFlashing())) 
-            {
-                base.Draw(_spriteBatch);
-            
-                m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
-            }
-            if (IsStopDown)
-            {
-                _spriteBatch.Draw(ReticuleTexture, Position + UI.ThumbStickPointOffset, null, Color.White, 0.0f, new Vector2(7, 7), 1.0f, SpriteEffects.None, 0);
+                case PlayerState.Damaged:
+                case PlayerState.Normal:
+                    if (IsStopDown)
+                    {
+                        Vector2 aimScale = Utilities.GetSpriteScaling(new Vector2(UI.StopButtonRec.Width, UI.StopButtonRec.Height), new Vector2(AimCircleTexture.Width, AimCircleTexture.Height));
+                        Texture2D temp;
+                        if (UI.ThumbStickPointOffset.LengthSquared() > (UI.StopButtonRec.Width / 2) * (UI.StopButtonRec.Width / 2))
+                        {
+                            temp = AimCircleRedTexture;
+                        }
+                        else
+                        {
+                            temp = AimCircleTexture;
+                        }
+                        _spriteBatch.Draw(temp, Position, null, Color.White, 0.0f, new Vector2(AimCircleTexture.Width / 2, AimCircleTexture.Height / 2), aimScale, SpriteEffects.None, 0);
+                    }
+                    if ((m_PlayerState != PlayerState.Damaged) || (m_PlayerState == PlayerState.Damaged && CanDrawWhenFlashing()))
+                    {
+                        base.Draw(_spriteBatch);
+
+                        m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
+                    }
+                    if (IsStopDown)
+                    {
+                        _spriteBatch.Draw(ReticuleTexture, Position + UI.ThumbStickPointOffset, null, Color.White, 0.0f, new Vector2(7, 7), 1.0f, SpriteEffects.None, 0);
+                    }
+                    break;
+                case PlayerState.Dead:
+                    PlayDeathAnimation(_spriteBatch);
+                    break;
             }
         }
 
@@ -417,8 +438,9 @@ namespace GameName1
         }
         private void UpdatePlayerState()
         {
-            if (m_PlayerState == PlayerState.Damaged)
+            switch (m_PlayerState)
             {
+                case PlayerState.Damaged:
                 if (m_HowLongInvincible >= INVINCIBLE_FRAMES)
                 {
                     m_HowLongInvincible = 0;
@@ -426,12 +448,40 @@ namespace GameName1
                     return;
                 }
                 ++m_HowLongInvincible;
+                break;
             }
         }
         private bool CanDrawWhenFlashing()
         {
             bool temp = m_HowLongInvincible % INVINCIBLE_FLASH_FRAME != 0;
             return temp;
+        }
+
+        private int m_CurrentDeathFrame = 0;
+        private Color m_CurrentDeathColor = new Color(0,249,0);
+        public bool isDead = false;
+        private void PlayDeathAnimation(SpriteBatch spriteBatch)
+        {
+            m_CurrentDeathColor = new Color(m_CurrentDeathFrame, 249 - m_CurrentDeathFrame, m_CurrentDeathFrame/2);
+            spriteBatch.Draw(Texture, Position, null, m_CurrentDeathColor, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
+            ++m_CurrentDeathFrame;
+            if (m_CurrentDeathFrame >= 250)
+            {
+                isDead = true;
+            }
+        }
+
+        //i should use this to reset the player during a game reset
+        public void ResetPlayer()
+        {
+            isDead = false;
+            m_CurrentDeathFrame = 0;
+            Position = m_InitialPosition;
+        }
+
+        public void SetPlayerToDyingState()
+        {
+            m_PlayerState = PlayerState.Dead;
         }
     }
 }

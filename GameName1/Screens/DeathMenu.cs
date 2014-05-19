@@ -22,19 +22,19 @@ namespace GameName1
             MenuEntry NewGameEntry = new MenuEntry("Try Again");
             MenuEntry UpgradeMenuEntry = new MenuEntry("Upgrade");
             MenuEntry optionsMenuEntry = new MenuEntry("Options");
-            MenuEntry playGameMenuEntry = new MenuEntry("Exit Game");
+            MenuEntry ExitGameMenuEntry = new MenuEntry("Exit Game");
 
             // Hook up menu event handlers.
             NewGameEntry.Selected += NewGameMenuEntrySelected;
             UpgradeMenuEntry.Selected += UpgradeMenuEntrySelected;
-            playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
+            ExitGameMenuEntry.Selected += ExitGameMenuEntrySelected;
             optionsMenuEntry.Selected += OptionsMenuEntrySelected;
 
             // Add entries to the menu.
             MenuEntries.Add(NewGameEntry);
             MenuEntries.Add(UpgradeMenuEntry);
             MenuEntries.Add(optionsMenuEntry);
-            MenuEntries.Add(playGameMenuEntry);
+            MenuEntries.Add(ExitGameMenuEntry);
             IsPopup = true;
         }
 
@@ -51,14 +51,14 @@ namespace GameName1
         /// <summary>
         /// Event handler for when the Play Game menu entry is selected.
         /// </summary>
-        void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        void ExitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            OnCancel();
+            ScreenManager.Game.Exit();
         }
 
         void UpgradeMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-
+            //this should push on the upgrade menu on top of the current menu
         }
         /// <summary>
         /// Event handler for when the Options menu entry is selected.
