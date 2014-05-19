@@ -33,8 +33,7 @@ namespace GameName1
         private enum GameState
         {
             Countdown,
-            Playing,
-            Paused
+            Playing
         }
         #region Fields
 
@@ -48,7 +47,7 @@ namespace GameName1
         private TouchCollection TouchesCollected;
         private bool isLoaded;
         private bool isUpdated;
-
+        private bool isPaused = false;
         private TimeSpan m_CountdownTime;
         Song m_song;
         Random random = new Random();
@@ -138,11 +137,19 @@ namespace GameName1
                                                        bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            if (ScreenState == ScreenState.Active && isPaused)
+            {
+                isPaused = false;
+            }
             if (IsActive)
             {
                 TimeSpan customElapsedTime = gameTime.ElapsedGameTime;
                 try
                 {
+                    if (isPaused)
+                    {
+                        return;
+                    }
                     switch (m_GameState)
                     {
                         case GameState.Countdown:
@@ -186,8 +193,6 @@ namespace GameName1
 
                             m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
                             break;
-                        case GameState.Paused:
-                            break;
                     }
                     
                     isUpdated = true;
@@ -215,7 +220,7 @@ namespace GameName1
         {
             if (input.IsNewKeyPress(Buttons.Back))
             {
-                m_GameState = GameState.Paused;
+                isPaused = true;
                 //ScreenManager.Game.Exit();
                 //return;
                 //this should actually create a menu overlay with the game underneathe
@@ -242,7 +247,6 @@ namespace GameName1
             SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
             switch (m_GameState)
             {
-                case GameState.Paused:
                 case GameState.Playing:
                     _spriteBatch.Begin();
                     UserInterface.DrawBackground(_spriteBatch);

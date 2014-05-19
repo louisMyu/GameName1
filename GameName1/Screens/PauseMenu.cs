@@ -43,7 +43,7 @@ namespace GameName1
         /// </summary>
         void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            OnCancel();
+            ScreenManager.Game.Exit();
         }
 
 
