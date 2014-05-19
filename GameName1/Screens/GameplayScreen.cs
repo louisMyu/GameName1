@@ -121,7 +121,7 @@ namespace GameName1
         /// </summary>
         public override void UnloadContent()
         {
-            content.Unload();
+            //content.Unload();
         }
 
 
@@ -171,6 +171,8 @@ namespace GameName1
                             {
                                 //SlowMotion = true;
                                 //ResetGame();
+                                TimeToDeath = TimeSpan.FromTicks(0);
+                                UserInterface.SetTimeToDeath(TimeToDeath);
                                 m_GameState = GameState.Dying;
                                 m_Player.SetPlayerToDyingState();
                                 return;
@@ -263,6 +265,7 @@ namespace GameName1
             SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
             switch (m_GameState)
             {
+                case GameState.Dying:
                 case GameState.Playing:
                     _spriteBatch.Begin();
                     UserInterface.DrawBackground(_spriteBatch);
@@ -279,13 +282,6 @@ namespace GameName1
                     //m_Player.Draw(_spriteBatch);
                     UserInterface.Draw(_spriteBatch, m_Player);
                     UserInterface.DrawCountdown(_spriteBatch, m_CountdownTime);
-                    _spriteBatch.End();
-                    break;
-                case GameState.Dying:
-                    _spriteBatch.Begin();
-                    UserInterface.DrawBackground(_spriteBatch);
-                    GlobalObjectManager.Draw(_spriteBatch);
-                    m_Player.Draw(_spriteBatch);
                     _spriteBatch.End();
                     break;
             }

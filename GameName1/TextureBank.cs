@@ -33,5 +33,9 @@ namespace GameName1
         {
             TexContent = content;
         }
+        public static void ClearTextureBank()
+        {
+            Bank.Clear();
+        }
     }
 }

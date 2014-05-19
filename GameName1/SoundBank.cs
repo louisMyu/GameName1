@@ -35,5 +35,9 @@ namespace GameName1
         {
             Content = content;
         }
+        public static void ClearSoundBank()
+        {
+            Bank.Clear();
+        }
     }
 }
