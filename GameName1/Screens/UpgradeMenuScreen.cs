@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace GameName1
         MenuEntry languageMenuEntry;
         MenuEntry frobnicateMenuEntry;
         MenuEntry elfMenuEntry;
-
+        Rectangle m_viewPort;
         enum Ungulate
         {
             BactrianCamel,
@@ -42,6 +43,7 @@ namespace GameName1
         public UpgradeMenuScreen()
             : base("Options")
         {
+            m_viewPort = new Rectangle();
             // Create our menu entries.
             ungulateMenuEntry = new MenuEntry(string.Empty);
             languageMenuEntry = new MenuEntry(string.Empty);
