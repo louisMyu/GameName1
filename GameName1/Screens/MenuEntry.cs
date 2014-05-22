@@ -28,7 +28,7 @@ namespace GameName1
         /// <summary>
         /// The text rendered for this entry.
         /// </summary>
-        string text;
+        protected string text;
 
         /// <summary>
         /// Tracks a fading selection effect on the entry.
@@ -36,13 +36,13 @@ namespace GameName1
         /// <remarks>
         /// The entries transition out of the selection effect when they are deselected.
         /// </remarks>
-        float selectionFade;
+        protected float selectionFade;
 
         /// <summary>
         /// The position at which the entry is drawn. This is set by the MenuScreen
         /// each frame in Update.
         /// </summary>
-        Vector2 position;
+        protected Vector2 position;
 
         #endregion
 
