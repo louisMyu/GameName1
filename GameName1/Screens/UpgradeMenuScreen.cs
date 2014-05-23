@@ -16,6 +16,12 @@ namespace GameName1
 
         Rectangle m_viewPort;
 
+        private enum SelectedMenu
+        {
+            Weapon,
+            Cheat,
+            Store
+        }
 
         //static string[] languages = { "C#", "French", "Deoxyribonucleic acid" };
         //static int currentLanguage = 0;
@@ -32,9 +38,14 @@ namespace GameName1
         private const int NUMBER_OF_CATEGORIES = 3;
 
         private Rectangle UpgradeWeaponRec;
+        private MenuCategory UpgradeWeaponCategory;
         private Rectangle UpgradeCheatsRec;
+        private MenuCategory UpgradeCheatsCategory;
         private Rectangle StoreRec;
-        private List<Rectangle> TouchableRectangles = new List<Rectangle>();
+        private MenuCategory StoreCategory;
+        private SelectedMenu m_SelectedMenu;
+
+        private List<MenuCategory> CategoryList = new List<MenuCategory>();
         #endregion
 
         #region Initialization
@@ -49,13 +60,17 @@ namespace GameName1
             CategoryWidth = Viewport.Height / 5;
             CategoryHeight = Viewport.Width / NUMBER_OF_CATEGORIES;
             m_viewPort = new Rectangle(0, CategoryWidth, Viewport.Width, Viewport.Height - CategoryWidth);
-            TouchableRectangles.Add(m_viewPort);
             StoreRec = new Rectangle(0, 0, CategoryHeight, CategoryWidth);
-            TouchableRectangles.Add(StoreRec);
+            StoreCategory = new MenuCategory(StoreRec, "Store", Color.Blue);
+            CategoryList.Add(StoreCategory);
             UpgradeCheatsRec = new Rectangle(0, UpgradeWeaponRec.Height, CategoryWidth, CategoryHeight);
-            TouchableRectangles.Add(UpgradeCheatsRec);
+            UpgradeCheatsCategory = new MenuCategory(UpgradeCheatsRec, "Upgrade Cheats", Color.Red);
+            CategoryList.Add(UpgradeCheatsCategory);
             UpgradeWeaponRec = new Rectangle(0, 0, CategoryWidth, CategoryHeight);
-            TouchableRectangles.Add(UpgradeWeaponRec);
+            UpgradeWeaponCategory = new MenuCategory(UpgradeWeaponRec, "Upgrade Weapons", Color.Beige);
+            CategoryList.Add(UpgradeWeaponCategory);
+
+            m_SelectedMenu = SelectedMenu.Weapon;
         }
 
 
@@ -84,25 +99,43 @@ namespace GameName1
                     Point tapLocation = new Point((int)gesture.Position.X, (int)gesture.Position.Y);
 
                     // iterate the entries to see if any were tapped
-                    foreach (Rectangle rec in TouchableRectangles)
+                    foreach (MenuCategory category in CategoryList)
                     {
-                        if (rec.Contains(tapLocation))
+                        if (category.SelectablelArea.Contains(tapLocation))
                         {
-                            SelectEntry(rec);
+                            category.OnSelectEntry(PlayerIndex.One);
                             return;
                         }
                     }
                 }
             }
         }
-        private void SelectEntry(Rectangle touchedRec)
+        private void UpgradeMenuSelected(object sender, PlayerIndexEventArgs e)
         {
+            m_SelectedMenu = SelectedMenu.Weapon;
+        }
+        private void CheatMenuSelected(object sender, PlayerIndexEventArgs e)
+        {
+            m_SelectedMenu = SelectedMenu.Cheat;
+        }
+        private void StoreMenuSelected(object sender, PlayerIndexEventArgs e)
+        {
+            m_SelectedMenu = SelectedMenu.Store;
         }
         #endregion
         #region Update and Draw
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            switch (m_SelectedMenu)
+            {
+                case SelectedMenu.Weapon:
+                    break;
+                case SelectedMenu.Cheat:
+                    break;
+                case SelectedMenu.Store:
+                    break;
+            }
         }
         public override void Draw(GameTime gameTime)
         {
@@ -113,13 +146,14 @@ namespace GameName1
     //represents a rectangle that can be touched
     class MenuCategory : MenuEntry
     {
-        Color color;
-        Rectangle selectableArea;
+        Color m_color;
+        Rectangle m_selectableArea;
+        public Rectangle SelectablelArea { get { return m_selectableArea; } }
         Texture2D texture;
         public MenuCategory(Rectangle area, string text, Color _color) : base(text)
         {
-            selectableArea = area;
-            color = _color;
+            m_selectableArea = area;
+            m_color = _color;
         }
         public void LoadContent()
         {
@@ -143,7 +177,7 @@ namespace GameName1
             SpriteFont font = screenManager.Font;
 
             Vector2 origin = new Vector2(0, font.LineSpacing / 2);
-            spriteBatch.Draw(texture, selectableArea, color);
+            spriteBatch.Draw(texture, m_selectableArea, m_color);
             spriteBatch.DrawString(font, text, position, color, 0,
                                    origin, 1.0f, SpriteEffects.None, 0);
         }
