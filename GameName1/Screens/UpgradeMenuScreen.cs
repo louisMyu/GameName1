@@ -65,16 +65,22 @@ namespace GameName1
             m_FinalMainScreenRec = new Rectangle(0, CategoryWidth, Viewport.Width, Viewport.Height - CategoryWidth);
             StoreRec = new Rectangle(0, 0, CategoryHeight, CategoryWidth);
             StoreCategory = new MenuCategory(StoreRec, "Store", Color.Blue, m_FinalMainScreenRec);
+            StoreCategory.HandleTap += StoreMenuTapped;
+            StoreCategory.HandleDrag += StoreMenuDragged;
             CategoryList.Add(StoreCategory);
             UpgradeCheatsRec = new Rectangle(StoreRec.X + StoreRec.Width, 0, CategoryHeight, CategoryWidth);
             UpgradeCheatsCategory = new MenuCategory(UpgradeCheatsRec, "Upgrade Cheats", Color.Red, m_FinalMainScreenRec);
+            UpgradeCheatsCategory.HandleTap += CheatMenuTapped;
+            UpgradeCheatsCategory.HandleDrag += CheatMenuDragged;
             CategoryList.Add(UpgradeCheatsCategory);
             UpgradeWeaponRec = new Rectangle(UpgradeCheatsRec.X + UpgradeCheatsRec.Width, 0, CategoryHeight, CategoryWidth);
             UpgradeWeaponCategory = new MenuCategory(UpgradeWeaponRec, "Upgrade Weapons", Color.Beige, m_FinalMainScreenRec);
+            UpgradeWeaponCategory.HandleTap += UpgradeMenuTapped;
+            UpgradeWeaponCategory.HandleDrag += UpgradeMenuDragged;
             CategoryList.Add(UpgradeWeaponCategory);
 
             
-            EnabledGestures = GestureType.Tap & GestureType.HorizontalDrag;
+            EnabledGestures = GestureType.Tap | GestureType.VerticalDrag;
             foreach (MenuCategory category in CategoryList)
             {
                 category.LoadContent();
@@ -82,8 +88,6 @@ namespace GameName1
             m_SelectedMenu = UpgradeWeaponCategory;
             IsPopup = true;
         }
-
-
 
         #endregion
 
@@ -94,6 +98,10 @@ namespace GameName1
         /// </summary>
         public override void HandleInput(Input input)
         {
+            if (ScreenState != ScreenState.Active)
+            {
+                return;
+            }
             // we cancel the current menu screen if the user presses the back button
             if (input.IsNewKeyPress(Buttons.Back))
             {
@@ -122,25 +130,36 @@ namespace GameName1
                         m_SelectedMenu.HandleCategoryTap(tapLocation);
                     }
                 }
-                else if (gesture.GestureType == GestureType.HorizontalDrag)
+                else if (gesture.GestureType == GestureType.VerticalDrag)
                 {
                     m_SelectedMenu.HandleCategoryDrag(gesture);
                 }
             }
         }
-        private void UpgradeMenuSelected(object sender, MenuCategoryEventArgs e)
+        private void UpgradeMenuTapped(object sender, PointEventArgs e)
         {
-            m_SelectedMenu = e.Category;
+            Point point = e.Tap;
         }
-        private void CheatMenuSelected(object sender, MenuCategoryEventArgs e)
+        private void CheatMenuTapped(object sender, PointEventArgs e)
         {
-            m_SelectedMenu = e.Category;
+            Point point = e.Tap;
         }
-        private void StoreMenuSelected(object sender, MenuCategoryEventArgs e)
+        private void StoreMenuTapped(object sender, PointEventArgs e)
         {
-            m_SelectedMenu = e.Category;
+            Point point = e.Tap;
         }
-
+        private void UpgradeMenuDragged(object sender, GestureEventArgs e)
+        {
+            GestureSample gesture = e.Gesture;
+        }
+        private void CheatMenuDragged(object sender, GestureEventArgs e)
+        {
+            GestureSample gesture = e.Gesture;
+        }
+        private void StoreMenuDragged(object sender, GestureEventArgs e)
+        {
+            GestureSample gesture = e.Gesture;
+        }
         #endregion
         #region Update and Draw
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
@@ -238,7 +257,8 @@ namespace GameName1
         public Rectangle CurrentPosition;
         Texture2D texture;
         Texture2D m_SelectedTexture;
-        public new event EventHandler<MenuCategoryEventArgs> Selected;
+        public event EventHandler<GestureEventArgs> HandleDrag;
+        public event EventHandler<PointEventArgs> HandleTap;
         //rectangle representing the area to display this menu's selection of things
         Rectangle m_SelectionRec;
         public MenuCategory(Rectangle area, string text, Color _color, Rectangle selectionArea) : base(text)
@@ -257,18 +277,13 @@ namespace GameName1
         public void Update(GameTime gameTime)
         {
         }
-        protected internal void OnSelectEntry()
-        {
-            if (Selected != null)
-            {
-                Selected(this, new MenuCategoryEventArgs(this));
-            }
-        }
         public void HandleCategoryTap(Point point)
         {
+            HandleTap(this, new PointEventArgs(point));
         }
         public void HandleCategoryDrag(GestureSample gesture)
         {
+            HandleDrag(this, new GestureEventArgs(gesture));
         }
         public void DrawSelection(UpgradeMenuScreen screen, GameTime gameTime, Rectangle where)
         {
@@ -292,13 +307,22 @@ namespace GameName1
                                    origin, 1.0f, SpriteEffects.None, 0);
         }
     }
-    class MenuCategoryEventArgs : EventArgs 
+    class GestureEventArgs : EventArgs
     {
-        MenuCategory m_MenuCategory;
-        public MenuCategoryEventArgs(MenuCategory category) 
+        GestureSample m_GestureSample;
+        public GestureEventArgs(GestureSample gesture)
         {
-            m_MenuCategory = category;
+            m_GestureSample = gesture;
         }
-        public MenuCategory Category {get{return m_MenuCategory;}}
+        public GestureSample Gesture { get { return m_GestureSample; } }
+    }
+    class PointEventArgs : EventArgs
+    {
+        Point m_Point;
+        public PointEventArgs(Point point)
+        {
+            m_Point = point;
+        }
+        public Point Tap { get { return m_Point; } }
     }
 }
