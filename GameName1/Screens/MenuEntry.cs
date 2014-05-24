@@ -77,7 +77,7 @@ namespace GameName1
         /// <summary>
         /// Event raised when the menu entry is selected.
         /// </summary>
-        public event EventHandler<PlayerIndexEventArgs> Selected;
+        public virtual event EventHandler<PlayerIndexEventArgs> Selected;
 
 
         /// <summary>
