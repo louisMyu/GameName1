@@ -34,6 +34,13 @@ namespace GameName1
 
         private SoundEffectInstance m_ReloadSound;
         private AnimationManager m_FireAnimation;
+
+        private int m_ShotgunDamage;
+        public int ShotgunDamage
+        {
+            get { return m_ShotgunDamage; }
+            set { m_ShotgunDamage = value; }
+        }
         public Shotgun() : base()
         {
             Spread = (float)Math.PI / 6;
@@ -47,6 +54,7 @@ namespace GameName1
             Knockback = 250f;
             CanMoveWhileShooting = true;
             BulletsExist = false;
+            m_ShotgunDamage = (int)UpgradeMenuScreen.GetFieldValue(UpgradeMenuScreen.UpgradeField.ShotgunDamage);
         }
 
         public override void LoadContent()
@@ -116,7 +124,7 @@ namespace GameName1
                     if ((enemy = ob as IEnemy) != null)
                     {
                         enemy.ApplyLinearForce(intersectingAngle, Knockback);
-                        enemy.AddToHealth(-10);
+                        enemy.AddToHealth(-m_ShotgunDamage);
                         if (enemy.GetHealth() <= 0)
                         {
                             return true;

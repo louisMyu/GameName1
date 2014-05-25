@@ -12,17 +12,35 @@ namespace GameName1
 {
     class UpgradeMenuScreen : GameScreen
     {
+        private static Dictionary<UpgradeField, object> Upgrade_List = new Dictionary<UpgradeField, object>();
+        public static void LoadUpgradeFields()
+        {
+            Upgrade_List.Add(UpgradeField.ShotgunDamage, 10);
+        }
+        public static object GetFieldValue(UpgradeField field)
+        {
+            if (Upgrade_List[field] != null)
+            {
+                return Upgrade_List[field];
+            }
+            throw new NullReferenceException();
+        }
         #region Fields
 
         Rectangle m_FinalMainScreenRec;
         Rectangle m_CurrentMainScreenRec;
+
+
         private enum SelectedMenu
         {
             Weapon,
             Cheat,
             Store
         }
-
+        public enum UpgradeField
+        {
+            ShotgunDamage
+        }
         //static string[] languages = { "C#", "French", "Deoxyribonucleic acid" };
         //static int currentLanguage = 0;
 
@@ -64,22 +82,22 @@ namespace GameName1
             CategoryHeight = Viewport.Width / NUMBER_OF_CATEGORIES;
             m_FinalMainScreenRec = new Rectangle(0, CategoryWidth, Viewport.Width, Viewport.Height - CategoryWidth);
             StoreRec = new Rectangle(0, 0, CategoryHeight, CategoryWidth);
-            StoreCategory = new MenuCategory(StoreRec, "Store", Color.Blue, m_FinalMainScreenRec);
+            StoreCategory = CreateStoreMenu();
             StoreCategory.HandleTap += StoreMenuTapped;
             StoreCategory.HandleDrag += StoreMenuDragged;
             CategoryList.Add(StoreCategory);
             UpgradeCheatsRec = new Rectangle(StoreRec.X + StoreRec.Width, 0, CategoryHeight, CategoryWidth);
-            UpgradeCheatsCategory = new MenuCategory(UpgradeCheatsRec, "Upgrade Cheats", Color.Red, m_FinalMainScreenRec);
+            UpgradeCheatsCategory = CreateCheatUpgradeMenu();
             UpgradeCheatsCategory.HandleTap += CheatMenuTapped;
             UpgradeCheatsCategory.HandleDrag += CheatMenuDragged;
             CategoryList.Add(UpgradeCheatsCategory);
             UpgradeWeaponRec = new Rectangle(UpgradeCheatsRec.X + UpgradeCheatsRec.Width, 0, CategoryHeight, CategoryWidth);
-            UpgradeWeaponCategory = new MenuCategory(UpgradeWeaponRec, "Upgrade Weapons", Color.Beige, m_FinalMainScreenRec);
+            UpgradeWeaponCategory = CreateWeaponUpgradeMenu();
             UpgradeWeaponCategory.HandleTap += UpgradeMenuTapped;
             UpgradeWeaponCategory.HandleDrag += UpgradeMenuDragged;
             CategoryList.Add(UpgradeWeaponCategory);
 
-            
+
             EnabledGestures = GestureType.Tap | GestureType.VerticalDrag;
             foreach (MenuCategory category in CategoryList)
             {
@@ -161,6 +179,7 @@ namespace GameName1
             GestureSample gesture = e.Gesture;
         }
         #endregion
+
         #region Update and Draw
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
@@ -247,10 +266,29 @@ namespace GameName1
             spriteBatch.End();
         }
         #endregion
+
+        private MenuCategory CreateWeaponUpgradeMenu()
+        {
+            MenuCategory menu = new MenuCategory(UpgradeWeaponRec, "Upgrade Weapons", Color.Beige, m_FinalMainScreenRec);
+            UpgradeSlot shotgunSlot = new UpgradeSlot(TextureBank.GetTexture("GSMbackground"), "Shotgun description");
+            WidgetTree tree = new WidgetTree();
+            return menu;
+        }
+        private MenuCategory CreateCheatUpgradeMenu()
+        {
+            MenuCategory menu = new MenuCategory(UpgradeCheatsRec, "Upgrade Cheats", Color.Red, m_FinalMainScreenRec);
+            return menu;
+        }
+        private MenuCategory CreateStoreMenu()
+        {
+            MenuCategory menu = new MenuCategory(StoreRec, "Store", Color.Blue, m_FinalMainScreenRec);
+            return menu;
+        }
     }
     //represents a rectangle that can be touched
     class MenuCategory : MenuEntry
     {
+        List<UpgradeSlot> m_UpgradeSlots;
         Color m_color;
         Rectangle m_selectableArea;
         public Rectangle SelectableArea { get { return m_selectableArea; } }
@@ -273,7 +311,10 @@ namespace GameName1
             texture = ScreenManager.Game.Content.Load<Texture2D>("GSMbackground");
             m_SelectedTexture = ScreenManager.Game.Content.Load<Texture2D>("GSMbackground");
         }
-
+        public void SetUpgradeSlot(List<UpgradeSlot> slots)
+        {
+            m_UpgradeSlots = slots;
+        }
         public void Update(GameTime gameTime)
         {
         }
@@ -307,6 +348,30 @@ namespace GameName1
                                    origin, 1.0f, SpriteEffects.None, 0);
         }
     }
+    class UpgradeSlot
+    {
+        Texture2D UpgradeButtonTexture;
+        WidgetTree Widgets;
+        string m_Description;
+        public UpgradeSlot(Texture2D icon, string description)
+        {
+            UpgradeButtonTexture = TextureBank.GetTexture("GSMbackground");
+            m_Description = description;
+        }
+        public void SetWidgetTree(WidgetTree widg)
+        {
+            Widgets = widg;
+            
+        }
+        public void Draw(SpriteBatch _spriteBatch)
+        {
+            Widgets.StartDrawWidgets(_spriteBatch);
+        }
+        public void Update(float xDelta, float yDelta)
+        {
+            Widgets.UpdatePositions(new Vector2(xDelta, yDelta));
+        }
+    }
     class GestureEventArgs : EventArgs
     {
         GestureSample m_GestureSample;
@@ -325,4 +390,5 @@ namespace GameName1
         }
         public Point Tap { get { return m_Point; } }
     }
+    
 }
