@@ -79,7 +79,7 @@ namespace GameName1
             CategoryWidth = Viewport.Height / 5;
             CategoryHeight = Viewport.Width / NUMBER_OF_CATEGORIES;
             m_FinalMainScreenRec = new Rectangle(0, CategoryWidth, Viewport.Width, Viewport.Height - CategoryWidth);
-            MenuSelectionTotalArea = new Rectangle(0, 0, Viewport.Width, Viewport.Height - CategoryWidth + 200);
+            MenuSelectionTotalArea = new Rectangle(0, 0, Viewport.Width, Viewport.Height - CategoryWidth);
             m_CurrentMainScreenRec = m_FinalMainScreenRec;
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
             if (ScreenState == ScreenState.TransitionOn)
@@ -213,7 +213,20 @@ namespace GameName1
             // power curve to make things look more interesting (this makes
             // the movement slow down as it nears the end).
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
+            int deltaX, deltaY;
+            deltaX = 0;
 
+            //do a fade for the actual selection area of the categories
+            m_CurrentMainScreenRec = m_FinalMainScreenRec;
+            if (ScreenState == ScreenState.TransitionOn)
+            {
+                deltaY = (int)(transitionOffset * 720);
+            }
+            else
+            {
+                deltaY = (int)(transitionOffset * 960);
+            }
+            m_CurrentMainScreenRec.Y += deltaY;
             // update each menu entry's location in turn
             for (int i = 0; i < CategoryList.Count; i++)
             {
@@ -233,19 +246,8 @@ namespace GameName1
                 category.CurrentPosition.Y = (int)position.Y;
                 //// move down for the next entry the size of this entry plus our padding
                 //position.Y += category.GetHeight(this) + (menuEntryPadding * 2);
-                category.UpdatePosition(m_CurrentMainScreenRec);
+                category.UpdatePosition(m_CurrentMainScreenRec, deltaX, deltaY);
             }
-            //do a fade for the actual selection area of the categories
-            m_CurrentMainScreenRec = m_FinalMainScreenRec;
-            if (ScreenState == ScreenState.TransitionOn)
-            {
-                m_CurrentMainScreenRec.Y += (int)(transitionOffset * 720);
-            }
-            else
-            {
-                m_CurrentMainScreenRec.Y += (int)(transitionOffset * 960);
-            }
-
             
         }
         public override void Draw(GameTime gameTime)
@@ -258,7 +260,7 @@ namespace GameName1
             SpriteFont font = ScreenManager.Font;
 
             spriteBatch.Begin();
-
+            m_SelectedMenu.DrawSelection(this, gameTime);
             // Draw each menu entry in turn.
             for (int i = 0; i < CategoryList.Count; i++)
             {
@@ -283,7 +285,6 @@ namespace GameName1
 
             //spriteBatch.DrawString(font, menuTitle, titlePosition, titleColor, 0,
             //                       titleOrigin, titleScale, SpriteEffects.None, 0);
-            m_SelectedMenu.DrawSelection(this, gameTime);
             spriteBatch.End();
         }
         #endregion
@@ -298,11 +299,10 @@ namespace GameName1
             //base widget tree
             for (int i = 0; i < NumberOfWeapons; ++i)
             {
-                Rectangle temp = new Rectangle(MenuSelectionTotalArea.X, MenuSelectionTotalArea.Y + (SelectionUpgradeWidth*i), MenuSelectionTotalArea.Width, SelectionUpgradeWidth);
+                Rectangle temp = new Rectangle(0, 0, MenuSelectionTotalArea.Width, SelectionUpgradeWidth);
                 WidgetTree tree = new WidgetTree(temp);
-                if (i==0)
-                tree.AddDrawArea(new Rectangle(396,(SelectionUpgradeWidth*i) + (SelectionUpgradeWidth/2), SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
-                Rectangle currentSlotPosition = new Rectangle(m_CurrentMainScreenRec.X, m_CurrentMainScreenRec.Y + (SelectionUpgradeWidth*i), temp.Width, temp.Height);
+                tree.AddDrawArea(new Rectangle(396, 100, SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
+                Rectangle currentSlotPosition = new Rectangle(m_FinalMainScreenRec.X, m_FinalMainScreenRec.Y + (SelectionUpgradeWidth * i), temp.Width, temp.Height);
                 UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition, new Color(250 - (75*i),75*i,50-(i*10)));
                 slot.SetWidgetTree(tree);
                 upgradeSlots.Add(slot);
@@ -354,14 +354,14 @@ namespace GameName1
         {
             m_UpgradeSlots = slots;
         }
-        public void UpdatePosition(Rectangle where)
+        public void UpdatePosition(Rectangle where, int deltaX, int deltaY)
         {
             CurrentSelectionAreaRec = where;
             if (m_UpgradeSlots != null)
             {
                 foreach (UpgradeSlot slot in m_UpgradeSlots)
                 {
-                    slot.Update(where);
+                    slot.Update(deltaX, deltaY);
                 }
             }
         }
@@ -408,12 +408,13 @@ namespace GameName1
         WidgetTree Widgets;
         Color color;
         string m_Description;
-        private Rectangle Container;
+        private Rectangle FinalContainer;
+        private Rectangle CurrentContainer;
         public UpgradeSlot(string description, Rectangle baseContainer, Color c)
         {
             m_Description = description;
             color = c;
-            Container = baseContainer;
+            FinalContainer = baseContainer;
         }
         public void SetWidgetTree(WidgetTree widg)
         {
@@ -422,13 +423,16 @@ namespace GameName1
         }
         public void Draw(SpriteBatch _spriteBatch)
         {
-            Widgets.StartDrawWidgets(_spriteBatch, Container, color);
+            Widgets.StartDrawWidgets(_spriteBatch, CurrentContainer, color);
         }
-        public void Update(Rectangle where)
+        public void Update(int deltaX, int deltaY)
         {
-            Vector2 delta = new Vector2(where.X - Container.X, where.Y - Container.Y);
-            Container.X += (int)Math.Round(delta.X);
-            Container.Y += (int)Math.Round(delta.Y);
+            CurrentContainer = FinalContainer;
+            CurrentContainer.X += deltaX;
+            CurrentContainer.Y += deltaY;
+            //Vector2 delta = new Vector2(where.X - FinalContainer.X, where.Y - FinalContainer.Y);
+            //FinalContainer.X += (int)Math.Round(delta.X);
+            //FinalContainer.Y += (int)Math.Round(delta.Y);
             //Widgets.UpdatePositions(delta);
         }
     }
