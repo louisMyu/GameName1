@@ -218,7 +218,7 @@ namespace GameName1
         public void DrawCountdown(SpriteBatch spriteBatch, TimeSpan countdown)
         {
             string countdownString = countdown.ToString(@"ss");
-            spriteBatch.DrawString(ColunaFont, countdownString, new Vector2(GameWidth - 175, 300), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
+            spriteBatch.DrawString(ColunaFont, countdownString, new Vector2(GameWidth - 175, 500), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
         }
 
         public void SetTimeToDeath(TimeSpan time)

@@ -42,11 +42,13 @@ namespace GameName1
         private List<WidgetTree> Children;
         private List<Rectangle> HitableObjects;
         private Dictionary<Rectangle, Texture2D> DrawableAreas;
-        public WidgetTree()
+        private Rectangle BaseContainer;
+        public WidgetTree(Rectangle baseArea)
         {
             Children = null;
             HitableObjects = new List<Rectangle>();
             DrawableAreas = new Dictionary<Rectangle, Texture2D>();
+            BaseContainer = baseArea;
         }
         public void AddHitArea(Rectangle rec)
         {
@@ -77,6 +79,7 @@ namespace GameName1
         {
             Children.Add(widgetTree);
         }
+        //returns an empty rectangle on false
         public Rectangle CheckCollision(Point p)
         {
             if (Children != null)
@@ -85,7 +88,7 @@ namespace GameName1
                 {
                     Rectangle temp;
                     temp = tree.CheckCollision(p);
-                    if (temp.Width != 0)
+                    if (temp.Width > 0)
                     {
                         return temp;
                     }
@@ -100,13 +103,14 @@ namespace GameName1
             }
             return new Rectangle();
         }
-        public void StartDrawWidgets(SpriteBatch _spriteBatch)
+        //this color parameter needs to be removed in the future
+        public void StartDrawWidgets(SpriteBatch _spriteBatch, Rectangle where, Color c)
         {
             Queue<WidgetTree> queue = new Queue<WidgetTree>();
             queue.Enqueue(this);
             while (queue.Count > 0) {
                 WidgetTree child = queue.Dequeue();
-                child.DrawWidgets(_spriteBatch);
+                child.DrawWidgets(_spriteBatch, where, c);
                 if (child.Children != null) 
                 {
                     foreach (WidgetTree widgetTree in child.Children)
@@ -116,11 +120,17 @@ namespace GameName1
                 }
             }
         }
-        private void DrawWidgets(SpriteBatch _spriteBatch)
+        //TODO: Remove this color parameter
+        private void DrawWidgets(SpriteBatch _spriteBatch, Rectangle where, Color c)
         {
+            Rectangle temp = new Rectangle();
             foreach (KeyValuePair<Rectangle, Texture2D> entry in DrawableAreas)
             {
-                _spriteBatch.Draw(entry.Value, entry.Key, Color.White);
+                temp = entry.Key;
+                temp.X += (BaseContainer.X + where.X);
+                temp.Y += (BaseContainer.Y + where.Y);
+                _spriteBatch.Draw(entry.Value, temp, null, c, Utilities.DegreesToRadians(90f), new Vector2((temp.Width / 2), (temp.Height / 2)), SpriteEffects.None, 0);
+                //_spriteBatch.Draw(entry.Value, temp, c);
             }
         }
     }
