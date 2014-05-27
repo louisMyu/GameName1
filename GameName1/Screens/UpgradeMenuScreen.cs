@@ -62,6 +62,8 @@ namespace GameName1
         private List<MenuCategory> CategoryList = new List<MenuCategory>();
 
         private Rectangle MenuSelectionTotalArea;
+
+        RenderTarget2D SelectionScreenTexture;
         #endregion
 
         #region Initialization
@@ -99,16 +101,16 @@ namespace GameName1
             UpgradeCheatsRec = new Rectangle(StoreRec.X + StoreRec.Width, 0, CategoryHeight, CategoryWidth);
             UpgradeCheatsCategory = CreateCheatUpgradeMenu();
             UpgradeCheatsCategory.HandleTap += CheatMenuTapped;
-            UpgradeCheatsCategory.HandleDrag += CheatMenuDragged;
+            UpgradeCheatsCategory.HandleDrag += ScrollMenuDragged;
             CategoryList.Add(UpgradeCheatsCategory);
             UpgradeWeaponRec = new Rectangle(UpgradeCheatsRec.X + UpgradeCheatsRec.Width, 0, CategoryHeight, CategoryWidth);
             UpgradeWeaponCategory = CreateWeaponUpgradeMenu();
             UpgradeWeaponCategory.HandleTap += UpgradeMenuTapped;
-            UpgradeWeaponCategory.HandleDrag += UpgradeMenuDragged;
+            UpgradeWeaponCategory.HandleDrag += ScrollMenuDragged;
             CategoryList.Add(UpgradeWeaponCategory);
 
 
-            EnabledGestures = GestureType.Tap | GestureType.VerticalDrag;
+            EnabledGestures = GestureType.Tap | GestureType.VerticalDrag | GestureType.Flick;
             foreach (MenuCategory category in CategoryList)
             {
                 category.LoadContent();
@@ -124,7 +126,7 @@ namespace GameName1
                     m_SelectedMenu = StoreCategory;
                     break;
             }
-            
+            SelectionScreenTexture = new RenderTarget2D(ScreenManager.GraphicsDevice, m_FinalMainScreenRec.Width, m_FinalMainScreenRec.Height);
             IsPopup = true;
         }
 
@@ -174,6 +176,10 @@ namespace GameName1
                 {
                     m_SelectedMenu.HandleCategoryDrag(gesture);
                 }
+                else if (gesture.GestureType == GestureType.Flick)
+                {
+
+                }
             }
         }
         private void UpgradeMenuTapped(object sender, PointEventArgs e)
@@ -188,13 +194,17 @@ namespace GameName1
         {
             Point point = e.Tap;
         }
-        private void UpgradeMenuDragged(object sender, GestureEventArgs e)
+        private void ScrollMenuDragged(object sender, GestureEventArgs e)
         {
             GestureSample gesture = e.Gesture;
+            MenuCategory category = (MenuCategory)sender;
+            category.UpdateSlotPosition((int)gesture.Delta.X, (int)gesture.Delta.Y);
         }
-        private void CheatMenuDragged(object sender, GestureEventArgs e)
+        private void ScrollMenuFlicked(object sender, GestureEventArgs e)
         {
             GestureSample gesture = e.Gesture;
+            MenuCategory category = (MenuCategory)sender;
+            category.UpdateSlotPosition((int)gesture.Delta.X, (int)gesture.Delta.Y);
         }
         private void StoreMenuDragged(object sender, GestureEventArgs e)
         {
@@ -246,7 +256,6 @@ namespace GameName1
                 category.CurrentPosition.Y = (int)position.Y;
                 //// move down for the next entry the size of this entry plus our padding
                 //position.Y += category.GetHeight(this) + (menuEntryPadding * 2);
-                category.UpdatePosition(m_CurrentMainScreenRec, deltaX, deltaY);
             }
             
         }
@@ -258,9 +267,13 @@ namespace GameName1
             GraphicsDevice graphics = ScreenManager.GraphicsDevice;
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
             SpriteFont font = ScreenManager.Font;
-
+            graphics.SetRenderTarget(SelectionScreenTexture);
             spriteBatch.Begin();
             m_SelectedMenu.DrawSelection(this, gameTime);
+            spriteBatch.End();
+            graphics.SetRenderTarget(null);
+            spriteBatch.Begin();
+            spriteBatch.Draw(SelectionScreenTexture, m_CurrentMainScreenRec, Color.White);
             // Draw each menu entry in turn.
             for (int i = 0; i < CategoryList.Count; i++)
             {
@@ -294,15 +307,15 @@ namespace GameName1
         {
             int NumberOfWeapons = 4;
             SelectionUpgradeWidth = MenuSelectionTotalArea.Height / NumberOfWeapons;
-            MenuCategory menu = new MenuCategory("Weapons", UpgradeWeaponRec, "Upgrade Weapons", Color.Beige, m_FinalMainScreenRec);
+            Rectangle temp = new Rectangle(0, 0, MenuSelectionTotalArea.Width, SelectionUpgradeWidth);
+            MenuCategory menu = new MenuCategory("Weapons", UpgradeWeaponRec, "Upgrade Weapons", Color.Beige, MenuSelectionTotalArea);
             List<UpgradeSlot> upgradeSlots = new List<UpgradeSlot>();
             //base widget tree
             for (int i = 0; i < NumberOfWeapons; ++i)
             {
-                Rectangle temp = new Rectangle(0, 0, MenuSelectionTotalArea.Width, SelectionUpgradeWidth);
                 WidgetTree tree = new WidgetTree(temp);
                 tree.AddDrawArea(new Rectangle(396, 100, SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
-                Rectangle currentSlotPosition = new Rectangle(m_FinalMainScreenRec.X, m_FinalMainScreenRec.Y + (SelectionUpgradeWidth * i), temp.Width, temp.Height);
+                Rectangle currentSlotPosition = new Rectangle(0, (SelectionUpgradeWidth * i), temp.Width, temp.Height);
                 UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition, new Color(250 - (75*i),75*i,50-(i*10)));
                 slot.SetWidgetTree(tree);
                 upgradeSlots.Add(slot);
@@ -312,12 +325,27 @@ namespace GameName1
         }
         private MenuCategory CreateCheatUpgradeMenu()
         {
-            MenuCategory menu = new MenuCategory("Cheats", UpgradeCheatsRec, "Upgrade Cheats", Color.Red, m_FinalMainScreenRec);
+            int NumberOfCheats = 6;
+            SelectionUpgradeWidth = MenuSelectionTotalArea.Height / NumberOfCheats;
+            Rectangle temp = new Rectangle(0, 0, MenuSelectionTotalArea.Width, SelectionUpgradeWidth);
+            MenuCategory menu = new MenuCategory("Cheats", UpgradeCheatsRec, "Upgrade Cheats", Color.Red, MenuSelectionTotalArea);
+            List<UpgradeSlot> upgradeSlots = new List<UpgradeSlot>();
+            //base widget tree
+            for (int i = 0; i < NumberOfCheats; ++i)
+            {
+                WidgetTree tree = new WidgetTree(temp);
+                tree.AddDrawArea(new Rectangle(396, 100, SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
+                Rectangle currentSlotPosition = new Rectangle(0, (SelectionUpgradeWidth * i), temp.Width, temp.Height);
+                UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition, new Color(250 - (75 * i), 75 * i, 50 - (i * 10)));
+                slot.SetWidgetTree(tree);
+                upgradeSlots.Add(slot);
+            }
+            menu.SetUpgradeSlot(upgradeSlots);
             return menu;
         }
         private MenuCategory CreateStoreMenu()
         {
-            MenuCategory menu = new MenuCategory("Store", StoreRec, "Store", Color.Blue, m_FinalMainScreenRec);
+            MenuCategory menu = new MenuCategory("Store", StoreRec, "Store", Color.Blue, MenuSelectionTotalArea);
             return menu;
         }
     }
@@ -342,8 +370,9 @@ namespace GameName1
             Type = type;
             m_selectableArea = area;
             m_color = _color;
-            m_SelectionRec = selectionArea;
+            m_SelectionRec = new Rectangle(0,0, area.Width, area.Height);
             CurrentPosition = new Rectangle(0, 0, area.Width, area.Height);
+            CurrentSelectionAreaRec = selectionArea;
         }
         public void LoadContent()
         {
@@ -354,9 +383,8 @@ namespace GameName1
         {
             m_UpgradeSlots = slots;
         }
-        public void UpdatePosition(Rectangle where, int deltaX, int deltaY)
+        public void UpdateSlotPosition(int deltaX, int deltaY)
         {
-            CurrentSelectionAreaRec = where;
             if (m_UpgradeSlots != null)
             {
                 foreach (UpgradeSlot slot in m_UpgradeSlots)
@@ -409,7 +437,6 @@ namespace GameName1
         Color color;
         string m_Description;
         private Rectangle FinalContainer;
-        private Rectangle CurrentContainer;
         public UpgradeSlot(string description, Rectangle baseContainer, Color c)
         {
             m_Description = description;
@@ -423,16 +450,12 @@ namespace GameName1
         }
         public void Draw(SpriteBatch _spriteBatch)
         {
-            Widgets.StartDrawWidgets(_spriteBatch, CurrentContainer, color);
+            Widgets.StartDrawWidgets(_spriteBatch, FinalContainer, color);
         }
         public void Update(int deltaX, int deltaY)
         {
-            CurrentContainer = FinalContainer;
-            CurrentContainer.X += deltaX;
-            CurrentContainer.Y += deltaY;
-            //Vector2 delta = new Vector2(where.X - FinalContainer.X, where.Y - FinalContainer.Y);
-            //FinalContainer.X += (int)Math.Round(delta.X);
-            //FinalContainer.Y += (int)Math.Round(delta.Y);
+            FinalContainer.X += (deltaX);
+            FinalContainer.Y += (deltaY);
             //Widgets.UpdatePositions(delta);
         }
     }

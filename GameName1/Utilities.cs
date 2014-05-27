@@ -60,6 +60,8 @@ namespace GameName1
         }
         public void UpdatePositions(Vector2 delta)
         {
+            BaseContainer.X += (int)delta.X;
+            BaseContainer.Y += (int)delta.Y;
             for (int x = 0; x < HitableObjects.Count; ++x)
             {
                 Rectangle rec = HitableObjects[x];
