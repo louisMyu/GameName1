@@ -286,7 +286,7 @@ namespace GameName1
                     break;
             }
             // If the game is transitioning on or off, fade it out to black.
-            if (TransitionPosition > 0)
+            if (TransitionPosition > 0 && !isPaused)
                 ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
         }
         //push the death screen

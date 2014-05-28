@@ -131,7 +131,7 @@ namespace GameName1
                 temp = entry.Key;
                 temp.X += (BaseContainer.X + where.X);
                 temp.Y += (BaseContainer.Y + where.Y);
-                _spriteBatch.Draw(entry.Value, temp, null, c, Utilities.DegreesToRadians(90f), new Vector2((temp.Width / 2), (temp.Height / 2)), SpriteEffects.None, 0);
+                _spriteBatch.Draw(entry.Value, temp, null, c, Utilities.DegreesToRadians(90f), new Vector2((entry.Value.Width / 2), (entry.Value.Height / 2)), SpriteEffects.None, 0);
                 //_spriteBatch.Draw(entry.Value, temp, c);
             }
         }

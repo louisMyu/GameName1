@@ -133,7 +133,6 @@ namespace GameName1
                         {
                             IEnemy enemy = ob as IEnemy;
                             LifeTotal -= enemy.GetDamageAmount();
-                            DrawRedFlash = true;
                             if (LifeTotal <= 0)
                             {
                                 isDead = true;
@@ -142,6 +141,7 @@ namespace GameName1
                                 return;
                             }
                             m_PlayerState = PlayerState.Damaged;
+                            DrawRedFlash = true;
                         }
                         if (ob is PowerUp)
                         {

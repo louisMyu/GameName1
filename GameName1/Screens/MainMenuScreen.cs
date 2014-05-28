@@ -72,6 +72,13 @@ namespace GameName1
         {
             ScreenManager.Game.Exit();
         }
+        /// <summary>
+        /// When the user cancels the main menu, we exit the game.
+        /// </summary>
+        protected override void OnCancel()
+        {
+            ScreenManager.Game.Exit();
+        }
 
 
         #endregion

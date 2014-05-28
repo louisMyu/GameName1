@@ -204,7 +204,10 @@ namespace GameName1
         {
             GestureSample gesture = e.Gesture;
             MenuCategory category = (MenuCategory)sender;
-            category.UpdateSlotPosition((int)gesture.Delta.X, (int)gesture.Delta.Y);
+            
+            //it wont be as simple as just passing a single value, the flick event
+            //occurs only once, but the position needs to be updated multiple times even after the flick happens
+            //category.UpdateSlotPosition((int)gesture.Delta.X, (int)gesture.Delta.Y);
         }
         private void StoreMenuDragged(object sender, GestureEventArgs e)
         {
@@ -216,6 +219,15 @@ namespace GameName1
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            // make sure our entries are in the right place before we draw them
+            UpdateMenuLocations();
+            GraphicsDevice graphics = ScreenManager.GraphicsDevice;
+            SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
+            graphics.SetRenderTarget(SelectionScreenTexture);
+            spriteBatch.Begin();
+            m_SelectedMenu.DrawSelection(this, gameTime);
+            spriteBatch.End();
+            graphics.SetRenderTarget(null);
         }
         private void UpdateMenuLocations()
         {
@@ -261,17 +273,12 @@ namespace GameName1
         }
         public override void Draw(GameTime gameTime)
         {
-            // make sure our entries are in the right place before we draw them
-            UpdateMenuLocations();
+            
 
             GraphicsDevice graphics = ScreenManager.GraphicsDevice;
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
             SpriteFont font = ScreenManager.Font;
-            graphics.SetRenderTarget(SelectionScreenTexture);
-            spriteBatch.Begin();
-            m_SelectedMenu.DrawSelection(this, gameTime);
-            spriteBatch.End();
-            graphics.SetRenderTarget(null);
+            
             spriteBatch.Begin();
             spriteBatch.Draw(SelectionScreenTexture, m_CurrentMainScreenRec, Color.White);
             // Draw each menu entry in turn.
@@ -314,7 +321,7 @@ namespace GameName1
             for (int i = 0; i < NumberOfWeapons; ++i)
             {
                 WidgetTree tree = new WidgetTree(temp);
-                tree.AddDrawArea(new Rectangle(396, 100, SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
+                tree.AddDrawArea(new Rectangle(Viewport.Width/2, SelectionUpgradeWidth/2, SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
                 Rectangle currentSlotPosition = new Rectangle(0, (SelectionUpgradeWidth * i), temp.Width, temp.Height);
                 UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition, new Color(250 - (75*i),75*i,50-(i*10)));
                 slot.SetWidgetTree(tree);
@@ -334,7 +341,7 @@ namespace GameName1
             for (int i = 0; i < NumberOfCheats; ++i)
             {
                 WidgetTree tree = new WidgetTree(temp);
-                tree.AddDrawArea(new Rectangle(396, 100, SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
+                tree.AddDrawArea(new Rectangle(Viewport.Width / 2, SelectionUpgradeWidth / 2, SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
                 Rectangle currentSlotPosition = new Rectangle(0, (SelectionUpgradeWidth * i), temp.Width, temp.Height);
                 UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition, new Color(250 - (75 * i), 75 * i, 50 - (i * 10)));
                 slot.SetWidgetTree(tree);
