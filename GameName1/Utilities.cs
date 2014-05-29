@@ -41,22 +41,28 @@ namespace GameName1
     {
         private List<WidgetTree> Children;
         private List<Rectangle> HitableObjects;
-        private Dictionary<Rectangle, Texture2D> DrawableAreas;
+        private Dictionary<Rectangle, ColorTexture> DrawableAreas;
+        private Dictionary<Rectangle, ColorString> DrawableTexts;
         private Rectangle BaseContainer;
         public WidgetTree(Rectangle baseArea)
         {
             Children = null;
             HitableObjects = new List<Rectangle>();
-            DrawableAreas = new Dictionary<Rectangle, Texture2D>();
+            DrawableAreas = new Dictionary<Rectangle, ColorTexture>();
+            DrawableTexts = new Dictionary<Rectangle, ColorString>();
             BaseContainer = baseArea;
         }
         public void AddHitArea(Rectangle rec)
         {
             HitableObjects.Add(rec);
         }
-        public void AddDrawArea(Rectangle area, Texture2D tex)
+        public void AddDrawArea(Rectangle area, ColorTexture tex)
         {
             DrawableAreas.Add(area, tex);
+        }
+        public void AddTextArea(Rectangle area, string text)
+        {
+            
         }
         public void UpdatePositions(Vector2 delta)
         {
@@ -79,6 +85,10 @@ namespace GameName1
         }
         public void AddWidgetTree(WidgetTree widgetTree)
         {
+            if (Children == null)
+            {
+                Children = new List<WidgetTree>();
+            }
             Children.Add(widgetTree);
         }
         //returns an empty rectangle on false
@@ -98,7 +108,8 @@ namespace GameName1
             }
             foreach (Rectangle rec in HitableObjects)
             {
-                if (rec.Contains(p))
+                Rectangle trueRec = new Rectangle(rec.X - (rec.Width/2) + BaseContainer.X, rec.Y - (rec.Height/2) + BaseContainer.Y, rec.Width, rec.Height);
+                if (trueRec.Contains(p))
                 {
                     return rec;
                 }
@@ -106,13 +117,13 @@ namespace GameName1
             return new Rectangle();
         }
         //this color parameter needs to be removed in the future
-        public void StartDrawWidgets(SpriteBatch _spriteBatch, Rectangle where, Color c)
+        public void StartDrawWidgets(SpriteBatch _spriteBatch, Rectangle where)
         {
             Queue<WidgetTree> queue = new Queue<WidgetTree>();
             queue.Enqueue(this);
             while (queue.Count > 0) {
                 WidgetTree child = queue.Dequeue();
-                child.DrawWidgets(_spriteBatch, where, c);
+                child.DrawWidgets(_spriteBatch, where);
                 if (child.Children != null) 
                 {
                     foreach (WidgetTree widgetTree in child.Children)
@@ -123,17 +134,49 @@ namespace GameName1
             }
         }
         //TODO: Remove this color parameter
-        private void DrawWidgets(SpriteBatch _spriteBatch, Rectangle where, Color c)
+        private void DrawWidgets(SpriteBatch _spriteBatch, Rectangle where)
         {
             Rectangle temp = new Rectangle();
-            foreach (KeyValuePair<Rectangle, Texture2D> entry in DrawableAreas)
+            foreach (KeyValuePair<Rectangle, ColorTexture> entry in DrawableAreas)
             {
                 temp = entry.Key;
                 temp.X += (BaseContainer.X + where.X);
                 temp.Y += (BaseContainer.Y + where.Y);
-                _spriteBatch.Draw(entry.Value, temp, null, c, Utilities.DegreesToRadians(90f), new Vector2((entry.Value.Width / 2), (entry.Value.Height / 2)), SpriteEffects.None, 0);
-                //_spriteBatch.Draw(entry.Value, temp, c);
+                _spriteBatch.Draw(entry.Value.Texture, temp, null, entry.Value.Color, Utilities.DegreesToRadians(90f), new Vector2((entry.Value.Texture.Width / 2), (entry.Value.Texture.Height / 2)), 
+                                    SpriteEffects.None, 0);
             }
+            foreach (KeyValuePair<Rectangle, ColorString> entry in DrawableTexts)
+            {
+                Vector2 measuredString = entry.Value.Font.MeasureString(entry.Value.Text);
+                Vector2 stringOrigin = new Vector2(measuredString.X / 2, measuredString.Y / 2);
+                temp = entry.Key;
+                temp.X += (BaseContainer.X + where.X);
+                temp.Y += (BaseContainer.Y + where.Y);
+                _spriteBatch.DrawString(entry.Value.Font, entry.Value.Text, new Vector2(temp.X, temp.Y), entry.Value.Color, Utilities.DegreesToRadians(90f), stringOrigin, new Vector2(0,0),
+                                    SpriteEffects.None, 0);
+            }
+        }
+    }
+    public class ColorString
+    {
+        public SpriteFont Font;
+        public string Text;
+        public Color Color;
+        public ColorString(SpriteFont f, string t, Color c)
+        {
+            Font = f;
+            Text = t;
+            Color = c;
+        }
+    }
+    public class ColorTexture
+    {
+        public Texture2D Texture;
+        public Color Color;
+        public ColorTexture(Texture2D tex, Color c)
+        {
+            Texture = tex;
+            Color = c;
         }
     }
 }

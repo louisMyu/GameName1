@@ -185,6 +185,10 @@ namespace GameName1
         private void UpgradeMenuTapped(object sender, PointEventArgs e)
         {
             Point point = e.Tap;
+            MenuCategory category = (MenuCategory)sender;
+
+            Point pointInSelectionArea = new Point(e.Tap.X - m_CurrentMainScreenRec.X, e.Tap.Y - m_CurrentMainScreenRec.Y);
+            category.HandleSelectionAreaTapped(pointInSelectionArea);
         }
         private void CheatMenuTapped(object sender, PointEventArgs e)
         {
@@ -314,17 +318,27 @@ namespace GameName1
         {
             int NumberOfWeapons = 4;
             SelectionUpgradeWidth = MenuSelectionTotalArea.Height / NumberOfWeapons;
-            Rectangle temp = new Rectangle(0, 0, MenuSelectionTotalArea.Width, SelectionUpgradeWidth);
             MenuCategory menu = new MenuCategory("Weapons", UpgradeWeaponRec, "Upgrade Weapons", Color.Beige, MenuSelectionTotalArea);
             List<UpgradeSlot> upgradeSlots = new List<UpgradeSlot>();
             //base widget tree
             for (int i = 0; i < NumberOfWeapons; ++i)
             {
+                Rectangle temp = new Rectangle(0, SelectionUpgradeWidth*i, MenuSelectionTotalArea.Width, SelectionUpgradeWidth);
+                Color tempColor = new Color(250 - (75*i),75*i,50-(i*10));
                 WidgetTree tree = new WidgetTree(temp);
-                tree.AddDrawArea(new Rectangle(Viewport.Width/2, SelectionUpgradeWidth/2, SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
+                Rectangle baseSlotDrawArea = new Rectangle(Viewport.Width/2, SelectionUpgradeWidth/2, SelectionUpgradeWidth, MenuSelectionTotalArea.Width);
+                tree.AddDrawArea(baseSlotDrawArea, new ColorTexture(TextureBank.GetTexture("GSMbackground"), tempColor));
+                WidgetTree slotTop = new WidgetTree(new Rectangle(0,0, baseSlotDrawArea.Width, baseSlotDrawArea.Height));
+                Rectangle tapButton = new Rectangle(baseSlotDrawArea.Height / 2, baseSlotDrawArea.Width / 2, 50, 50);
+                Rectangle valueArea = new Rectangle(tapButton.X - 100, tapButton.Y, 200, 100);
+                slotTop.AddDrawArea(tapButton, new ColorTexture(TextureBank.GetTexture("GSMbackground"), Color.Black));
+                slotTop.AddHitArea(tapButton);
+                tree.AddWidgetTree(slotTop);
+
                 Rectangle currentSlotPosition = new Rectangle(0, (SelectionUpgradeWidth * i), temp.Width, temp.Height);
-                UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition, new Color(250 - (75*i),75*i,50-(i*10)));
+                UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition);
                 slot.SetWidgetTree(tree);
+                slot.Value = i * 100;
                 upgradeSlots.Add(slot);
             }
             menu.SetUpgradeSlot(upgradeSlots);
@@ -340,10 +354,12 @@ namespace GameName1
             //base widget tree
             for (int i = 0; i < NumberOfCheats; ++i)
             {
+                Color tempColor = new Color(250 - (75*i),75*i,50-(i*10));
                 WidgetTree tree = new WidgetTree(temp);
-                tree.AddDrawArea(new Rectangle(Viewport.Width / 2, SelectionUpgradeWidth / 2, SelectionUpgradeWidth, MenuSelectionTotalArea.Width), TextureBank.GetTexture("GSMbackground"));
+                Rectangle baseSlotDrawArea = new Rectangle(Viewport.Width / 2, SelectionUpgradeWidth / 2, SelectionUpgradeWidth, MenuSelectionTotalArea.Width);
+                tree.AddDrawArea(baseSlotDrawArea, new ColorTexture(TextureBank.GetTexture("GSMbackground"), tempColor));
                 Rectangle currentSlotPosition = new Rectangle(0, (SelectionUpgradeWidth * i), temp.Width, temp.Height);
-                UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition, new Color(250 - (75 * i), 75 * i, 50 - (i * 10)));
+                UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition);
                 slot.SetWidgetTree(tree);
                 upgradeSlots.Add(slot);
             }
@@ -400,6 +416,17 @@ namespace GameName1
                 }
             }
         }
+        public void HandleSelectionAreaTapped(Point p)
+        {
+            foreach (UpgradeSlot slot in m_UpgradeSlots)
+            {
+                if (slot.PointIsInContainer(p))
+                {
+                    slot.HandleTap(p);
+                }
+            }
+            
+        }
         public void HandleCategoryTap(Point point)
         {
             HandleTap(this, new PointEventArgs(point));
@@ -440,14 +467,14 @@ namespace GameName1
     }
     class UpgradeSlot
     {
+        int m_Value;
+        public int Value { get { return m_Value; } set { m_Value = value; } }
         WidgetTree Widgets;
-        Color color;
         string m_Description;
         private Rectangle FinalContainer;
-        public UpgradeSlot(string description, Rectangle baseContainer, Color c)
+        public UpgradeSlot(string description, Rectangle baseContainer)
         {
             m_Description = description;
-            color = c;
             FinalContainer = baseContainer;
         }
         public void SetWidgetTree(WidgetTree widg)
@@ -457,13 +484,29 @@ namespace GameName1
         }
         public void Draw(SpriteBatch _spriteBatch)
         {
-            Widgets.StartDrawWidgets(_spriteBatch, FinalContainer, color);
+            Widgets.StartDrawWidgets(_spriteBatch, FinalContainer);
         }
         public void Update(int deltaX, int deltaY)
         {
             FinalContainer.X += (deltaX);
             FinalContainer.Y += (deltaY);
             //Widgets.UpdatePositions(delta);
+        }
+        public bool PointIsInContainer(Point p)
+        {
+            if (FinalContainer.Contains(p))
+            {
+                return true;
+            }
+            return false;
+        }
+        public void HandleTap(Point p)
+        {
+            Rectangle tempRec = Widgets.CheckCollision(p);
+            if (tempRec.Width > 0)
+            {
+                m_Value += 1;
+            }
         }
     }
     class GestureEventArgs : EventArgs
