@@ -244,7 +244,6 @@ namespace GameName1
             screen.ControllingPlayer = controllingPlayer;
             screen.ScreenManager = this;
             screen.IsExiting = false;
-
             // If we have a graphics device, tell the screen to load content.
             if (isInitialized)
             {

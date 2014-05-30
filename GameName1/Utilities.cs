@@ -158,6 +158,10 @@ namespace GameName1
             spriteBatch.DrawString(Font, Text, new Vector2(pos.X, pos.Y), Color, Utilities.DegreesToRadians(90f), stringCenter, new Vector2(1,1),
                                     SpriteEffects.None, 0);
         }
+        public void SetText(string s)
+        {
+            Text = s;
+        }
     }
     public class ColorTexture : DrawableArea
     {
