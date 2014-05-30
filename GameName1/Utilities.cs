@@ -41,28 +41,22 @@ namespace GameName1
     {
         private List<WidgetTree> Children;
         private List<Rectangle> HitableObjects;
-        private Dictionary<Rectangle, ColorTexture> DrawableAreas;
-        private Dictionary<Rectangle, ColorString> DrawableTexts;
+        private Dictionary<Rectangle, DrawableArea> DrawableAreas;
         private Rectangle BaseContainer;
         public WidgetTree(Rectangle baseArea)
         {
             Children = null;
             HitableObjects = new List<Rectangle>();
-            DrawableAreas = new Dictionary<Rectangle, ColorTexture>();
-            DrawableTexts = new Dictionary<Rectangle, ColorString>();
+            DrawableAreas = new Dictionary<Rectangle, DrawableArea>();
             BaseContainer = baseArea;
         }
         public void AddHitArea(Rectangle rec)
         {
             HitableObjects.Add(rec);
         }
-        public void AddDrawArea(Rectangle area, ColorTexture tex)
+        public void AddDrawArea(Rectangle area, DrawableArea tex)
         {
             DrawableAreas.Add(area, tex);
-        }
-        public void AddTextArea(Rectangle area, string text)
-        {
-            
         }
         public void UpdatePositions(Vector2 delta)
         {
@@ -137,27 +131,16 @@ namespace GameName1
         private void DrawWidgets(SpriteBatch _spriteBatch, Rectangle where)
         {
             Rectangle temp = new Rectangle();
-            foreach (KeyValuePair<Rectangle, ColorTexture> entry in DrawableAreas)
+            foreach (KeyValuePair<Rectangle, DrawableArea> entry in DrawableAreas)
             {
                 temp = entry.Key;
                 temp.X += (BaseContainer.X + where.X);
                 temp.Y += (BaseContainer.Y + where.Y);
-                _spriteBatch.Draw(entry.Value.Texture, temp, null, entry.Value.Color, Utilities.DegreesToRadians(90f), new Vector2((entry.Value.Texture.Width / 2), (entry.Value.Texture.Height / 2)), 
-                                    SpriteEffects.None, 0);
-            }
-            foreach (KeyValuePair<Rectangle, ColorString> entry in DrawableTexts)
-            {
-                Vector2 measuredString = entry.Value.Font.MeasureString(entry.Value.Text);
-                Vector2 stringOrigin = new Vector2(measuredString.X / 2, measuredString.Y / 2);
-                temp = entry.Key;
-                temp.X += (BaseContainer.X + where.X);
-                temp.Y += (BaseContainer.Y + where.Y);
-                _spriteBatch.DrawString(entry.Value.Font, entry.Value.Text, new Vector2(temp.X, temp.Y), entry.Value.Color, Utilities.DegreesToRadians(90f), stringOrigin, new Vector2(0,0),
-                                    SpriteEffects.None, 0);
+                entry.Value.Draw(_spriteBatch, temp);
             }
         }
     }
-    public class ColorString
+    public class ColorString : DrawableArea
     {
         public SpriteFont Font;
         public string Text;
@@ -168,8 +151,15 @@ namespace GameName1
             Text = t;
             Color = c;
         }
+        public void Draw(SpriteBatch spriteBatch, Rectangle pos)
+        {
+            Vector2 measuredString = Font.MeasureString(Text);
+            Vector2 stringCenter = new Vector2(measuredString.X / 2, measuredString.Y / 2);
+            spriteBatch.DrawString(Font, Text, new Vector2(pos.X, pos.Y), Color, Utilities.DegreesToRadians(90f), stringCenter, new Vector2(1,1),
+                                    SpriteEffects.None, 0);
+        }
     }
-    public class ColorTexture
+    public class ColorTexture : DrawableArea
     {
         public Texture2D Texture;
         public Color Color;
@@ -178,5 +168,14 @@ namespace GameName1
             Texture = tex;
             Color = c;
         }
+        public void Draw(SpriteBatch spriteBatch, Rectangle rec)
+        {
+            spriteBatch.Draw(Texture, rec, null, Color, Utilities.DegreesToRadians(90f), new Vector2((Texture.Width / 2), (Texture.Height / 2)),
+                                    SpriteEffects.None, 0);
+        }
+    }
+    public interface DrawableArea
+    {
+        void Draw(SpriteBatch sprite, Rectangle position);
     }
 }
