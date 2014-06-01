@@ -214,6 +214,10 @@ namespace GameName1
         {
             LifeTotal += amount;
         }
+        public void ExplodeIntoParts()
+        {
+
+        }
         public int GetHealth()
         {
             return LifeTotal;
