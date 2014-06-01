@@ -208,7 +208,7 @@ namespace GameName1
 
         public void DrawBackground(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(m_Background, new Vector2(OFFSET, 0), BackGroundHueColor);
+            spriteBatch.Draw(m_Background, new Vector2(0, 0), BackGroundHueColor);
         }
         public void DrawDeathTimer(SpriteBatch spriteBatch)
         {

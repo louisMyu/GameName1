@@ -53,6 +53,8 @@ namespace GameName1
         Song m_song;
         Random random = new Random();
         private GameState m_GameState;
+
+        RenderTarget2D backgroundTexture;
         #endregion
 
         #region Initialization
@@ -109,6 +111,8 @@ namespace GameName1
             TimeToDeath = TimeSpan.FromSeconds(30);
             UserInterface.SetTimeToDeath(TimeToDeath);
             isLoaded = true;
+            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+            backgroundTexture = new RenderTarget2D(ScreenManager.GraphicsDevice, viewport.Width, viewport.Height);
             // once the load has finished, we use ResetElapsedTime to tell the game's
             // timing mechanism that we have just finished a very long frame, and that
             // it should not try to catch up.
@@ -217,6 +221,13 @@ namespace GameName1
                 catch (Exception e)
                 {
                 }
+                SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
+
+                GraphicsDevice device = ScreenManager.GraphicsDevice;
+                device.SetRenderTarget(backgroundTexture);
+                spriteBatch.Begin();
+                UserInterface.DrawBackground(spriteBatch);
+                spriteBatch.End();
                 // TODO: this game isn't very fun! You could probably improve
                 // it by inserting something more interesting in this space :-)
             }
@@ -268,7 +279,7 @@ namespace GameName1
                 case GameState.Dying:
                 case GameState.Playing:
                     _spriteBatch.Begin();
-                    UserInterface.DrawBackground(_spriteBatch);
+                    _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), Color.White);
                     UserInterface.DrawDeathTimer(_spriteBatch);
                     GlobalObjectManager.Draw(_spriteBatch);
                     m_Player.Draw(_spriteBatch);
@@ -277,7 +288,7 @@ namespace GameName1
                     break;
                 case GameState.Countdown:
                     _spriteBatch.Begin();
-                    UserInterface.DrawBackground(_spriteBatch);
+                    _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), Color.White);
                     //GlobalObjectManager.Draw(_spriteBatch);
                     //m_Player.Draw(_spriteBatch);
                     UserInterface.Draw(_spriteBatch, m_Player);

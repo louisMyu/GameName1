@@ -233,7 +233,6 @@ namespace GameName1
             spriteBatch.Begin();
             m_SelectedMenu.DrawSelection(this, gameTime);
             spriteBatch.End();
-            graphics.SetRenderTarget(null);
         }
         private void UpdateMenuLocations()
         {
