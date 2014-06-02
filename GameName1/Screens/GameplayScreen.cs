@@ -112,10 +112,19 @@ namespace GameName1
             UserInterface.SetTimeToDeath(TimeToDeath);
             isLoaded = true;
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
-            backgroundTexture = new RenderTarget2D(ScreenManager.GraphicsDevice, viewport.Width, viewport.Height);
+            backgroundTexture = new RenderTarget2D(ScreenManager.GraphicsDevice, viewport.Width, viewport.Height, false,
+                                            SurfaceFormat.Color, DepthFormat.None, ScreenManager.GraphicsDevice.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
             // once the load has finished, we use ResetElapsedTime to tell the game's
             // timing mechanism that we have just finished a very long frame, and that
             // it should not try to catch up.
+
+            SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
+
+            GraphicsDevice device = ScreenManager.GraphicsDevice;
+            device.SetRenderTarget(backgroundTexture);
+            spriteBatch.Begin();
+            UserInterface.DrawBackground(spriteBatch);
+            spriteBatch.End();
             ScreenManager.Game.ResetElapsedTime();
         }
 
@@ -201,7 +210,7 @@ namespace GameName1
                                 m_Player.Update(customElapsedTime);
                                 return;
                             }
-
+                            m_Player.CheckWeaponHits();
                             //cleanup dead objects
                             GlobalObjectManager.Update(customElapsedTime);
 
@@ -226,7 +235,7 @@ namespace GameName1
                 GraphicsDevice device = ScreenManager.GraphicsDevice;
                 device.SetRenderTarget(backgroundTexture);
                 spriteBatch.Begin();
-                UserInterface.DrawBackground(spriteBatch);
+                UserInterface.DrawGibsOnBackground(spriteBatch);
                 spriteBatch.End();
                 // TODO: this game isn't very fun! You could probably improve
                 // it by inserting something more interesting in this space :-)
@@ -270,16 +279,14 @@ namespace GameName1
             {
                 return;
             }
-            // This game has a blue background. Why? Because!
-            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
-                                               Color.CornflowerBlue, 0, 0);
             SpriteBatch _spriteBatch = ScreenManager.SpriteBatch;
             switch (m_GameState)
             {
                 case GameState.Dying:
                 case GameState.Playing:
                     _spriteBatch.Begin();
-                    _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), Color.White);
+                    _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), UserInterface.BackGroundHueColor);
+                    UserInterface.DrawActiveGibs(_spriteBatch);
                     UserInterface.DrawDeathTimer(_spriteBatch);
                     GlobalObjectManager.Draw(_spriteBatch);
                     m_Player.Draw(_spriteBatch);

@@ -127,6 +127,20 @@ namespace GameName1
                         enemy.AddToHealth(-m_ShotgunDamage);
                         if (enemy.GetHealth() <= 0)
                         {
+                            List<Texture2D> gibTextures = enemy.GetExplodedParts();
+                            float shotgunSpreadAngle = 60;
+                            float singleAngle = (float)(shotgunSpreadAngle / gibTextures.Count);
+                            Vector2 singleAngleVec = Utilities.RadiansToVector2(singleAngle);
+                            float startingPoint = singleAngle * gibTextures.Count / 2;
+                            for (int i = 0; i < gibTextures.Count; ++i)
+                            {
+                                ExplodedPart gib = new ExplodedPart();
+                                gib.LoadContent(gibTextures[i], ob.Position);
+                                float temp = Utilities.RadiansToDegrees( Utilities.Vector2ToRadians(intersectingAngle));
+                                gib.ApplyLinearForce(intersectingAngle-(singleAngleVec)+(i*singleAngleVec), Knockback * 1.5f);
+                                gib.ApplyTorque(5000f);
+                                UI.GibsToBeDrawn.Add(gib);
+                            }
                             return true;
                         }
                     }

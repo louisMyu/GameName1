@@ -26,6 +26,7 @@ namespace GameName1
         private static int NumZombies = 0;
         private static int MaxZombies = 5;
         private PowerUp m_PowerUp;
+
         public void Init(Player p, ContentManager content, World world)
         {
             m_Player = p;

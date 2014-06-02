@@ -214,9 +214,12 @@ namespace GameName1
         {
             LifeTotal += amount;
         }
-        public void ExplodeIntoParts()
+        public List<Texture2D> GetExplodedParts()
         {
-
+            return ExplodedParts;
+        }
+        protected override void LoadExplodedParts()
+        {
         }
         public int GetHealth()
         {

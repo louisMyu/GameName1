@@ -50,7 +50,7 @@ namespace GameName1
         public static float ThumbStickAngle;
 
         private int BackGroundHueCounter = -250;
-        private Color BackGroundHueColor = new Color(255,0,0);
+        public Color BackGroundHueColor = new Color(255,0,0);
         private const int MAX_PERIOD = 600;
         private const int MIN_PERIOD = 40;
         private int m_Period;
@@ -58,7 +58,8 @@ namespace GameName1
         private const int OSCILLATE_START = 10;
         private const int SCALE = 200;
 
-
+        private List<ExplodedPart> GibsToBeBaked = new List<ExplodedPart>();
+        public static List<ExplodedPart> GibsToBeDrawn = new List<ExplodedPart>();
         public UI()
         {
         }
@@ -91,6 +92,9 @@ namespace GameName1
             WeaponSlotRec = new Rectangle((int)(WeaponSlotPosition.X - ((m_FireButton.Width*WeaponSlotScale.X)/2)), (int)(WeaponSlotPosition.Y - ((m_FireButton.Height*WeaponSlotScale.Y)/2)), PlayfieldBottom, PlayfieldBottom);
             ThumbStickPressed = false;
             ThumbStickPoint = StopButtonPosition;
+
+
+            
         }
 
         public void Update(TimeSpan timeToDeath, TimeSpan elapsedTime)
@@ -112,6 +116,18 @@ namespace GameName1
             int delta = (int)(Math.Sin(BackGroundHueCounter * 2 * Math.PI / m_Period) * (SCALE / 2) + (SCALE / 2));
             ++BackGroundHueCounter;
             BackGroundHueColor = new Color(255 - delta, delta, 0);
+            for (int i = 0; i < GibsToBeDrawn.Count; ++i)
+            {
+                ExplodedPart part = GibsToBeDrawn[i];
+                bool hasStopped;
+                part.Update(out hasStopped);
+                if (hasStopped)
+                {
+                    GibsToBeBaked.Add(part);
+                    GibsToBeDrawn.Remove(part);
+                    i--;
+                }
+            }
         }
 
         public void ProcessInput(Player p, TouchCollection input)
@@ -205,10 +221,25 @@ namespace GameName1
                 spriteBatch.Draw(p.RedFlashTexture, new Vector2(PlayfieldBottom, 0), null, Color.White, 0, new Vector2(0,0),Utilities.GetSpriteScaling(new Vector2(GameWidth-PlayfieldBottom, GameHeight), new Vector2(p.RedFlashTexture.Width, p.RedFlashTexture.Height)) ,SpriteEffects.None, 0);
             }
         }
-
         public void DrawBackground(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(m_Background, new Vector2(0, 0), BackGroundHueColor);
+            spriteBatch.Draw(m_Background, new Vector2(0, 0), Color.White);
+        }
+        public void DrawActiveGibs(SpriteBatch spriteBatch)
+        {
+            foreach (ExplodedPart part in GibsToBeDrawn)
+            {
+                part.Draw(spriteBatch);
+            }
+        }
+        public void DrawGibsOnBackground(SpriteBatch spriteBatch)
+        {
+            foreach (ExplodedPart part in GibsToBeBaked)
+            {
+                part.DrawOffset(spriteBatch);
+                part.CleanBody();
+            }
+            GibsToBeBaked.Clear();
         }
         public void DrawDeathTimer(SpriteBatch spriteBatch)
         {

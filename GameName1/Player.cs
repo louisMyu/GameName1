@@ -178,6 +178,9 @@ namespace GameName1
                     }
                 }
             }
+        }
+        public void CheckWeaponHits()
+        {
             if (m_Weapon.Firing || m_Weapon.BulletsExist)
             {
 

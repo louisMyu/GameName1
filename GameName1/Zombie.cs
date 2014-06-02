@@ -79,6 +79,8 @@ namespace GameName1
             _circleBody.BodyType = BodyType.Dynamic;
             _circleBody.Mass = 0.2f;
             _circleBody.LinearDamping = 2f;
+
+            LoadExplodedParts();
         }
 
         //moves a set amount per frame toward a certain location
@@ -181,6 +183,15 @@ namespace GameName1
         public override void Save()
         {
             Storage.Save<Zombie>("", "", this);
+        }
+        public List<Texture2D> GetExplodedParts()
+        {
+            return ExplodedParts;
+        }
+        protected override void LoadExplodedParts()
+        {
+            ExplodedParts.Add(TextureBank.GetTexture("EmptyHeart"));
+            ExplodedParts.Add(TextureBank.GetTexture("EmptyHeart"));
         }
         public override void Load(World world)
         {

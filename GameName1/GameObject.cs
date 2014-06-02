@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FarseerPhysics;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -22,6 +25,8 @@ namespace GameName1
         public Vector2 Position { get { return m_Position; } set { m_Position = value; } }
         [IgnoreDataMember]
         public Texture2D Texture;
+        [IgnoreDataMember]
+        protected List<Texture2D> ExplodedParts = new List<Texture2D>();
         [DataMember]
         public int Width { get; set; }
         [DataMember]
@@ -102,6 +107,79 @@ namespace GameName1
         public virtual void CheckCollisions(GameObject obj)
         {
 
+        }
+        protected virtual void LoadExplodedParts()
+        {
+        }
+    }
+    public class ExplodedPart
+    {
+        static Random GibRandom = new Random();
+        Texture2D m_Texture;
+        Body Body;
+        Vector2 Position;
+        Vector2 m_Origin;
+        float RotationAngle;
+        bool hasStopped;
+        public void LoadContent(Texture2D tex, Vector2 pos)
+        {
+            m_Texture = tex;
+            Position = pos;
+            Body = BodyFactory.CreateBody(GameplayScreen.m_World, ConvertUnits.ToSimUnits(Position));
+            Fixture fixture = FixtureFactory.AttachCircle(ConvertUnits.ToSimUnits(35 / 2f), 1f, Body, null);
+            Body.BodyType = BodyType.Dynamic;
+            Body.Mass = 2f;
+            Body.LinearDamping = 0.9f;
+            Body.AngularDamping = 0.2f;
+            fixture.OnCollision += MyOnCollision;
+            m_Origin = new Vector2(m_Texture.Width / 2, m_Texture.Height / 2);
+            RotationAngle = (float)((GibRandom.Next(0, 301) / 300.0f) * Math.PI * 2);
+            Body.Rotation = RotationAngle;
+            hasStopped = false;
+        }
+
+        public bool MyOnCollision(Fixture f1, Fixture f2,
+                                    FarseerPhysics.Dynamics.Contacts.Contact contact)
+        {
+            return false;
+        }
+        public void Update(out bool hasStopped)
+        {
+            hasStopped = false;
+            Position = ConvertUnits.ToDisplayUnits(Body.Position);
+            RotationAngle = Body.Rotation;
+            Vector2 vel = Body.LinearVelocity;
+            if (vel.X == 0 && vel.Y == 0)
+            {
+                hasStopped = true;
+            }
+        }
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(Body.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
+        }
+        public void DrawOffset(SpriteBatch spriteBatch)
+        {
+            Vector2 temp = ConvertUnits.ToDisplayUnits(Body.Position);
+            temp.X -= UI.OFFSET;
+            spriteBatch.Draw(m_Texture, temp, null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
+        }
+        public void ApplyLinearForce(Vector2 angle, float force)
+        {
+            float temp =Utilities.RadiansToDegrees( Utilities.Vector2ToRadians(angle));
+            Vector2 impulse = Vector2.Normalize(angle) * force;
+            Body.ApplyLinearImpulse(impulse);
+        }
+        public void ApplyTorque(float force)
+        {
+            Body.ApplyTorque(force);
+        }
+        public void CleanBody()
+        {
+            if (Body != null)
+            {
+                GameplayScreen.m_World.RemoveBody(Body);
+            }
         }
     }
     [DataContract]

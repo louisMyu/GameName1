@@ -34,6 +34,14 @@ namespace GameName1
             temp.Y = result.Y / baseVec.Y;
             return temp;
         }
+        public static Vector2 RadiansToVector2(float radians)
+        {
+            return new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
+        }
+        public static float Vector2ToRadians(Vector2 vec)
+        {
+            return (float)Math.Atan(vec.Y / vec.X);
+        }
     }
 
     //0_o
