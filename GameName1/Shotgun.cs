@@ -139,7 +139,7 @@ namespace GameName1
                                 float temp = Utilities.RadiansToDegrees( Utilities.Vector2ToRadians(intersectingAngle));
                                 gib.ApplyLinearForce(intersectingAngle-(singleAngleVec)+(i*singleAngleVec), Knockback * 1.5f);
                                 gib.ApplyTorque(5000f);
-                                UI.GibsToBeDrawn.Add(gib);
+                                UI.ActiveGibs.Add(gib);
                             }
                             return true;
                         }

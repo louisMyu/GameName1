@@ -173,6 +173,7 @@ namespace GameName1
                             {
                                 m_GameState = GameState.Playing;
                             }
+                            UserInterface.Update(customElapsedTime);
                             break;
                         case GameState.Playing:
                             if (SlowMotion)
@@ -193,7 +194,8 @@ namespace GameName1
                             TimeToDeath -= gameTime.ElapsedGameTime;
                             // TODO: Add your update logic here
                             UserInterface.ProcessInput(m_Player, TouchesCollected);
-                            UserInterface.Update(TimeToDeath, customElapsedTime);
+                            UserInterface.Update(customElapsedTime);
+                            UserInterface.SetTimeToDeath(TimeToDeath);
                             //check if a game reset or zombie hit and save state and do the action here,
                             //so that the game will draw the zombie intersecting the player
                             m_Player.Update(customElapsedTime);
@@ -235,7 +237,7 @@ namespace GameName1
                 GraphicsDevice device = ScreenManager.GraphicsDevice;
                 device.SetRenderTarget(backgroundTexture);
                 spriteBatch.Begin();
-                UserInterface.DrawGibsOnBackground(spriteBatch);
+                UserInterface.DrawBakedGibs(spriteBatch);
                 spriteBatch.End();
                 // TODO: this game isn't very fun! You could probably improve
                 // it by inserting something more interesting in this space :-)
@@ -295,7 +297,7 @@ namespace GameName1
                     break;
                 case GameState.Countdown:
                     _spriteBatch.Begin();
-                    _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), Color.White);
+                    _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), UserInterface.BackGroundHueColor);
                     //GlobalObjectManager.Draw(_spriteBatch);
                     //m_Player.Draw(_spriteBatch);
                     UserInterface.Draw(_spriteBatch, m_Player);

@@ -12,7 +12,7 @@ namespace GameName1
 {
     class UI
     {
-        private string m_TimeToDeathString;
+        private TimeSpan TimeToDeath;
         private Texture2D m_StatusBackground;
         public static SpriteFont m_SpriteFont;
         private Texture2D m_FireButton;
@@ -58,8 +58,8 @@ namespace GameName1
         private const int OSCILLATE_START = 10;
         private const int SCALE = 200;
 
-        private List<ExplodedPart> GibsToBeBaked = new List<ExplodedPart>();
-        public static List<ExplodedPart> GibsToBeDrawn = new List<ExplodedPart>();
+        private List<ExplodedPart> BakedGibs = new List<ExplodedPart>();
+        public static List<ExplodedPart> ActiveGibs = new List<ExplodedPart>();
         public UI()
         {
         }
@@ -97,15 +97,14 @@ namespace GameName1
             
         }
 
-        public void Update(TimeSpan timeToDeath, TimeSpan elapsedTime)
+        public void Update(TimeSpan elapsedTime)
         {
-            SetTimeToDeath(timeToDeath);
             m_Period = MAX_PERIOD;
             //if (timeToDeath.Seconds <= OSCILLATE_START)
             //{
             //    m_Period = (int)(timeToDeath.TotalSeconds / OSCILLATE_START * (MAX_PERIOD - MIN_PERIOD)) + MIN_PERIOD;
             //}
-            if (timeToDeath.TotalSeconds <= OSCILLATE_START)
+            if (TimeToDeath.TotalSeconds <= OSCILLATE_START)
             {
                 m_Period = MIN_PERIOD;
             }
@@ -116,15 +115,15 @@ namespace GameName1
             int delta = (int)(Math.Sin(BackGroundHueCounter * 2 * Math.PI / m_Period) * (SCALE / 2) + (SCALE / 2));
             ++BackGroundHueCounter;
             BackGroundHueColor = new Color(255 - delta, delta, 0);
-            for (int i = 0; i < GibsToBeDrawn.Count; ++i)
+            for (int i = 0; i < ActiveGibs.Count; ++i)
             {
-                ExplodedPart part = GibsToBeDrawn[i];
+                ExplodedPart part = ActiveGibs[i];
                 bool hasStopped;
                 part.Update(out hasStopped);
                 if (hasStopped)
                 {
-                    GibsToBeBaked.Add(part);
-                    GibsToBeDrawn.Remove(part);
+                    BakedGibs.Add(part);
+                    ActiveGibs.Remove(part);
                     i--;
                 }
             }
@@ -227,23 +226,23 @@ namespace GameName1
         }
         public void DrawActiveGibs(SpriteBatch spriteBatch)
         {
-            foreach (ExplodedPart part in GibsToBeDrawn)
+            foreach (ExplodedPart part in ActiveGibs)
             {
-                part.Draw(spriteBatch);
+                part.Draw(spriteBatch, BackGroundHueColor);
             }
         }
-        public void DrawGibsOnBackground(SpriteBatch spriteBatch)
+        public void DrawBakedGibs(SpriteBatch spriteBatch)
         {
-            foreach (ExplodedPart part in GibsToBeBaked)
+            foreach (ExplodedPart part in BakedGibs)
             {
-                part.DrawOffset(spriteBatch);
+                part.DrawOffset(spriteBatch, BackGroundHueColor);
                 part.CleanBody();
             }
-            GibsToBeBaked.Clear();
+            BakedGibs.Clear();
         }
         public void DrawDeathTimer(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(ColunaFont, m_TimeToDeathString, new Vector2(GameWidth - 175, 300), Color.Red * 0.45f, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
+            spriteBatch.DrawString(ColunaFont, TimeToDeath.ToString(@"mm\:ss\:ff"), new Vector2(GameWidth - 175, 300), Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
         }
 
         public void DrawCountdown(SpriteBatch spriteBatch, TimeSpan countdown)
@@ -254,7 +253,7 @@ namespace GameName1
 
         public void SetTimeToDeath(TimeSpan time)
         {
-            m_TimeToDeathString = time.ToString(@"mm\:ss\:ff");
+            TimeToDeath = time;
         }
     }
 }

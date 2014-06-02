@@ -74,7 +74,7 @@ namespace GameName1
         /// </summary>
         public UpgradeMenuScreen()
         {
-            TransitionOnTime = TimeSpan.FromSeconds(0.5);
+            TransitionOnTime = TimeSpan.FromSeconds(1.0);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
             Viewport = ScreenManager.GraphicsDevice.Viewport;

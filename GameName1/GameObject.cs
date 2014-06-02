@@ -154,15 +154,15 @@ namespace GameName1
                 hasStopped = true;
             }
         }
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Color c)
         {
-            spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(Body.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(Body.Position), null, c, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
         }
-        public void DrawOffset(SpriteBatch spriteBatch)
+        public void DrawOffset(SpriteBatch spriteBatch, Color c)
         {
             Vector2 temp = ConvertUnits.ToDisplayUnits(Body.Position);
             temp.X -= UI.OFFSET;
-            spriteBatch.Draw(m_Texture, temp, null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(m_Texture, temp, null, c, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
         }
         public void ApplyLinearForce(Vector2 angle, float force)
         {
