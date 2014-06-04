@@ -137,8 +137,8 @@ namespace GameName1
                             {
                                 ExplodedPart gib = new ExplodedPart();
                                 gib.LoadContent(gibTextures[i], ob.Position);
-                                Vector2 halfAngle = Utilities.RadiansToVector2(singleAngleRadians / 2);
-                                gib.ApplyLinearForce(intersectingAngle-(halfAngle), Knockback * 1.5f);
+                                Vector2 halfAngle = Utilities.RadiansToVector2(-30);
+                                gib.ApplyLinearForce(intersectingAngle-(halfAngle)+(i*2*halfAngle), Knockback * 1.5f);
                                 gib.ApplyTorque(5000f);
                                 UI.ActiveGibs.Add(gib);
                             }

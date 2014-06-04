@@ -191,7 +191,7 @@ namespace GameName1
         protected override void LoadExplodedParts()
         {
             ExplodedParts.Add(TextureBank.GetTexture("ZombieBody"));
-            //ExplodedParts.Add(TextureBank.GetTexture("ZombieHead"));
+            ExplodedParts.Add(TextureBank.GetTexture("ZombieHead"));
         }
         public override void Load(World world)
         {
