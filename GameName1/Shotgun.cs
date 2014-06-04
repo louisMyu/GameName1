@@ -120,29 +120,31 @@ namespace GameName1
                 if (check.X != -1)
                 {
                     Vector2 intersectingAngle = new Vector2(line.P2.X - line.P1.X, line.P2.Y - line.P1.Y);
+                    intersectingAngle.Normalize();
                     IEnemy enemy;
                     if ((enemy = ob as IEnemy) != null)
                     {
-                        enemy.ApplyLinearForce(intersectingAngle, Knockback);
                         enemy.AddToHealth(-m_ShotgunDamage);
                         if (enemy.GetHealth() <= 0)
                         {
                             List<Texture2D> gibTextures = enemy.GetExplodedParts();
                             float shotgunSpreadAngle = 60;
-                            float singleAngle = (float)(shotgunSpreadAngle / gibTextures.Count);
-                            Vector2 singleAngleVec = Utilities.RadiansToVector2(singleAngle);
+                            float singleAngle = (shotgunSpreadAngle / (float)gibTextures.Count);
+                            float singleAngleRadians = Utilities.DegreesToRadians(singleAngle);
+                            Vector2 singleAngleVec = Utilities.RadiansToVector2(singleAngleRadians);
                             float startingPoint = singleAngle * gibTextures.Count / 2;
                             for (int i = 0; i < gibTextures.Count; ++i)
                             {
                                 ExplodedPart gib = new ExplodedPart();
                                 gib.LoadContent(gibTextures[i], ob.Position);
-                                float temp = Utilities.RadiansToDegrees( Utilities.Vector2ToRadians(intersectingAngle));
-                                gib.ApplyLinearForce(intersectingAngle-(singleAngleVec)+(i*singleAngleVec), Knockback * 1.5f);
+                                Vector2 halfAngle = Utilities.RadiansToVector2(singleAngleRadians / 2);
+                                gib.ApplyLinearForce(intersectingAngle-(halfAngle), Knockback * 1.5f);
                                 gib.ApplyTorque(5000f);
                                 UI.ActiveGibs.Add(gib);
                             }
                             return true;
                         }
+                        enemy.ApplyLinearForce(intersectingAngle, Knockback);
                     }
                 }
             }
