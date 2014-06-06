@@ -45,7 +45,7 @@ namespace GameName1
         [DataMember]
         public MotionState State { get; set; }
 
-        private List<SlimeTrailPiece> m_SlimeTrailList;
+        private SlimeTrail m_SlimeTrail;
         private int m_SlimeTrailTimeCounter = 0;
         public Slime()
             : base()
@@ -98,7 +98,7 @@ namespace GameName1
                 m_Origin.Y = Height / 2;
             }
 
-            m_SlimeTrailList = new List<SlimeTrailPiece>();
+            m_SlimeTrail = new SlimeTrail();
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
             _circleBody.Mass = 0.2f;
@@ -124,8 +124,8 @@ namespace GameName1
             Vector2 amount = m_Direction * m_Speed;
             base.Move(amount, elapsedTime);
             Vector2 temp = new Vector2();
-            temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth - Width/2);
-            temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight - Height/2);
+            temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth - Width / 2);
+            temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight - Height / 2);
             Position = temp;
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {
@@ -166,11 +166,6 @@ namespace GameName1
         }
         public override void Update(Player player, TimeSpan elapsedTime)
         {
-            m_SlimeTrailList.RemoveAll(x => !x.isAlive);
-            foreach (SlimeTrailPiece piece in m_SlimeTrailList)
-            {
-                piece.Update();
-            }
             ObjectManager.GetCell(Position).Remove(this);
             Move(player.Position, elapsedTime);
             ObjectManager.GetCell(Position).Add(this);
@@ -184,17 +179,14 @@ namespace GameName1
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            foreach (SlimeTrailPiece p in m_SlimeTrailList)
-            {
-                p.Draw(spriteBatch);
-            }
+
             spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
         }
         private void AddSlimePiece()
         {
             Rectangle pieceRec = new Rectangle((int)Position.X, (int)Position.Y, (int)m_Texture.Width / 2, (int)m_Texture.Width / 2);
             SlimeTrailPiece piece = new SlimeTrailPiece(pieceRec, 100, m_SlimeTrailTex, RotationAngle);
-            m_SlimeTrailList.Add(piece);
+            m_SlimeTrail.AddPiece(piece);
         }
         public void ApplyLinearForce(Vector2 angle, float amount)
         {
@@ -220,6 +212,9 @@ namespace GameName1
         }
         protected override void LoadExplodedParts()
         {
+            ExplodedParts.Add(TextureBank.GetTexture("SlimePart1");
+            ExplodedParts.Add(TextureBank.GetTexture("SlimePart2");
+            ExplodedParts.Add(TextureBank.GetTexture("SlimePart3");
         }
         public int GetHealth()
         {
@@ -245,50 +240,73 @@ namespace GameName1
             _circleBody.LinearDamping = 2f;
             _circleBody.Position = bodyPosition;
         }
-        private class SlimeTrailPiece
+    }
+    public class SlimeTrail
+    {
+        List<SlimeTrailPiece> m_SlimePieces = new List<SlimeTrailPiece>();
+        public void Update()
         {
-            private const int LIFE_TIME = 500;
-            Texture2D m_Texture;
-            float m_Rotation;
-            Rectangle m_Bounds;
-            //time left in frames to exist
-            int m_Life;
-            public bool isAlive;
-            public SlimeTrailPiece(Rectangle rec, int life, Texture2D texture, float rot)
+            m_SlimePieces.RemoveAll(x => !x.isAlive);
+            foreach (SlimeTrailPiece piece in m_SlimePieces)
             {
-                m_Texture = texture;
-                m_Rotation = rot;
-                m_Bounds = new Rectangle(rec.X, rec.Y, rec.Width, rec.Height);
-                m_Life = 500;
-                isAlive = true;
+                piece.Update();
             }
-            public void Update()
+        }
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            foreach (SlimeTrailPiece p in m_SlimePieces)
             {
-                if (m_Life <= 0)
-                {
-                    isAlive = false;
-                }
-                else
-                {
-                    --m_Life;
-                }
+                p.Draw(spriteBatch);
             }
-            public void Draw(SpriteBatch _spriteBatch)
+        }
+        public void AddPiece(SlimeTrailPiece piece)
+        {
+            m_SlimePieces.Add(piece);
+        }
+    }
+    private class SlimeTrailPiece
+    {
+        private const int LIFE_TIME = 500;
+        Texture2D m_Texture;
+        float m_Rotation;
+        Rectangle m_Bounds;
+        //time left in frames to exist
+        int m_Life;
+        public bool isAlive;
+        public SlimeTrailPiece(Rectangle rec, int life, Texture2D texture, float rot)
+        {
+            m_Texture = texture;
+            m_Rotation = rot;
+            m_Bounds = new Rectangle(rec.X, rec.Y, rec.Width, rec.Height);
+            m_Life = 500;
+            isAlive = true;
+        }
+        public void Update()
+        {
+            if (m_Life <= 0)
             {
+                isAlive = false;
+            }
+            else
+            {
+                --m_Life;
+            }
+        }
+        public void Draw(SpriteBatch _spriteBatch)
+        {
 
-                float temp;
-                float alpha;
-                if (m_Life / LIFE_TIME > 0.5)
-                {
-                    temp = 0.5f;
-                }
-                else
-                {
-                    temp = m_Life;
-                }
-                alpha = (temp / LIFE_TIME);
-                _spriteBatch.Draw(m_Texture, m_Bounds, null, Color.White * alpha, m_Rotation, new Vector2(m_Bounds.Width / 2, m_Bounds.Height / 2), SpriteEffects.None, 0);
+            float temp;
+            float alpha;
+            if (m_Life / LIFE_TIME > 0.5)
+            {
+                temp = 0.5f;
             }
+            else
+            {
+                temp = m_Life;
+            }
+            alpha = (temp / LIFE_TIME);
+            _spriteBatch.Draw(m_Texture, m_Bounds, null, Color.White * alpha, m_Rotation, new Vector2(m_Bounds.Width / 2, m_Bounds.Height / 2), SpriteEffects.None, 0);
         }
     }
 }

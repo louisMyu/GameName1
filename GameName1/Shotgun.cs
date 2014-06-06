@@ -127,21 +127,7 @@ namespace GameName1
                         enemy.AddToHealth(-m_ShotgunDamage);
                         if (enemy.GetHealth() <= 0)
                         {
-                            List<Texture2D> gibTextures = enemy.GetExplodedParts();
-                            float shotgunSpreadAngle = 60;
-                            float singleAngle = (shotgunSpreadAngle / (float)gibTextures.Count);
-                            float singleAngleRadians = Utilities.DegreesToRadians(singleAngle);
-                            Vector2 singleAngleVec = Utilities.RadiansToVector2(singleAngleRadians);
-                            float startingPoint = singleAngle * gibTextures.Count / 2;
-                            for (int i = 0; i < gibTextures.Count; ++i)
-                            {
-                                ExplodedPart gib = new ExplodedPart();
-                                gib.LoadContent(gibTextures[i], ob.Position);
-                                Vector2 halfAngle = Utilities.RadiansToVector2(-30);
-                                gib.ApplyLinearForce(intersectingAngle-(halfAngle)+(i*2*halfAngle), Knockback * 1.5f);
-                                gib.ApplyTorque(5000f);
-                                UI.ActiveGibs.Add(gib);
-                            }
+                            ExplodeEnemy(intersectingAngle, enemy, ob.Position);
                             return true;
                         }
                         enemy.ApplyLinearForce(intersectingAngle, Knockback);
@@ -200,6 +186,25 @@ namespace GameName1
             array[2] = new AnimationInfo(TextureBank.GetTexture(blast3String), 12);
             array[3] = new AnimationInfo(TextureBank.GetTexture(blast4String), -1);
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 15);
+        }
+        public override void ExplodeEnemy(Vector2 intersectingAngle, IEnemy enemy, Vector2 pos)
+        {
+            List<Texture2D> gibTextures = enemy.GetExplodedParts();
+            float shotgunSpreadAngle = 60;
+            float singleAngle = (shotgunSpreadAngle / (float)gibTextures.Count);
+            float singleAngleRadians = Utilities.DegreesToRadians(singleAngle);
+            Vector2 singleAngleVec = Utilities.RadiansToVector2(singleAngleRadians);
+            float startingPoint = singleAngle * gibTextures.Count / 2;
+            for (int i = 0; i < gibTextures.Count; ++i)
+            {
+                ExplodedPart gib = new ExplodedPart();
+                gib.LoadContent(gibTextures[i], pos);
+                Vector2 halfAngle = Utilities.RadiansToVector2(Utilities.DegreesToRadians(-30));
+                gib.ApplyLinearForce(intersectingAngle - (halfAngle) + (i * 2 * halfAngle), Knockback * 1.5f);
+                //shoul be randomixed
+                gib.ApplyTorque(5000f);
+                UI.ActiveGibs.Add(gib);
+            }
         }
     }
 }

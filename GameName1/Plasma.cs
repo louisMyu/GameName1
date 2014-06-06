@@ -134,7 +134,26 @@ namespace GameName1
         }
         protected override void LoadTextures()
         {
-        }   
+        }
+        public override void ExplodeEnemy(Vector2 intersectingAngle, IEnemy enemy, Vector2 pos)
+        {
+            List<Texture2D> gibTextures = enemy.GetExplodedParts();
+            float shotgunSpreadAngle = 60;
+            float singleAngle = (shotgunSpreadAngle / (float)gibTextures.Count);
+            float singleAngleRadians = Utilities.DegreesToRadians(singleAngle);
+            Vector2 singleAngleVec = Utilities.RadiansToVector2(singleAngleRadians);
+            float startingPoint = singleAngle * gibTextures.Count / 2;
+            for (int i = 0; i < gibTextures.Count; ++i)
+            {
+                ExplodedPart gib = new ExplodedPart();
+                gib.LoadContent(gibTextures[i], pos);
+                Vector2 halfAngle = Utilities.RadiansToVector2(Utilities.DegreesToRadians(-30));
+                gib.ApplyLinearForce(intersectingAngle - (halfAngle) + (i * 2 * halfAngle), Knockback * 1.5f);
+                //shoul be randomixed
+                gib.ApplyTorque(5000f);
+                UI.ActiveGibs.Add(gib);
+            }
+        }
     }
     public class Bullet : GameObject
     {

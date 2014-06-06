@@ -188,5 +188,22 @@ namespace GameName1
             array[1] = new AnimationInfo(TextureBank.GetTexture(shotString2), -1);
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 60);
         }
+        protected override void ExplodeEnemy(Vector2 intersectingAngle, IEnemy enemy, Vector2 pos)
+        {
+            List<Texture2D> gibTextures = enemy.GetExplodedParts();
+            float spreadAngle = 180;
+            float singleAngle = (spreadAngle / (float)gibTextures.Count);
+            float startingPoint = singleAngle * gibTextures.Count / 2;
+            for (int i = 0; i < gibTextures.Count; ++i)
+            {
+                ExplodedPart gib = new ExplodedPart();
+                gib.LoadContent(gibTextures[i], pos);
+                Vector2 halfAngle = Utilities.RadiansToVector2(Utilities.DegreesToRadians(-30));
+                gib.ApplyLinearForce(intersectingAngle - (halfAngle) + (i * 2 * halfAngle), Knockback);
+                //should be randomixed
+                gib.ApplyTorque(5000f);
+                UI.ActiveGibs.Add(gib);
+            }
+        }
     }
 }

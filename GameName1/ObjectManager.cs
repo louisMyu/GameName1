@@ -16,6 +16,8 @@ namespace GameName1
         private const int GRID_DIVISIONS_Y = 50;
         public static List<GameObject> AllGameObjects = new List<GameObject>();
         public static List<GameObject>[][] GameObjectGrid;
+        public static List<SlimeTrail> SlimeTrails = new List<SlimeTrail>();
+        
         public static Random ZombieRandom = new Random(424242);
         public static long FrameCounter = 0;
         public static bool itemMade = false;
@@ -139,6 +141,10 @@ namespace GameName1
                 cell.RemoveAll(x => x.CanDelete);
             }
             AllGameObjects.RemoveAll(x => x.CanDelete);
+            foreach (SlimeTrail trail in SlimeTrails)
+            {
+                trail.Update();
+            }
             if (FrameCounter % 100 == 0 && NumZombies < MaxZombies)
             {
                 SpawnZombie();
@@ -166,6 +172,10 @@ namespace GameName1
                 {
                     g.Draw(_spriteBatch);
                 }
+            }
+            foreach (SlimeTrail trail in SlimeTrails)
+            {
+                trail.Draw(_spriteBatch);
             }
         }
         public static void RemoveObject(GameObject obj)
