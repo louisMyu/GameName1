@@ -103,6 +103,7 @@ namespace GameName1
             _circleBody.BodyType = BodyType.Dynamic;
             _circleBody.Mass = 0.2f;
             _circleBody.LinearDamping = 2f;
+            ObjectManager.SlimeTrails.Add(m_SlimeTrail);
         }
 
         //moves a set amount per frame toward a certain location
@@ -212,9 +213,9 @@ namespace GameName1
         }
         protected override void LoadExplodedParts()
         {
-            ExplodedParts.Add(TextureBank.GetTexture("SlimePart1");
-            ExplodedParts.Add(TextureBank.GetTexture("SlimePart2");
-            ExplodedParts.Add(TextureBank.GetTexture("SlimePart3");
+            ExplodedParts.Add(TextureBank.GetTexture("SlimePart1"));
+            ExplodedParts.Add(TextureBank.GetTexture("SlimePart2"));
+            ExplodedParts.Add(TextureBank.GetTexture("SlimePart3"));
         }
         public int GetHealth()
         {
@@ -264,7 +265,7 @@ namespace GameName1
             m_SlimePieces.Add(piece);
         }
     }
-    private class SlimeTrailPiece
+    public class SlimeTrailPiece
     {
         private const int LIFE_TIME = 500;
         Texture2D m_Texture;

@@ -162,6 +162,10 @@ namespace GameName1
         }
         public void Draw(SpriteBatch _spriteBatch)
         {
+            foreach (SlimeTrail trail in SlimeTrails)
+            {
+                trail.Draw(_spriteBatch);
+            }
             foreach (GameObject g in AllGameObjects)
             {
                 if (g is PowerUp)
@@ -172,10 +176,6 @@ namespace GameName1
                 {
                     g.Draw(_spriteBatch);
                 }
-            }
-            foreach (SlimeTrail trail in SlimeTrails)
-            {
-                trail.Draw(_spriteBatch);
             }
         }
         public static void RemoveObject(GameObject obj)

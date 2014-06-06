@@ -188,7 +188,7 @@ namespace GameName1
             array[1] = new AnimationInfo(TextureBank.GetTexture(shotString2), -1);
             m_FireAnimation = new AnimationManager(array, m_SavedShotInfo, 60);
         }
-        protected override void ExplodeEnemy(Vector2 intersectingAngle, IEnemy enemy, Vector2 pos)
+        public override void ExplodeEnemy(Vector2 intersectingAngle, IEnemy enemy, Vector2 pos)
         {
             List<Texture2D> gibTextures = enemy.GetExplodedParts();
             float spreadAngle = 180;
