@@ -288,8 +288,9 @@ namespace GameName1
                 case GameState.Playing:
                     _spriteBatch.Begin();
                     _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), UserInterface.BackGroundHueColor);
-                    UserInterface.DrawActiveGibs(_spriteBatch);
                     UserInterface.DrawDeathTimer(_spriteBatch);
+                    GlobalObjectManager.DrawSlimeTrails(_spriteBatch);
+                    UserInterface.DrawActiveGibs(_spriteBatch);
                     GlobalObjectManager.Draw(_spriteBatch);
                     m_Player.Draw(_spriteBatch);
                     UserInterface.Draw(_spriteBatch, m_Player);

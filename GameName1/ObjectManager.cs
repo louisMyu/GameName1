@@ -141,10 +141,17 @@ namespace GameName1
                 cell.RemoveAll(x => x.CanDelete);
             }
             AllGameObjects.RemoveAll(x => x.CanDelete);
-            foreach (SlimeTrail trail in SlimeTrails)
+
+            for(int i = 0; i < SlimeTrails.Count; ++i)
             {
-                trail.Update();
+                SlimeTrails[i].Update();
+                if (!SlimeTrails[i].Alive)
+                {
+                    SlimeTrails.Remove(SlimeTrails[i]);
+                    --i;
+                }
             }
+
             if (FrameCounter % 100 == 0 && NumZombies < MaxZombies)
             {
                 SpawnZombie();
@@ -162,10 +169,7 @@ namespace GameName1
         }
         public void Draw(SpriteBatch _spriteBatch)
         {
-            foreach (SlimeTrail trail in SlimeTrails)
-            {
-                trail.Draw(_spriteBatch);
-            }
+
             foreach (GameObject g in AllGameObjects)
             {
                 if (g is PowerUp)
@@ -176,6 +180,13 @@ namespace GameName1
                 {
                     g.Draw(_spriteBatch);
                 }
+            }
+        }
+        public void DrawSlimeTrails(SpriteBatch spriteBatch)
+        {
+            foreach (SlimeTrail trail in SlimeTrails)
+            {
+                trail.Draw(spriteBatch);
             }
         }
         public static void RemoveObject(GameObject obj)

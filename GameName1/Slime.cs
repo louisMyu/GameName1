@@ -98,7 +98,7 @@ namespace GameName1
                 m_Origin.Y = Height / 2;
             }
 
-            m_SlimeTrail = new SlimeTrail();
+            m_SlimeTrail = new SlimeTrail(this);
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
             _circleBody.Mass = 0.2f;
@@ -244,10 +244,25 @@ namespace GameName1
     }
     public class SlimeTrail
     {
+        Slime m_SlimeBody;
         List<SlimeTrailPiece> m_SlimePieces = new List<SlimeTrailPiece>();
+        private bool m_Alive;
+        public bool Alive { get { return m_Alive; } }
+        public SlimeTrail(Slime body)
+        {
+            m_SlimeBody = body;
+            m_Alive = true;
+        }
+
         public void Update()
         {
             m_SlimePieces.RemoveAll(x => !x.isAlive);
+            if (m_SlimePieces.Count == 0 && m_SlimeBody.CanDelete)
+            {
+                m_SlimeBody = null;
+                m_Alive = false;
+                return;
+            }
             foreach (SlimeTrailPiece piece in m_SlimePieces)
             {
                 piece.Update();
