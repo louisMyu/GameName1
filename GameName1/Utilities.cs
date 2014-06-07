@@ -42,6 +42,37 @@ namespace GameName1
         {
             return (float)Math.Atan(vec.Y / vec.X);
         }
+        public static Vector2 rotateVec2(Vector2 original, float angle)
+        {
+            float newX = (float)(original.X * Math.Cos(angle) - original.Y * Math.Sin(angle));
+            float newY = (float)(original.Y * Math.Sin(angle) + original.Y * Math.Cos(angle));
+            return new Vector2(newX, newY);
+        }
+        public static float NormalizeDegrees(float degrees)
+        {
+            while (degrees < 0)
+            {
+                degrees += 360;
+            }
+            while (degrees > 360)
+            {
+                degrees -= 360;
+            }
+            return degrees;
+        }
+        public static void Shuffle<T>(IList<T> list)
+        {
+            Random rng = new Random();
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
     }
 
     //0_o

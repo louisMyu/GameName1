@@ -120,7 +120,6 @@ namespace GameName1
         Vector2 Position;
         Vector2 m_Origin;
         float RotationAngle;
-        bool hasStopped;
         public void LoadContent(Texture2D tex, Vector2 pos)
         {
             m_Texture = tex;
@@ -128,14 +127,13 @@ namespace GameName1
             Body = BodyFactory.CreateBody(GameplayScreen.m_World, ConvertUnits.ToSimUnits(Position));
             Fixture fixture = FixtureFactory.AttachCircle(ConvertUnits.ToSimUnits(35 / 2f), 1f, Body, null);
             Body.BodyType = BodyType.Dynamic;
-            Body.Mass = 2f;
-            Body.LinearDamping = 0.9f;
-            Body.AngularDamping = 0.2f;
+            Body.Mass = 0.3f;
+            Body.LinearDamping = 0.75f;
+            Body.AngularDamping = 0.5f;
             fixture.OnCollision += MyOnCollision;
             m_Origin = new Vector2(m_Texture.Width / 2, m_Texture.Height / 2);
             RotationAngle = (float)((GibRandom.Next(0, 301) / 300.0f) * Math.PI * 2);
             Body.Rotation = RotationAngle;
-            hasStopped = false;
         }
 
         public bool MyOnCollision(Fixture f1, Fixture f2,

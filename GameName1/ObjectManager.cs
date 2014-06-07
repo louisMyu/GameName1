@@ -17,8 +17,9 @@ namespace GameName1
         public static List<GameObject> AllGameObjects = new List<GameObject>();
         public static List<GameObject>[][] GameObjectGrid;
         public static List<SlimeTrail> SlimeTrails = new List<SlimeTrail>();
-        
-        public static Random ZombieRandom = new Random(424242);
+        public static List<PowerUp> PowerUpItems = new List<PowerUp>();
+
+        public static Random ZombieRandom = new Random();
         public static long FrameCounter = 0;
         public static bool itemMade = false;
         public static bool face = false;
@@ -128,12 +129,12 @@ namespace GameName1
                         RemoveObject(ob);
                     }
                 }
-                if (ob is PowerUp)
+            }
+            foreach (PowerUp p in PowerUpItems)
+            {
+                if (p.CanDelete)
                 {
-                    if (ob.CanDelete)
-                    {
-                        cellsToClean.Add(ObjectManager.GetCell(ob.Position));
-                    }
+                    cellsToClean.Add(ObjectManager.GetCell(p.Position));
                 }
             }
             foreach (List<GameObject> cell in cellsToClean)
@@ -141,7 +142,7 @@ namespace GameName1
                 cell.RemoveAll(x => x.CanDelete);
             }
             AllGameObjects.RemoveAll(x => x.CanDelete);
-
+            PowerUpItems.RemoveAll(x => x.CanDelete);
             for(int i = 0; i < SlimeTrails.Count; ++i)
             {
                 SlimeTrails[i].Update();
@@ -169,7 +170,6 @@ namespace GameName1
         }
         public void Draw(SpriteBatch _spriteBatch)
         {
-
             foreach (GameObject g in AllGameObjects)
             {
                 if (g is PowerUp)
@@ -189,9 +189,15 @@ namespace GameName1
                 trail.Draw(spriteBatch);
             }
         }
+        public void DrawPowerUps(SpriteBatch spriteBatch)
+        {
+            foreach (PowerUp p in PowerUpItems)
+            {
+                p.Draw(spriteBatch);
+            }
+        }
         public static void RemoveObject(GameObject obj)
         {
-
             if (obj is IEnemy)
             {
                 ((IEnemy)obj).CleanBody();
@@ -273,7 +279,7 @@ namespace GameName1
             temp.Y = MathHelper.Clamp(y, 0, Game1.GameHeight-15);
             m_PowerUp.Position = temp;
             m_PowerUp.LoadContent();
-            ObjectManager.AllGameObjects.Add(m_PowerUp);
+            ObjectManager.PowerUpItems.Add(m_PowerUp);
             GetCell(m_PowerUp.Position).Add(m_PowerUp);
         }
         //probably should add spawn face in here

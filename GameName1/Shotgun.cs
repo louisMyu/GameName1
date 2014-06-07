@@ -190,19 +190,22 @@ namespace GameName1
         public override void ExplodeEnemy(Vector2 intersectingAngle, IEnemy enemy, Vector2 pos)
         {
             List<Texture2D> gibTextures = enemy.GetExplodedParts();
-            float shotgunSpreadAngle = 60;
-            float singleAngle = (shotgunSpreadAngle / (float)gibTextures.Count);
-            float singleAngleRadians = Utilities.DegreesToRadians(singleAngle);
-            Vector2 singleAngleVec = Utilities.RadiansToVector2(singleAngleRadians);
-            float startingPoint = singleAngle * gibTextures.Count / 2;
             for (int i = 0; i < gibTextures.Count; ++i)
             {
+                float randomTorque = -200000f + (400000f*(float)Weapon.GibRandomGenerator.NextDouble());
+                float randomDegree = -30f + (60f * (float)Weapon.GibRandomGenerator.NextDouble());
                 ExplodedPart gib = new ExplodedPart();
                 gib.LoadContent(gibTextures[i], pos);
-                Vector2 halfAngle = Utilities.RadiansToVector2(Utilities.DegreesToRadians(-30));
-                gib.ApplyLinearForce(intersectingAngle - (halfAngle) + (i * 2 * halfAngle), Knockback * 1.5f);
-                //shoul be randomixed
-                gib.ApplyTorque(5000f);
+                Vector2 temp = Utilities.rotateVec2(intersectingAngle, randomDegree);
+                if (intersectingAngle.X == 0) intersectingAngle.X += 0.000001f;
+                float originalDegrees = Utilities.RadiansToDegrees((float)Math.Atan(intersectingAngle.Y/intersectingAngle.X));
+                if (intersectingAngle.X < 0) originalDegrees += 180;
+                float newDegrees = Utilities.NormalizeDegrees(originalDegrees) + randomDegree;
+                Vector2 change = new Vector2((float)Math.Cos(Utilities.DegreesToRadians(newDegrees)), (float)Math.Sin(Utilities.DegreesToRadians(newDegrees)));
+                float degrees = Utilities.RadiansToDegrees((float)Math.Acos(change.X));
+                gib.ApplyLinearForce(change, Knockback * 75f);
+                //should be randomixed
+                gib.ApplyTorque(randomTorque);
                 UI.ActiveGibs.Add(gib);
             }
         }

@@ -290,6 +290,7 @@ namespace GameName1
                     _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), UserInterface.BackGroundHueColor);
                     UserInterface.DrawDeathTimer(_spriteBatch);
                     GlobalObjectManager.DrawSlimeTrails(_spriteBatch);
+                    GlobalObjectManager.DrawPowerUps(_spriteBatch);
                     UserInterface.DrawActiveGibs(_spriteBatch);
                     GlobalObjectManager.Draw(_spriteBatch);
                     m_Player.Draw(_spriteBatch);
