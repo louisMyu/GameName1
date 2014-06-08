@@ -54,17 +54,9 @@ namespace GameName1
 
         }
 
-        private Texture2D m_SlimeTrailTex;
+        private static Texture2D m_SlimeTrailTex;
         public void LoadContent(World world)
         {
-            if (m_Texture == null)
-            {
-                m_Texture = TextureBank.GetTexture("Slime");
-            }
-            if (m_SlimeTrailTex == null)
-            {
-                m_SlimeTrailTex = TextureBank.GetTexture("SlimeTrail");
-            }
             int dir = SlimeRandom.Next(4);
             m_Direction = new Vector2(0, 0);
             switch (dir)
@@ -101,8 +93,9 @@ namespace GameName1
             m_SlimeTrail = new SlimeTrail(this);
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
-            _circleBody.Mass = 0.2f;
-            _circleBody.LinearDamping = 2f;
+            _circleBody.Mass = 5f;
+            _circleBody.LinearDamping = 3f;
+            _circleBody.Restitution = .5f;
             ObjectManager.SlimeTrails.Add(m_SlimeTrail);
         }
 
@@ -189,19 +182,30 @@ namespace GameName1
             SlimeTrailPiece piece = new SlimeTrailPiece(pieceRec, 100, m_SlimeTrailTex, RotationAngle);
             m_SlimeTrail.AddPiece(piece);
         }
-        public void ApplyLinearForce(Vector2 angle, float amount)
+        public static void LoadTextures()
         {
-            Vector2 impulse = Vector2.Normalize(angle) * amount;
-            _circleBody.ApplyLinearImpulse(impulse);
+            if (m_Texture == null)
+            {
+                m_Texture = TextureBank.GetTexture("Slime");
+            }
+            if (m_SlimeTrailTex == null)
+            {
+                m_SlimeTrailTex = TextureBank.GetTexture("SlimeTrail");
+            }
+            //TODO load slime exploded textures here
         }
-
+        #region IEnemy
         public void CleanBody()
         {
             if (_circleBody != null)
             {
                 GameplayScreen.m_World.RemoveBody(_circleBody);
-
             }
+        }
+        public void ApplyLinearForce(Vector2 angle, float amount)
+        {
+            Vector2 impulse = Vector2.Normalize(angle) * amount;
+            _circleBody.ApplyLinearImpulse(impulse);
         }
         public void AddToHealth(int amount)
         {
@@ -225,6 +229,11 @@ namespace GameName1
         {
             return DAMAGE_AMOUNT;
         }
+        public void DoCollision()
+        {
+        }
+        #endregion
+        #region Save/Load
         public override void Save()
         {
             Storage.Save<Slime>("", "", this);
@@ -241,6 +250,7 @@ namespace GameName1
             _circleBody.LinearDamping = 2f;
             _circleBody.Position = bodyPosition;
         }
+        #endregion
     }
     public class SlimeTrail
     {

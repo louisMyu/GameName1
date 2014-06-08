@@ -13,7 +13,6 @@ namespace GameName1
     [DataContract]
     public class Weapon
     {
-        protected static Random GibRandomGenerator = new Random();
         protected SoundEffectInstance m_ShotSound;
         [DataMember]
         public bool CanMoveWhileShooting { get; set; }

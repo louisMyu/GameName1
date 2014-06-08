@@ -127,9 +127,9 @@ namespace GameName1
             Body = BodyFactory.CreateBody(GameplayScreen.m_World, ConvertUnits.ToSimUnits(Position));
             Fixture fixture = FixtureFactory.AttachCircle(ConvertUnits.ToSimUnits(35 / 2f), 1f, Body, null);
             Body.BodyType = BodyType.Dynamic;
-            Body.Mass = 1f;
-            Body.LinearDamping = 0.95f;
-            Body.AngularDamping = 0.5f;
+            Body.Mass = 2.5f;
+            Body.LinearDamping = 2.5f;
+            Body.AngularDamping = 0.6f;
             fixture.OnCollision += MyOnCollision;
             m_Origin = new Vector2(m_Texture.Width / 2, m_Texture.Height / 2);
             RotationAngle = (float)((GibRandom.Next(0, 301) / 300.0f) * Math.PI * 2);

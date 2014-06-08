@@ -110,6 +110,11 @@ namespace GameName1
             m_song = SoundBank.GetSong("AuraQualic - DATA (FL Studio Remix)");
             TimeToDeath = TimeSpan.FromSeconds(30);
             UserInterface.SetTimeToDeath(TimeToDeath);
+
+            Zombie.LoadTextures();
+            Slime.LoadTextures();
+            Anubis.LoadTextures();
+
             isLoaded = true;
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
             backgroundTexture = new RenderTarget2D(ScreenManager.GraphicsDevice, viewport.Width, viewport.Height, false,
@@ -126,6 +131,8 @@ namespace GameName1
             UserInterface.DrawBackground(spriteBatch);
             spriteBatch.End();
             ScreenManager.Game.ResetElapsedTime();
+
+            m_World.Step(0f);
         }
 
 
@@ -176,10 +183,10 @@ namespace GameName1
                             UserInterface.Update(customElapsedTime);
                             break;
                         case GameState.Playing:
-                            if (SlowMotion)
-                            {
-                                customElapsedTime = new TimeSpan((long)(customElapsedTime.Ticks * 0.5));
-                            }
+                            //if (SlowMotion)
+                            //{
+                            //    customElapsedTime = new TimeSpan((long)(customElapsedTime.Ticks * 0.5));
+                            //}
 
                             if (TimeToDeath < TimeSpan.FromSeconds(0))
                             {
@@ -216,7 +223,7 @@ namespace GameName1
                             //cleanup dead objects
                             GlobalObjectManager.Update(customElapsedTime);
 
-                            m_World.Step((float)customElapsedTime.TotalMilliseconds * 0.002f);
+                            m_World.Step((float)1.0f/60f);
                             break;
                         case GameState.Dying:
                             if (m_Player.isDead)

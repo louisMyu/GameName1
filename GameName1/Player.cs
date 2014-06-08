@@ -110,22 +110,12 @@ namespace GameName1
                     if (ob is Player) { continue; }
                     //TODO: seriously need to refactor this later
                     //its good to find the nearest zombie when i run through entire zombie list, but probably not here
-                    //this code will find the nearest zombie for autoaim
-                    //Vector2 vec = new Vector2(ob.Position.X - Position.X, ob.Position.Y - Position.Y);
-                    //float temp = vec.LengthSquared();
-                    //if (temp < nearestLength && ob is Zombie)
-                    //{
-                    //    nearestLength = temp;
-                    //    if (!m_Weapon.Firing)
-                    //    {
-                    //        //RotationAngle = (float)Math.Atan2(vec.Y, vec.X);
-                    //    }
-                    //}
 
                     if (ob == null)
                     {
                         //need to handle null exeception here
-                        return;
+                        gameObjectList.Remove(ob);
+                        continue;
                     }
                     if (ob.m_Bounds.Intersects(this.m_Bounds))
                     {
@@ -208,7 +198,7 @@ namespace GameName1
 
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
-            _circleBody.Mass = 0.2f;
+            _circleBody.Mass = 4f;
             _circleBody.LinearDamping = 2f;
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {

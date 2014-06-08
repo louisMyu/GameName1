@@ -60,6 +60,7 @@ namespace GameName1
 
         private List<ExplodedPart> BakedGibs = new List<ExplodedPart>();
         public static List<ExplodedPart> ActiveGibs = new List<ExplodedPart>();
+
         public UI()
         {
         }
@@ -92,9 +93,7 @@ namespace GameName1
             WeaponSlotRec = new Rectangle((int)(WeaponSlotPosition.X - ((m_FireButton.Width*WeaponSlotScale.X)/2)), (int)(WeaponSlotPosition.Y - ((m_FireButton.Height*WeaponSlotScale.Y)/2)), PlayfieldBottom, PlayfieldBottom);
             ThumbStickPressed = false;
             ThumbStickPoint = StopButtonPosition;
-
-
-            
+            ActiveGibs.Clear();
         }
 
         public void Update(TimeSpan elapsedTime)
