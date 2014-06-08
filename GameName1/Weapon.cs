@@ -136,5 +136,8 @@ namespace GameName1
                 UI.ActiveGibs.Add(gib);
             }
         }
+        public virtual void ApplyKickback(Player p)
+        {
+        }
     }
 }

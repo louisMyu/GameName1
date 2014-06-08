@@ -194,8 +194,10 @@ namespace GameName1
             Vector2 impulse = Vector2.Normalize(angle) * amount;
             _circleBody.ApplyLinearImpulse(impulse);
         }
-        public void DoCollision()
+        public void DoCollision(Player player)
         {
+            player.LifeTotal -= GetDamageAmount();
+            ObjectManager.RemoveObject(this);
         }
         #endregion
         #region Save/Load

@@ -122,7 +122,8 @@ namespace GameName1
                         if (ob is IEnemy && m_PlayerState != PlayerState.Damaged)
                         {
                             IEnemy enemy = ob as IEnemy;
-                            LifeTotal -= enemy.GetDamageAmount();
+                            //do collision should take care of removing the enemy
+                            enemy.DoCollision(this);
                             if (LifeTotal <= 0)
                             {
                                 isDead = true;
@@ -132,6 +133,7 @@ namespace GameName1
                             }
                             m_PlayerState = PlayerState.Damaged;
                             DrawRedFlash = true;
+                            continue;
                         }
                         if (ob is PowerUp)
                         {
@@ -276,11 +278,7 @@ namespace GameName1
                     if (!KickedBack && isFireButtonDown && m_Weapon.CanFire())
                     {
                         KickedBack = true;
-                        if (m_Weapon is Shotgun)
-                        {
-                            Vector2 temp = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle)) * -50;
-                            this._circleBody.ApplyLinearImpulse(temp);
-                        }
+                        Weapon.ApplyKickback(this);
                     }
                     if (!m_Weapon.Firing && KickedBack)
                     {
@@ -389,7 +387,10 @@ namespace GameName1
                     break;
             }
         }
-
+        public void ApplyLinearForce(Vector2 force)
+        {
+            this._circleBody.ApplyLinearImpulse(force);
+        }
         public override void Save()
         {
             Storage.Save<Player>(Player.playerSaveDir, "player1", this);

@@ -102,6 +102,10 @@ namespace GameName1
             }
             return false;
         }
+        public override void ApplyKickback(Player p)
+        {
+            
+        }
         public override void DrawWeapon(SpriteBatch _spriteBatch, Vector2 position, float rot)
         {
 

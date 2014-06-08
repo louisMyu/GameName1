@@ -16,6 +16,6 @@ namespace GameName1
         void CleanBody();
         int GetDamageAmount();
         List<Texture2D> GetExplodedParts();
-        void DoCollision();
+        void DoCollision(Player p);
     }
 }

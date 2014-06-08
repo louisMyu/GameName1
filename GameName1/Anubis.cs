@@ -131,9 +131,11 @@ namespace GameName1
             ObjectManager.GetCell(Position).Remove(this);
             //get a normalized direction toward the point that was passed in, probably the player
             Vector2 vec = new Vector2(playerPosition.X - Position.X, playerPosition.Y - Position.Y);
-            if (vec.LengthSquared() <= (275.0f * 275.0f) && m_State != MotionState.Attacking)
+            float temp = vec.LengthSquared();
+
+            if (temp <= (275.0f * 275.0f) && m_State != MotionState.Attacking)
             {
-                if (vec.LengthSquared() <= (20.0f * 20.0f))
+                if (vec.LengthSquared() <= (150.0f * 150.0f))
                 {
                     m_State = MotionState.Attacking;
                 }
@@ -204,8 +206,15 @@ namespace GameName1
         {
 
         }
-        public void DoCollision()
+        public void DoCollision(Player player)
         {
+            if (m_State == MotionState.Attacking)
+            {
+                Vector2 dirOfPlayer = new Vector2(player.Position.X - Position.X, player.Position.Y - Position.Y);
+                dirOfPlayer *= 500f;
+                player.LifeTotal -= GetDamageAmount();
+                player.ApplyLinearForce(dirOfPlayer);
+            }
         }
         #endregion
         #region Save/Load
