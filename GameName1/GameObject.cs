@@ -127,8 +127,8 @@ namespace GameName1
             Body = BodyFactory.CreateBody(GameplayScreen.m_World, ConvertUnits.ToSimUnits(Position));
             Fixture fixture = FixtureFactory.AttachCircle(ConvertUnits.ToSimUnits(35 / 2f), 1f, Body, null);
             Body.BodyType = BodyType.Dynamic;
-            Body.Mass = 0.3f;
-            Body.LinearDamping = 0.75f;
+            Body.Mass = 1f;
+            Body.LinearDamping = 0.95f;
             Body.AngularDamping = 0.5f;
             fixture.OnCollision += MyOnCollision;
             m_Origin = new Vector2(m_Texture.Width / 2, m_Texture.Height / 2);
@@ -164,7 +164,6 @@ namespace GameName1
         }
         public void ApplyLinearForce(Vector2 angle, float force)
         {
-            float temp =Utilities.RadiansToDegrees( Utilities.Vector2ToRadians(angle));
             Vector2 impulse = Vector2.Normalize(angle) * force;
             Body.ApplyLinearImpulse(impulse);
         }
