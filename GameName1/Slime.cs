@@ -229,8 +229,10 @@ namespace GameName1
         {
             return DAMAGE_AMOUNT;
         }
-        public void DoCollision()
+        public void DoCollision(Player player)
         {
+            player.LifeTotal -= GetDamageAmount();
+            ObjectManager.RemoveObject(this);
         }
         #endregion
         #region Save/Load

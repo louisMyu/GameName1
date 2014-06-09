@@ -77,7 +77,7 @@ namespace GameName1
             _circleBody.BodyType = BodyType.Dynamic;
             _circleBody.Mass = 5f;
             _circleBody.LinearDamping = 3f;
-            _circleBody.Restitution = 1f;
+            _circleBody.Restitution = .7f;
         }
         public static void LoadTextures()
         {
@@ -135,7 +135,7 @@ namespace GameName1
 
             if (temp <= (275.0f * 275.0f) && m_State != MotionState.Attacking)
             {
-                if (vec.LengthSquared() <= (150.0f * 150.0f))
+                if (vec.LengthSquared() <= (100.0f * 100.0f))
                 {
                     m_State = MotionState.Attacking;
                 }
@@ -211,10 +211,11 @@ namespace GameName1
             if (m_State == MotionState.Attacking)
             {
                 Vector2 dirOfPlayer = new Vector2(player.Position.X - Position.X, player.Position.Y - Position.Y);
-                dirOfPlayer *= 500f;
-                player.LifeTotal -= GetDamageAmount();
+                dirOfPlayer *= 700f;
                 player.ApplyLinearForce(dirOfPlayer);
+                //player.LifeTotal -= GetDamageAmount();   
             }
+            
         }
         #endregion
         #region Save/Load

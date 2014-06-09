@@ -210,9 +210,9 @@ namespace GameName1
                 UI.ActiveGibs.Add(gib);
             }
         }
-        public override void ApplyKnockback(Player player)
+        public override void ApplyKickback(Player player)
         {
-            Vector2 temp = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle)) * -50;
+            Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -50;
             player.ApplyLinearForce(temp);
         }
     }

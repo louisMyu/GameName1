@@ -165,8 +165,8 @@ namespace GameName1
                                 weapon.LoadContent();
                                 m_Weapon = weapon;
                             }
+                            ObjectManager.RemoveObject(ob);
                         }
-                        ObjectManager.RemoveObject(ob);
                     }
                 }
             }
