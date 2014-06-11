@@ -135,7 +135,7 @@ namespace GameName1
 
             if (temp <= (275.0f * 275.0f) && m_State != MotionState.Attacking)
             {
-                if (vec.LengthSquared() <= (100.0f * 100.0f))
+                if (vec.LengthSquared() <= (80.0f * 80.0f))
                 {
                     m_State = MotionState.Attacking;
                 }

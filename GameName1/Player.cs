@@ -32,9 +32,9 @@ namespace GameName1
         public static float VELOCITY = 40f;
 
         //how many frames of invincible to occur when player is damaged
-        private const int INVINCIBLE_FRAMES = 50;
+        private const int INVINCIBLE_FRAMES = 100;
         //how many frames to wait until a flash occurs when being hit, done via modulo
-        private const int INVINCIBLE_FLASH_FRAME = 10;
+        private const int INVINCIBLE_FLASH_FRAME = 15;
         [IgnoreDataMember]
         public Vector2 m_MoveToward = new Vector2();
         [DataMember]

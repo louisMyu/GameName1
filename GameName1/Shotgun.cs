@@ -212,7 +212,7 @@ namespace GameName1
         }
         public override void ApplyKickback(Player player)
         {
-            Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -50;
+            Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -505;
             player.ApplyLinearForce(temp);
         }
     }

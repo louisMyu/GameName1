@@ -107,7 +107,7 @@ namespace GameName1
             CategoryList.Add(StoreCategory);
             UpgradeCheatsRec = new Rectangle(StoreRec.X + StoreRec.Width, 0, CategoryHeight, CategoryWidth);
             UpgradeCheatsCategory = CreateCheatUpgradeMenu();
-            UpgradeCheatsCategory.HandleTap += CheatMenuTapped;
+            UpgradeCheatsCategory.HandleTap += UpgradeMenuTapped;
             UpgradeCheatsCategory.HandleDrag += ScrollMenuDragged;
             CategoryList.Add(UpgradeCheatsCategory);
             UpgradeWeaponRec = new Rectangle(UpgradeCheatsRec.X + UpgradeCheatsRec.Width, 0, CategoryHeight, CategoryWidth);
@@ -192,10 +192,7 @@ namespace GameName1
             Point pointInSelectionArea = new Point(e.Tap.X - m_CurrentMainScreenRec.X, e.Tap.Y - m_CurrentMainScreenRec.Y);
             category.HandleSelectionAreaTapped(pointInSelectionArea);
         }
-        private void CheatMenuTapped(object sender, PointEventArgs e)
-        {
-            Point point = e.Tap;
-        }
+        
         private void StoreMenuTapped(object sender, PointEventArgs e)
         {
             Point point = e.Tap;
@@ -326,7 +323,13 @@ namespace GameName1
             {
                 Rectangle temp = new Rectangle(0, 0, MenuSelectionTotalArea.Width, SelectionUpgradeWidth);
                 Rectangle currentSlotPosition = new Rectangle(0, (SelectionUpgradeWidth * i), temp.Width, temp.Height);
-                UpgradeSlot slot = new UpgradeSlot("Shotgun description", currentSlotPosition, ScreenManager.Font);
+                UpgradeSlot slot = new UpgradeSlot(currentSlotPosition, ScreenManager.Font);
+                switch (i)
+                {
+                    case 0:
+                        slot.SetUpgradeField("Shotgun", UpgradeField.ShotgunDamage, Upgrade_List[UpgradeField.ShotgunDamage]);
+                        break;
+                }
                 Color tempColor = new Color(250 - (75*i),75*i,50-(i*10));
                 WidgetTree tree = new WidgetTree(temp);
                 Rectangle baseSlotDrawArea = new Rectangle(Viewport.Width/2, SelectionUpgradeWidth/2, SelectionUpgradeWidth, MenuSelectionTotalArea.Width);
@@ -334,8 +337,10 @@ namespace GameName1
                 WidgetTree slotTop = new WidgetTree(new Rectangle(0,0, baseSlotDrawArea.Width, baseSlotDrawArea.Height));
                 Rectangle tapButton = new Rectangle(baseSlotDrawArea.Height / 2, baseSlotDrawArea.Width / 2, 150, 150);
                 Rectangle valueArea = new Rectangle(tapButton.X - 200, tapButton.Y, 200, 100);
+                Rectangle descriptionArea = new Rectangle(valueArea.X - 200, valueArea.Y, 200, 10);
                 slotTop.AddDrawArea(tapButton, new ColorTexture(TextureBank.GetTexture("GSMbackground"), Color.Black));
                 slotTop.AddDrawArea(valueArea, slot.ValueString);
+                slotTop.AddDrawArea(descriptionArea, slot.Description); 
                 slotTop.AddHitArea(tapButton);
                 tree.AddWidgetTree(slotTop);
 
@@ -365,7 +370,7 @@ namespace GameName1
                 UpgradeSlot slot = null;
                 try
                 {
-                    slot = new UpgradeSlot("Shotgun description", currentSlotPosition, ScreenManager.Font);
+                    slot = new UpgradeSlot(currentSlotPosition, ScreenManager.Font);
                 }
                 catch (Exception e)
                 {
@@ -479,17 +484,27 @@ namespace GameName1
     }
     class UpgradeSlot
     {
+        private UpgradeMenuScreen.UpgradeField m_UpgradeField;
+        private object m_UpgradeValue;
+
         public ColorString ValueString;
         int m_Value;
         public int Value { get { return m_Value; } set { m_Value = value; } }
         WidgetTree Widgets;
-        string m_Description;
+        public ColorString Description;
         private Rectangle FinalContainer;
-        public UpgradeSlot(string description, Rectangle baseContainer, SpriteFont font = null)
+        private SpriteFont m_Font;
+        public UpgradeSlot(Rectangle baseContainer, SpriteFont font = null)
         {
-            m_Description = description;
             FinalContainer = baseContainer;
-            ValueString = new ColorString(font, "Test", Color.Black);
+            m_Font = font;
+            ValueString = new ColorString(font, "Test", Color.Black);    
+        }
+        public void SetUpgradeField(String description, UpgradeMenuScreen.UpgradeField field, object val)
+        {
+            Description = new ColorString(m_Font, description, Color.White);
+            m_UpgradeField = field;
+            m_UpgradeValue = val;
         }
         public void SetWidgetTree(WidgetTree widg)
         {
