@@ -54,7 +54,7 @@ namespace GameName1
             Knockback = 1000f;
             CanMoveWhileShooting = true;
             BulletsExist = false;
-            m_ShotgunDamage = (int)UpgradeMenuScreen.GetFieldValue(UpgradeMenuScreen.UpgradeField.ShotgunDamage);
+            m_ShotgunDamage = UpgradeMenuScreen.GetFieldValue(UpgradeMenuScreen.UpgradeField.ShotgunDamage);
         }
 
         public override void LoadContent()

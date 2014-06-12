@@ -12,19 +12,17 @@ namespace GameName1
 {
     class UpgradeMenuScreen : GameScreen
     {
-        private static Dictionary<UpgradeField, object> Upgrade_List = new Dictionary<UpgradeField, object>();
+        private static Dictionary<UpgradeField, int> Upgrade_List = new Dictionary<UpgradeField, int>();
         private static string SavedSelectedMenu = "Weapons";
         public static void LoadUpgradeFields()
         {
             Upgrade_List.Add(UpgradeField.ShotgunDamage, 10);
+            Upgrade_List.Add(UpgradeField.RifleDamage, 10);
+            Upgrade_List.Add(UpgradeField.PlasmaDamage, 5);
         }
-        public static object GetFieldValue(UpgradeField field)
+        public static int GetFieldValue(UpgradeField field)
         {
-            if (Upgrade_List[field] != null)
-            {
-                return Upgrade_List[field];
-            }
-            throw new NullReferenceException();
+            return Upgrade_List[field];
         }
         #region Fields
 
@@ -35,7 +33,9 @@ namespace GameName1
 
         public enum UpgradeField
         {
-            ShotgunDamage
+            ShotgunDamage,
+            RifleDamage,
+            PlasmaDamage
         }
         //static string[] languages = { "C#", "French", "Deoxyribonucleic acid" };
         //static int currentLanguage = 0;
@@ -323,11 +323,20 @@ namespace GameName1
             {
                 Rectangle temp = new Rectangle(0, 0, MenuSelectionTotalArea.Width, SelectionUpgradeWidth);
                 Rectangle currentSlotPosition = new Rectangle(0, (SelectionUpgradeWidth * i), temp.Width, temp.Height);
-                UpgradeSlot slot = new UpgradeSlot(currentSlotPosition, ScreenManager.Font);
+                UpgradeSlot slot = new UpgradeSlot(currentSlotPosition, ScreenManager, ScreenManager.Font);
                 switch (i)
                 {
                     case 0:
                         slot.SetUpgradeField("Shotgun", UpgradeField.ShotgunDamage, Upgrade_List[UpgradeField.ShotgunDamage]);
+                        break;
+                    case 1:
+                        slot.SetUpgradeField("Rifle", UpgradeField.RifleDamage, Upgrade_List[UpgradeField.RifleDamage]);
+                        break;
+                    case 2:
+                        slot.SetUpgradeField("Plasma", UpgradeField.PlasmaDamage, Upgrade_List[UpgradeField.PlasmaDamage]);
+                        break;
+                    default:
+                        slot.SetUpgradeField("Default String", UpgradeField.RifleDamage, Upgrade_List[UpgradeField.RifleDamage]);
                         break;
                 }
                 Color tempColor = new Color(250 - (75*i),75*i,50-(i*10));
@@ -370,7 +379,7 @@ namespace GameName1
                 UpgradeSlot slot = null;
                 try
                 {
-                    slot = new UpgradeSlot(currentSlotPosition, ScreenManager.Font);
+                    slot = new UpgradeSlot(currentSlotPosition, ScreenManager, ScreenManager.Font);
                 }
                 catch (Exception e)
                 {
@@ -494,8 +503,10 @@ namespace GameName1
         public ColorString Description;
         private Rectangle FinalContainer;
         private SpriteFont m_Font;
-        public UpgradeSlot(Rectangle baseContainer, SpriteFont font = null)
+        ScreenManager screenManager;
+        public UpgradeSlot(Rectangle baseContainer, ScreenManager manager, SpriteFont font = null)
         {
+            screenManager = manager;
             FinalContainer = baseContainer;
             m_Font = font;
             ValueString = new ColorString(font, "Test", Color.Black);    
@@ -535,9 +546,21 @@ namespace GameName1
             Rectangle tempRec = Widgets.CheckCollision(offsetPoint);
             if (tempRec.Width > 0)
             {
-                m_Value += 1;
-                ValueString.Text = m_Value.ToString();
+                //i should pop up a confirmation dialog box here
+                MessageBoxScreen box = new MessageBoxScreen("Confirmation Message");
+                box.Accepted += box_Accepted;
+                box.Cancelled += box_Cancelled;
+                screenManager.AddScreen(box, null);
             }
+        }
+
+        void box_Cancelled(object sender, EventArgs e)
+        {
+        }
+
+        void box_Accepted(object sender, EventArgs e)
+        {
+            m_Value += 1;
         }
     }
     class GestureEventArgs : EventArgs

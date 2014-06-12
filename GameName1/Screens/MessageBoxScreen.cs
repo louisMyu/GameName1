@@ -12,6 +12,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input.Touch;
 #endregion
 
 namespace GameName1
@@ -26,13 +27,15 @@ namespace GameName1
 
         string message;
         Texture2D gradientTexture;
+        Rectangle OKButton;
+        Rectangle CancelButton;
 
         #endregion
 
         #region Events
 
-        public event EventHandler<PlayerIndexEventArgs> Accepted;
-        public event EventHandler<PlayerIndexEventArgs> Cancelled;
+        public event EventHandler<EventArgs> Accepted;
+        public event EventHandler<EventArgs> Cancelled;
 
         #endregion
 
@@ -54,8 +57,7 @@ namespace GameName1
         /// </summary>
         public MessageBoxScreen(string message, bool includeUsageText)
         {
-            const string usageText = "\nA button, Space, Enter = ok" +
-                                     "\nB button, Esc = cancel"; 
+            const string usageText = "Are you sure?";
             
             if (includeUsageText)
                 this.message = message + usageText;
@@ -66,6 +68,10 @@ namespace GameName1
 
             TransitionOnTime = TimeSpan.FromSeconds(0.2);
             TransitionOffTime = TimeSpan.FromSeconds(0.2);
+
+            OKButton = new Rectangle();
+            CancelButton = new Rectangle();
+            EnabledGestures = GestureType.Tap;
         }
 
 
@@ -93,11 +99,11 @@ namespace GameName1
         /// </summary>
         public override void HandleInput(Input input)
         {
-            // //We pass in our ControllingPlayer, which may either be null (to
-            // //accept input from any player) or a specific index. If we pass a null
-            // //controlling player, the InputState helper returns to us which player
-            // //actually provided the input. We pass that through to our Accepted and
-            // //Cancelled events, so they can tell which player triggered them.
+            ////We pass in our ControllingPlayer, which may either be null (to
+            ////accept input from any player) or a specific index. If we pass a null
+            ////controlling player, the InputState helper returns to us which player
+            ////actually provided the input. We pass that through to our Accepted and
+            ////Cancelled events, so they can tell which player triggered them.
             //if (input.IsMenuSelect(ControllingPlayer, out playerIndex))
             //{
             //    // Raise the accepted event, then exit the message box.
@@ -114,6 +120,35 @@ namespace GameName1
 
             //    ExitScreen();
             //}
+            Rectangle rotatedOK = new Rectangle(OKButton.X, OKButton.Y, OKButton.Height, OKButton.Width);
+            Rectangle rotatedCancel = new Rectangle(CancelButton.X, CancelButton.Y, CancelButton.Height, CancelButton.Width);
+            TouchCollection state = input.TouchState;
+            foreach (TouchLocation touch in state)
+            {
+                if (rotatedOK.Contains(touch.Position.X, touch.Position.Y))
+                {
+                    if (touch.State == TouchLocationState.Pressed)
+                    {
+
+                    }
+                    else if (touch.State == TouchLocationState.Released)
+                    {
+                        Accepted(this, new EventArgs());
+                        ExitScreen();
+                    }
+                }
+                if (rotatedCancel.Contains(touch.Position.X, touch.Position.Y))
+                {
+                    if (touch.State == TouchLocationState.Pressed)
+                    {
+                    }
+                    else if (touch.State == TouchLocationState.Released)
+                    {
+                        Cancelled(this, new EventArgs());
+                        ExitScreen();
+                    }
+                }
+            }
         }
 
 
@@ -140,25 +175,34 @@ namespace GameName1
             Vector2 textPosition = (viewportSize - textSize) / 2;
 
             // The background includes a border somewhat larger than the text itself.
-            const int hPad = 32;
-            const int vPad = 16;
+            const int hPad = 40;
+            const int vPad = 32;
 
             Rectangle backgroundRectangle = new Rectangle((int)textPosition.X - hPad,
                                                           (int)textPosition.Y - vPad,
                                                           (int)textSize.X + hPad * 2,
                                                           (int)textSize.Y + vPad * 2);
-
+            OKButton = new Rectangle((int)textPosition.X - 30, (int)textPosition.Y, (int)100, (int)50);
+            CancelButton = new Rectangle((int)OKButton.X, (int)OKButton.Y + OKButton.Width + 25, (int)100, (int)50);
             // Fade the popup alpha during transitions.
             Color color = Color.White * TransitionAlpha;
 
             spriteBatch.Begin();
 
             // Draw the background rectangle.
-            spriteBatch.Draw(gradientTexture, backgroundRectangle, color);
-
+            spriteBatch.Draw(gradientTexture, backgroundRectangle, null, color, Utilities.DegreesToRadians(90f), new Vector2((gradientTexture.Width / 2), (gradientTexture.Height / 2)),
+                                    SpriteEffects.None, 0);
+            spriteBatch.Draw(gradientTexture, OKButton, null, Color.Pink, Utilities.DegreesToRadians(90f), new Vector2((gradientTexture.Width / 2), (gradientTexture.Height / 2)),
+                                    SpriteEffects.None, 0);
             // Draw the message box text.
-            spriteBatch.DrawString(font, message, textPosition, color);
-
+            Vector2 measuredString = font.MeasureString(message);
+            Vector2 stringCenter = new Vector2(measuredString.X / 2, measuredString.Y / 2);
+            spriteBatch.DrawString(font, message, textPosition, color, Utilities.DegreesToRadians(90f), stringCenter, new Vector2(1, 1),
+                                    SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, "OK", new Vector2(OKButton.X, OKButton.Y), color, Utilities.DegreesToRadians(90f), stringCenter, new Vector2(1, 1),
+                                    SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, "Cancel", new Vector2(CancelButton.X, CancelButton.Y), color, Utilities.DegreesToRadians(90f), stringCenter, new Vector2(1, 1),
+                                    SpriteEffects.None, 0);
             spriteBatch.End();
         }
 
