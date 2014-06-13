@@ -24,6 +24,10 @@ namespace GameName1
         {
             return Upgrade_List[field];
         }
+        public static void SetFieldValue(UpgradeField field, int i)
+        {
+            Upgrade_List[field] = i;
+        }
         #region Fields
 
         Rectangle m_FinalMainScreenRec;
@@ -494,7 +498,7 @@ namespace GameName1
     class UpgradeSlot
     {
         private UpgradeMenuScreen.UpgradeField m_UpgradeField;
-        private object m_UpgradeValue;
+        private int m_UpgradeValue;
 
         public ColorString ValueString;
         int m_Value;
@@ -511,7 +515,7 @@ namespace GameName1
             m_Font = font;
             ValueString = new ColorString(font, "Test", Color.Black);    
         }
-        public void SetUpgradeField(String description, UpgradeMenuScreen.UpgradeField field, object val)
+        public void SetUpgradeField(String description, UpgradeMenuScreen.UpgradeField field, int val)
         {
             Description = new ColorString(m_Font, description, Color.White);
             m_UpgradeField = field;
@@ -561,6 +565,8 @@ namespace GameName1
         void box_Accepted(object sender, EventArgs e)
         {
             m_Value += 1;
+            ValueString.Text = m_Value.ToString();
+            UpgradeMenuScreen.SetFieldValue(this.m_UpgradeField, m_UpgradeValue);
         }
     }
     class GestureEventArgs : EventArgs

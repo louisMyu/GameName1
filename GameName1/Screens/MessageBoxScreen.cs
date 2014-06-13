@@ -120,12 +120,12 @@ namespace GameName1
 
             //    ExitScreen();
             //}
-            Rectangle rotatedOK = new Rectangle(OKButton.X, OKButton.Y, OKButton.Height, OKButton.Width);
-            Rectangle rotatedCancel = new Rectangle(CancelButton.X, CancelButton.Y, CancelButton.Height, CancelButton.Width);
+            //Rectangle rotatedOK = new Rectangle(OKButton.X, OKButton.Y, OKButton.Height, OKButton.Width);
+            //Rectangle rotatedCancel = new Rectangle(CancelButton.X, CancelButton.Y, CancelButton.Height, CancelButton.Width);
             TouchCollection state = input.TouchState;
             foreach (TouchLocation touch in state)
             {
-                if (rotatedOK.Contains(touch.Position.X, touch.Position.Y))
+                if (OKButton.Contains(touch.Position.X, touch.Position.Y))
                 {
                     if (touch.State == TouchLocationState.Pressed)
                     {
@@ -137,7 +137,7 @@ namespace GameName1
                         ExitScreen();
                     }
                 }
-                if (rotatedCancel.Contains(touch.Position.X, touch.Position.Y))
+                if (CancelButton.Contains(touch.Position.X, touch.Position.Y))
                 {
                     if (touch.State == TouchLocationState.Pressed)
                     {
@@ -172,36 +172,41 @@ namespace GameName1
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
             Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
             Vector2 textSize = font.MeasureString(message);
-            Vector2 textPosition = (viewportSize - textSize) / 2;
+            Vector2 textPosition = (viewportSize) / 2;
 
             // The background includes a border somewhat larger than the text itself.
             const int hPad = 40;
             const int vPad = 32;
 
-            Rectangle backgroundRectangle = new Rectangle((int)textPosition.X - hPad,
-                                                          (int)textPosition.Y - vPad,
-                                                          (int)textSize.X + hPad * 2,
-                                                          (int)textSize.Y + vPad * 2);
-            OKButton = new Rectangle((int)textPosition.X - 30, (int)textPosition.Y, (int)100, (int)50);
-            CancelButton = new Rectangle((int)OKButton.X, (int)OKButton.Y + OKButton.Width + 25, (int)100, (int)50);
+            //Rectangle backgroundRectangle = new Rectangle((int)textPosition.X - hPad,
+            //                                              (int)textPosition.Y - vPad,
+            //                                              (int)textSize.X + hPad * 2,
+            //                                              (int)textSize.Y + vPad * 2);
+            Rectangle backgroundRectangle = new Rectangle((int)(viewportSize.X / 2 - textSize.Y / 2),
+                                                    (int)(viewportSize.Y / 2 - textSize.X / 2), 
+                                                    (int)textSize.Y + vPad * 2, 
+                                                    (int)textSize.X + hPad * 2);
+            Vector2 OKTextSize = font.MeasureString("Ok");
+            Vector2 CancelTextSize = font.MeasureString("Cancel");
+            OKButton = new Rectangle((int)backgroundRectangle.X + 5, (int)backgroundRectangle.Y + (backgroundRectangle.Height/2) - 100, (int)OKTextSize.Y + 5 * 2, (int)OKTextSize.X + 25 * 2);
+            CancelButton = new Rectangle((int)OKButton.X, (int)OKButton.Y + OKButton.Height + 75, (int)50, (int)100);
             // Fade the popup alpha during transitions.
             Color color = Color.White * TransitionAlpha;
 
             spriteBatch.Begin();
 
             // Draw the background rectangle.
-            spriteBatch.Draw(gradientTexture, backgroundRectangle, null, color, Utilities.DegreesToRadians(90f), new Vector2((gradientTexture.Width / 2), (gradientTexture.Height / 2)),
-                                    SpriteEffects.None, 0);
-            spriteBatch.Draw(gradientTexture, OKButton, null, Color.Pink, Utilities.DegreesToRadians(90f), new Vector2((gradientTexture.Width / 2), (gradientTexture.Height / 2)),
-                                    SpriteEffects.None, 0);
+            spriteBatch.Draw(gradientTexture, backgroundRectangle, color);
+            spriteBatch.Draw(gradientTexture, OKButton, Color.Green);
+            spriteBatch.Draw(gradientTexture, CancelButton, Color.Red);
             // Draw the message box text.
             Vector2 measuredString = font.MeasureString(message);
             Vector2 stringCenter = new Vector2(measuredString.X / 2, measuredString.Y / 2);
-            spriteBatch.DrawString(font, message, textPosition, color, Utilities.DegreesToRadians(90f), stringCenter, new Vector2(1, 1),
+            spriteBatch.DrawString(font, message, new Vector2(backgroundRectangle.X + backgroundRectangle.Width - textSize.Y/2, backgroundRectangle.Y + backgroundRectangle.Height/2), color, Utilities.DegreesToRadians(90f), stringCenter, new Vector2(1, 1),
                                     SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, "OK", new Vector2(OKButton.X, OKButton.Y), color, Utilities.DegreesToRadians(90f), stringCenter, new Vector2(1, 1),
+            spriteBatch.DrawString(font, "OK", new Vector2(OKButton.X + OKButton.Width/2, OKButton.Y+OKButton.Height/2), color, Utilities.DegreesToRadians(90f), OKTextSize/2, new Vector2(1, 1),
                                     SpriteEffects.None, 0);
-            spriteBatch.DrawString(font, "Cancel", new Vector2(CancelButton.X, CancelButton.Y), color, Utilities.DegreesToRadians(90f), stringCenter, new Vector2(1, 1),
+            spriteBatch.DrawString(font, "Cancel", new Vector2(CancelButton.X+CancelButton.Width/2, CancelButton.Y+CancelButton.Height/2), color, Utilities.DegreesToRadians(90f), CancelTextSize/2, new Vector2(1, 1),
                                     SpriteEffects.None, 0);
             spriteBatch.End();
         }
