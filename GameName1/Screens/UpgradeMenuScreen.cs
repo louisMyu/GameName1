@@ -279,8 +279,6 @@ namespace GameName1
         }
         public override void Draw(GameTime gameTime)
         {
-            
-
             GraphicsDevice graphics = ScreenManager.GraphicsDevice;
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
             SpriteFont font = ScreenManager.Font;
@@ -489,9 +487,9 @@ namespace GameName1
             SpriteBatch spriteBatch = screenManager.SpriteBatch;
             SpriteFont font = screenManager.Font;
 
-            Vector2 origin = new Vector2(0, font.LineSpacing / 2);
+            Vector2 origin = font.MeasureString(text) / 2;
             spriteBatch.Draw(texture, CurrentPosition, m_color);
-            spriteBatch.DrawString(font, text, position, color, 0,
+            spriteBatch.DrawString(font, text, new Vector2(CurrentPosition.X + CurrentPosition.Width/2, CurrentPosition.Y+CurrentPosition.Height/2), color, Utilities.DegreesToRadians(90f),
                                    origin, 1.0f, SpriteEffects.None, 0);
         }
     }
