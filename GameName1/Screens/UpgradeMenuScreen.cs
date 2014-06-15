@@ -16,9 +16,9 @@ namespace GameName1
         private static string SavedSelectedMenu = "Weapons";
         public static void LoadUpgradeFields()
         {
-            Upgrade_List.Add(UpgradeFieldEnum.ShotgunDamage, new UpgradeField("Shotgun"));
-            Upgrade_List.Add(UpgradeFieldEnum.RifleDamage, new UpgradeField("Rifle"));
-            Upgrade_List.Add(UpgradeFieldEnum.PlasmaDamage, new UpgradeField("Plasma"));
+            Upgrade_List.Add(UpgradeFieldEnum.ShotgunDamage, new UpgradeField("Shotgun", 10, 100));
+            Upgrade_List.Add(UpgradeFieldEnum.RifleDamage, new UpgradeField("Rifle", 10, 100));
+            Upgrade_List.Add(UpgradeFieldEnum.PlasmaDamage, new UpgradeField("Plasma", 10, 100));
         }
         public static UpgradeField GetFieldValue(UpgradeFieldEnum field)
         {
@@ -327,16 +327,16 @@ namespace GameName1
                 switch (i)
                 {
                     case 0:
-                        slot.SetUpgradeField("Shotgun", UpgradeFieldEnum.ShotgunDamage, Upgrade_List[UpgradeFieldEnum.ShotgunDamage]);
+                        slot.SetUpgradeField(UpgradeFieldEnum.ShotgunDamage, Upgrade_List[UpgradeFieldEnum.ShotgunDamage]);
                         break;
                     case 1:
-                        slot.SetUpgradeField("Rifle", UpgradeFieldEnum.RifleDamage, Upgrade_List[UpgradeFieldEnum.RifleDamage]);
+                        slot.SetUpgradeField(UpgradeFieldEnum.RifleDamage, Upgrade_List[UpgradeFieldEnum.RifleDamage]);
                         break;
                     case 2:
-                        slot.SetUpgradeField("Plasma", UpgradeFieldEnum.PlasmaDamage, Upgrade_List[UpgradeFieldEnum.PlasmaDamage]);
+                        slot.SetUpgradeField(UpgradeFieldEnum.PlasmaDamage, Upgrade_List[UpgradeFieldEnum.PlasmaDamage]);
                         break;
                     default:
-                        slot.SetUpgradeField("Default String", UpgradeFieldEnum.RifleDamage, Upgrade_List[UpgradeFieldEnum.RifleDamage]);
+                        slot.SetUpgradeField(UpgradeFieldEnum.RifleDamage, Upgrade_List[UpgradeFieldEnum.RifleDamage]);
                         break;
                 }
                 Color tempColor = new Color(250 - (75*i),75*i,50-(i*10));
@@ -511,16 +511,15 @@ namespace GameName1
             m_Font = font;
             ValueString = new ColorString(font, "Test", Color.Black);    
         }
-        public void SetUpgradeField(String description, UpgradeMenuScreen.UpgradeFieldEnum field, UpgradeField val)
+        public void SetUpgradeField(UpgradeMenuScreen.UpgradeFieldEnum field, UpgradeField val)
         {
-            Description = new ColorString(m_Font, description, Color.White);
+            Description = new ColorString(m_Font, val.Description, Color.White);
             m_UpgradeField = field;
             m_UpgradeValue = val;
         }
         public void SetWidgetTree(WidgetTree widg)
         {
             Widgets = widg;
-            
         }
         public void Draw(SpriteBatch _spriteBatch)
         {
@@ -560,8 +559,8 @@ namespace GameName1
 
         void box_Accepted(object sender, EventArgs e)
         {
-            m_Value += 1;
-            ValueString.Text = m_Value.ToString();
+            m_UpgradeValue.Upgrade();
+            ValueString.Text = m_UpgradeValue.GetUpgradeCost().ToString();
             UpgradeMenuScreen.SetFieldValue(this.m_UpgradeField, m_UpgradeValue);
         }
     }

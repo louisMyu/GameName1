@@ -197,13 +197,12 @@ namespace GameName1
                 float randomForce = Knockback + (1500f * (float)Weapon.WEAPON_RANDOM.NextDouble());
                 ExplodedPart gib = new ExplodedPart();
                 gib.LoadContent(gibTextures[i], pos);
-                Vector2 temp = Utilities.rotateVec2(intersectingAngle, randomDegree);
+                //so we dont divide by zero
                 if (intersectingAngle.X == 0) intersectingAngle.X += 0.000001f;
                 float originalDegrees = Utilities.RadiansToDegrees((float)Math.Atan(intersectingAngle.Y/intersectingAngle.X));
                 if (intersectingAngle.X < 0) originalDegrees += 180;
                 float newDegrees = Utilities.NormalizeDegrees(originalDegrees) + randomDegree;
                 Vector2 change = new Vector2((float)Math.Cos(Utilities.DegreesToRadians(newDegrees)), (float)Math.Sin(Utilities.DegreesToRadians(newDegrees)));
-                float degrees = Utilities.RadiansToDegrees((float)Math.Acos(change.X));
                 gib.ApplyLinearForce(change, randomForce);
                 //should be randomixed
                 gib.ApplyTorque(randomTorque);
@@ -212,7 +211,7 @@ namespace GameName1
         }
         public override void ApplyKickback(Player player)
         {
-            Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -505;
+            Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -405;
             player.ApplyLinearForce(temp);
         }
     }

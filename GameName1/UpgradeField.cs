@@ -15,13 +15,17 @@ namespace GameName1
         public int UpgradeLevel;
         private int NextUpgradeCost;
 
-        public UpgradeField(string desc)
+        public UpgradeField(string desc, int value, int upgradeCost)
         {
             Description = desc;
+            NextUpgradeCost = upgradeCost;
+            m_Value = value;
         }
         public void Upgrade()
         {
             m_Value += UpgradeAmount;
+            ++UpgradeLevel;
+            NextUpgradeCost += 100;
         }
         public int GetUpgradeCost()
         {

@@ -5,10 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameName1
 {
@@ -117,14 +114,12 @@ namespace GameName1
         static Random GibRandom = new Random();
         Texture2D m_Texture;
         Body Body;
-        Vector2 Position;
         Vector2 m_Origin;
         float RotationAngle;
         public void LoadContent(Texture2D tex, Vector2 pos)
         {
             m_Texture = tex;
-            Position = pos;
-            Body = BodyFactory.CreateBody(GameplayScreen.m_World, ConvertUnits.ToSimUnits(Position));
+            Body = BodyFactory.CreateBody(GameplayScreen.m_World, ConvertUnits.ToSimUnits(pos));
             Fixture fixture = FixtureFactory.AttachCircle(ConvertUnits.ToSimUnits(35 / 2f), 1f, Body, null);
             Body.BodyType = BodyType.Dynamic;
             Body.Mass = 2.5f;
@@ -144,7 +139,6 @@ namespace GameName1
         public void Update(out bool hasStopped)
         {
             hasStopped = false;
-            Position = ConvertUnits.ToDisplayUnits(Body.Position);
             RotationAngle = Body.Rotation;
             Vector2 vel = Body.LinearVelocity;
             if (vel.X == 0 && vel.Y == 0)
