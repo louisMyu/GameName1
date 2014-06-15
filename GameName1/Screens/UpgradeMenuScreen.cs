@@ -12,30 +12,28 @@ namespace GameName1
 {
     class UpgradeMenuScreen : GameScreen
     {
-        private static Dictionary<UpgradeField, int> Upgrade_List = new Dictionary<UpgradeField, int>();
+        private static Dictionary<UpgradeFieldEnum, UpgradeField> Upgrade_List = new Dictionary<UpgradeFieldEnum, UpgradeField>();
         private static string SavedSelectedMenu = "Weapons";
         public static void LoadUpgradeFields()
         {
-            Upgrade_List.Add(UpgradeField.ShotgunDamage, 10);
-            Upgrade_List.Add(UpgradeField.RifleDamage, 10);
-            Upgrade_List.Add(UpgradeField.PlasmaDamage, 5);
+            Upgrade_List.Add(UpgradeFieldEnum.ShotgunDamage, new UpgradeField("Shotgun"));
+            Upgrade_List.Add(UpgradeFieldEnum.RifleDamage, new UpgradeField("Rifle"));
+            Upgrade_List.Add(UpgradeFieldEnum.PlasmaDamage, new UpgradeField("Plasma"));
         }
-        public static int GetFieldValue(UpgradeField field)
+        public static UpgradeField GetFieldValue(UpgradeFieldEnum field)
         {
             return Upgrade_List[field];
         }
-        public static void SetFieldValue(UpgradeField field, int i)
+        public static void SetFieldValue(UpgradeFieldEnum field, UpgradeField val)
         {
-            Upgrade_List[field] = i;
+            Upgrade_List[field] = val;
         }
         #region Fields
 
         Rectangle m_FinalMainScreenRec;
         Rectangle m_CurrentMainScreenRec;
 
-
-
-        public enum UpgradeField
+        public enum UpgradeFieldEnum
         {
             ShotgunDamage,
             RifleDamage,
@@ -329,16 +327,16 @@ namespace GameName1
                 switch (i)
                 {
                     case 0:
-                        slot.SetUpgradeField("Shotgun", UpgradeField.ShotgunDamage, Upgrade_List[UpgradeField.ShotgunDamage]);
+                        slot.SetUpgradeField("Shotgun", UpgradeFieldEnum.ShotgunDamage, Upgrade_List[UpgradeFieldEnum.ShotgunDamage]);
                         break;
                     case 1:
-                        slot.SetUpgradeField("Rifle", UpgradeField.RifleDamage, Upgrade_List[UpgradeField.RifleDamage]);
+                        slot.SetUpgradeField("Rifle", UpgradeFieldEnum.RifleDamage, Upgrade_List[UpgradeFieldEnum.RifleDamage]);
                         break;
                     case 2:
-                        slot.SetUpgradeField("Plasma", UpgradeField.PlasmaDamage, Upgrade_List[UpgradeField.PlasmaDamage]);
+                        slot.SetUpgradeField("Plasma", UpgradeFieldEnum.PlasmaDamage, Upgrade_List[UpgradeFieldEnum.PlasmaDamage]);
                         break;
                     default:
-                        slot.SetUpgradeField("Default String", UpgradeField.RifleDamage, Upgrade_List[UpgradeField.RifleDamage]);
+                        slot.SetUpgradeField("Default String", UpgradeFieldEnum.RifleDamage, Upgrade_List[UpgradeFieldEnum.RifleDamage]);
                         break;
                 }
                 Color tempColor = new Color(250 - (75*i),75*i,50-(i*10));
@@ -348,10 +346,10 @@ namespace GameName1
                 WidgetTree slotTop = new WidgetTree(new Rectangle(0,0, baseSlotDrawArea.Width, baseSlotDrawArea.Height));
                 Rectangle tapButton = new Rectangle(baseSlotDrawArea.Height / 2, baseSlotDrawArea.Width / 2, 150, 150);
                 Rectangle valueArea = new Rectangle(tapButton.X - 200, tapButton.Y, 200, 100);
-                Rectangle descriptionArea = new Rectangle(valueArea.X - 200, valueArea.Y, 200, 10);
+                Rectangle descriptionArea = new Rectangle(tapButton.X + 200, valueArea.Y, 200, 10);
                 slotTop.AddDrawArea(tapButton, new ColorTexture(TextureBank.GetTexture("GSMbackground"), Color.Black));
                 slotTop.AddDrawArea(valueArea, slot.ValueString);
-                slotTop.AddDrawArea(descriptionArea, slot.Description); 
+                slotTop.AddDrawArea(descriptionArea, slot.Description);
                 slotTop.AddHitArea(tapButton);
                 tree.AddWidgetTree(slotTop);
 
@@ -495,8 +493,8 @@ namespace GameName1
     }
     class UpgradeSlot
     {
-        private UpgradeMenuScreen.UpgradeField m_UpgradeField;
-        private int m_UpgradeValue;
+        private UpgradeMenuScreen.UpgradeFieldEnum m_UpgradeField;
+        private UpgradeField m_UpgradeValue;
 
         public ColorString ValueString;
         int m_Value;
@@ -513,7 +511,7 @@ namespace GameName1
             m_Font = font;
             ValueString = new ColorString(font, "Test", Color.Black);    
         }
-        public void SetUpgradeField(String description, UpgradeMenuScreen.UpgradeField field, int val)
+        public void SetUpgradeField(String description, UpgradeMenuScreen.UpgradeFieldEnum field, UpgradeField val)
         {
             Description = new ColorString(m_Font, description, Color.White);
             m_UpgradeField = field;
@@ -549,7 +547,7 @@ namespace GameName1
             if (tempRec.Width > 0)
             {
                 //i should pop up a confirmation dialog box here
-                MessageBoxScreen box = new MessageBoxScreen("Confirmation Message");
+                MessageBoxScreen box = new MessageBoxScreen("");
                 box.Accepted += box_Accepted;
                 box.Cancelled += box_Cancelled;
                 screenManager.AddScreen(box, null);

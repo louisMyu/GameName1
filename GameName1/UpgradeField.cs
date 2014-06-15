@@ -27,6 +27,5 @@ namespace GameName1
         {
             return NextUpgradeCost;
         }
-
     }
 }
