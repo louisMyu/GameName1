@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 namespace GameName1
 {
     [DataContract]
-    public class Weapon
+    public abstract class Weapon
     {
+        public string Name;
         protected SoundEffectInstance m_ShotSound;
         [DataMember]
         public bool CanMoveWhileShooting { get; set; }
@@ -76,9 +77,7 @@ namespace GameName1
         {
             m_ElapsedFrames = FireRate;
         }
-        public virtual void LoadContent()
-        {
-        }
+        public abstract void LoadContent();
         //this should be called every update if it exists for the player
         public virtual void Update(Vector2 playerCenter, Vector2 playerVelocity, float rotationAngle, int accuracy, bool isFireDown, TimeSpan elapsedTime)
         {
@@ -94,13 +93,9 @@ namespace GameName1
             return false;
         }
 
-        public virtual void DrawWeapon(SpriteBatch _spritebatch, Vector2 position, float rot)
-        {
-        }
+        public abstract void DrawWeapon(SpriteBatch _spritebatch, Vector2 position, float rot);
 
-        public virtual void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot)
-        {
-        }
+        public abstract void DrawBlast(SpriteBatch _spriteBatch, Vector2 position, float rot);
         public virtual bool CanFire()
         {
             if (m_ElapsedFrames == 0)
@@ -110,13 +105,8 @@ namespace GameName1
             return false;
         }
 
-        public virtual void LoadWeapon()
-        {
-        }
-
-        protected virtual void LoadTextures()
-        {
-        }
+        public abstract void LoadWeapon();
+        protected abstract void LoadTextures();
         public virtual void ExplodeEnemy(Vector2 intersectingAngle, IEnemy enemy, Vector2 pos)
         {
             List<Texture2D> gibTextures = enemy.GetExplodedParts();
@@ -136,8 +126,13 @@ namespace GameName1
                 UI.ActiveGibs.Add(gib);
             }
         }
-        public virtual void ApplyKickback(Player p)
-        {
-        }
+        public abstract void ApplyKickback(Player p);
+        public abstract WeaponStats GetWeaponStats(int level);
+    }
+    public class WeaponStats
+    {
+        public int WeaponDamage;
+        public int WeaponLevel;
+        public int NextUpgradeCost;
     }
 }

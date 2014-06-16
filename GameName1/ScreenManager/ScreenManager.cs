@@ -252,7 +252,7 @@ namespace GameName1
                 {
                     screen.LoadContent();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
             }

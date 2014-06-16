@@ -35,6 +35,7 @@ namespace GameName1
         private SoundEffectInstance m_ChargeSound;
         public Rifle() : base()
         {
+            Name = "Rifle";
             Spread = (float)Math.PI / 6;
             NumberOfBullets = 1;
             FireRate = 15;
@@ -208,6 +209,27 @@ namespace GameName1
                 gib.ApplyTorque(5000f);
                 UI.ActiveGibs.Add(gib);
             }
+        }
+        public override WeaponStats GetWeaponStats(int level)
+        {
+            WeaponStats stats = new WeaponStats();
+            stats.WeaponLevel = level;
+            switch (level)
+            {
+                case 0:
+                    stats.WeaponDamage = 10;
+                    stats.NextUpgradeCost = 100;
+                    break;
+                case 1:
+                    stats.WeaponDamage = 12;
+                    stats.NextUpgradeCost = 200;
+                    break;
+                case 2:
+                    stats.WeaponDamage = 18;
+                    stats.NextUpgradeCost = 500;
+                    break;
+            }
+            return stats;
         }
     }
 }

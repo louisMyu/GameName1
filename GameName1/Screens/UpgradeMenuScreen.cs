@@ -16,9 +16,9 @@ namespace GameName1
         private static string SavedSelectedMenu = "Weapons";
         public static void LoadUpgradeFields()
         {
-            Upgrade_List.Add(UpgradeFieldEnum.ShotgunDamage, new UpgradeField("Shotgun", 10, 100));
-            Upgrade_List.Add(UpgradeFieldEnum.RifleDamage, new UpgradeField("Rifle", 10, 100));
-            Upgrade_List.Add(UpgradeFieldEnum.PlasmaDamage, new UpgradeField("Plasma", 10, 100));
+            Upgrade_List.Add(UpgradeFieldEnum.ShotgunDamage, new UpgradeField(new Shotgun()));
+            Upgrade_List.Add(UpgradeFieldEnum.RifleDamage, new UpgradeField(new Rifle()));
+            Upgrade_List.Add(UpgradeFieldEnum.PlasmaDamage, new UpgradeField(new Plasma()));
         }
         public static UpgradeField GetFieldValue(UpgradeFieldEnum field)
         {
@@ -239,8 +239,10 @@ namespace GameName1
             // power curve to make things look more interesting (this makes
             // the movement slow down as it nears the end).
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
-            int deltaX, deltaY;
-            deltaX = 0;
+            //int deltaX; 
+            //deltaX = 0;
+            int deltaY;
+
 
             //do a fade for the actual selection area of the categories
             m_CurrentMainScreenRec = m_FinalMainScreenRec;
@@ -347,12 +349,13 @@ namespace GameName1
                 Rectangle tapButton = new Rectangle(baseSlotDrawArea.Height / 2, baseSlotDrawArea.Width / 2, 150, 150);
                 Rectangle valueArea = new Rectangle(tapButton.X - 200, tapButton.Y, 200, 100);
                 Rectangle descriptionArea = new Rectangle(tapButton.X + 200, valueArea.Y, 200, 10);
+                Rectangle upgradeLevelArea = new Rectangle(descriptionArea.X - 50, descriptionArea.Y, 100, 10);
                 slotTop.AddDrawArea(tapButton, new ColorTexture(TextureBank.GetTexture("GSMbackground"), Color.Black));
-                slotTop.AddDrawArea(valueArea, slot.ValueString);
-                slotTop.AddDrawArea(descriptionArea, slot.Description);
+                slotTop.AddDrawArea(valueArea, slot.NextUpgradeCostString);
+                slotTop.AddDrawArea(descriptionArea, slot.NameString);
+                slotTop.AddDrawArea(upgradeLevelArea, slot.LevelString);
                 slotTop.AddHitArea(tapButton);
                 tree.AddWidgetTree(slotTop);
-
                 
                 slot.SetWidgetTree(tree);
                 slot.Value = i * 100;
@@ -381,7 +384,7 @@ namespace GameName1
                 {
                     slot = new UpgradeSlot(currentSlotPosition, ScreenManager, ScreenManager.Font);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
 
                 }
@@ -496,11 +499,12 @@ namespace GameName1
         private UpgradeMenuScreen.UpgradeFieldEnum m_UpgradeField;
         private UpgradeField m_UpgradeValue;
 
-        public ColorString ValueString;
+        public ColorString NextUpgradeCostString;
         int m_Value;
         public int Value { get { return m_Value; } set { m_Value = value; } }
         WidgetTree Widgets;
-        public ColorString Description;
+        public ColorString NameString;
+        public ColorString LevelString;
         private Rectangle FinalContainer;
         private SpriteFont m_Font;
         ScreenManager screenManager;
@@ -509,13 +513,16 @@ namespace GameName1
             screenManager = manager;
             FinalContainer = baseContainer;
             m_Font = font;
-            ValueString = new ColorString(font, "Test", Color.Black);    
+            NextUpgradeCostString = new ColorString(font, "", Color.Black);
+            LevelString = new ColorString(font, "", Color.White);
         }
         public void SetUpgradeField(UpgradeMenuScreen.UpgradeFieldEnum field, UpgradeField val)
         {
-            Description = new ColorString(m_Font, val.Description, Color.White);
+            NameString = new ColorString(m_Font, val.Name, Color.White);
             m_UpgradeField = field;
             m_UpgradeValue = val;
+            NextUpgradeCostString.Text = m_UpgradeValue.GetUpgradeCost().ToString();
+            LevelString.Text = "Level: " + m_UpgradeValue.UpgradeLevel.ToString();
         }
         public void SetWidgetTree(WidgetTree widg)
         {
@@ -560,7 +567,7 @@ namespace GameName1
         void box_Accepted(object sender, EventArgs e)
         {
             m_UpgradeValue.Upgrade();
-            ValueString.Text = m_UpgradeValue.GetUpgradeCost().ToString();
+            NextUpgradeCostString.Text = m_UpgradeValue.GetUpgradeCost().ToString();
             UpgradeMenuScreen.SetFieldValue(this.m_UpgradeField, m_UpgradeValue);
         }
     }

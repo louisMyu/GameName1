@@ -236,7 +236,7 @@ namespace GameName1
                     }
                     isUpdated = true;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
                 SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
