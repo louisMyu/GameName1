@@ -522,7 +522,7 @@ namespace GameName1
             m_UpgradeField = field;
             m_UpgradeValue = val;
             NextUpgradeCostString.Text = m_UpgradeValue.GetUpgradeCost().ToString();
-            LevelString.Text = "Level: " + m_UpgradeValue.UpgradeLevel.ToString();
+            LevelString.Text = "Level: " + m_UpgradeValue.GetUpgradeLevel().ToString();
         }
         public void SetWidgetTree(WidgetTree widg)
         {
@@ -568,6 +568,7 @@ namespace GameName1
         {
             m_UpgradeValue.Upgrade();
             NextUpgradeCostString.Text = m_UpgradeValue.GetUpgradeCost().ToString();
+            LevelString.Text = "Level: " + m_UpgradeValue.GetUpgradeLevel().ToString();
             UpgradeMenuScreen.SetFieldValue(this.m_UpgradeField, m_UpgradeValue);
         }
     }

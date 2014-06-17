@@ -13,6 +13,7 @@ namespace GameName1
     [DataContract]
     public abstract class Weapon
     {
+        public int WeaponLevel;
         public string Name;
         protected SoundEffectInstance m_ShotSound;
         [DataMember]
@@ -127,12 +128,14 @@ namespace GameName1
             }
         }
         public abstract void ApplyKickback(Player p);
-        public abstract WeaponStats GetWeaponStats(int level);
+        public abstract WeaponStats GetWeaponStats();
+        public abstract void UpgradeWeaponStats();
+        public abstract void SetWeaponStats();
     }
     public class WeaponStats
     {
         public int WeaponDamage;
-        public int WeaponLevel;
+        public int WeaponLevel = 0;
         public int NextUpgradeCost;
     }
 }

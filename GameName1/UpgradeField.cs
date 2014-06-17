@@ -11,26 +11,28 @@ namespace GameName1
         private int m_Value;
         public int Value { get { return m_Value; } set { m_Value = value; } }
         public string Name;
-        public int UpgradeLevel;
 
         private Weapon m_Weapon;
-        private WeaponStats m_WeaponStats;
         public UpgradeField(Weapon weapon)
         {
-            Name = weapon.Name;
-            UpgradeLevel = 0;
             m_Weapon = weapon;
-            m_WeaponStats = m_Weapon.GetWeaponStats(UpgradeLevel);
-            m_Value = m_WeaponStats.WeaponDamage;
+            Name = weapon.Name;
+            m_Weapon.SetWeaponStats();
+            WeaponStats tempStats = m_Weapon.GetWeaponStats();
+            m_Value = tempStats.WeaponDamage;
         }
         public void Upgrade()
         {
-            ++UpgradeLevel;
-            m_WeaponStats = m_Weapon.GetWeaponStats(UpgradeLevel);
+            m_Weapon.UpgradeWeaponStats();
+            m_Value = m_Weapon.GetWeaponStats().WeaponDamage;
         }
         public int GetUpgradeCost()
         {
-            return m_WeaponStats.NextUpgradeCost;
+            return m_Weapon.GetWeaponStats().NextUpgradeCost;
+        }
+        public int GetUpgradeLevel()
+        {
+            return m_Weapon.GetWeaponStats().WeaponLevel;
         }
     }
 }

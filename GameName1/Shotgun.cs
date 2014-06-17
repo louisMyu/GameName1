@@ -64,7 +64,7 @@ namespace GameName1
             {
                 m_BulletLines.Add(new Line());
             }
-            m_ShotgunDamage = UpgradeMenuScreen.GetFieldValue(UpgradeMenuScreen.UpgradeFieldEnum.ShotgunDamage).Value;
+            m_ShotgunDamage = WeaponStats.WeaponDamage;
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
@@ -212,29 +212,36 @@ namespace GameName1
         }
         public override void ApplyKickback(Player player)
         {
-            Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -405;
+            Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -215;
             player.ApplyLinearForce(temp);
         }
-        public override WeaponStats GetWeaponStats(int level)
+        private static WeaponStats WeaponStats = new WeaponStats();
+        public override WeaponStats GetWeaponStats()
         {
-            WeaponStats stats = new WeaponStats();
-            stats.WeaponLevel = level;
-            switch (level)
+            return WeaponStats;
+        }
+        public override void SetWeaponStats()
+        {
+            switch (WeaponStats.WeaponLevel)
             {
                 case 0:
-                    stats.WeaponDamage = 5;
-                    stats.NextUpgradeCost = 100;
+                    WeaponStats.WeaponDamage = 5;
+                    WeaponStats.NextUpgradeCost = 100;
                     break;
                 case 1:
-                    stats.WeaponDamage = 10;
-                    stats.NextUpgradeCost = 200;
+                    WeaponStats.WeaponDamage = 10;
+                    WeaponStats.NextUpgradeCost = 200;
                     break;
                 case 2:
-                    stats.WeaponDamage = 20;
-                    stats.NextUpgradeCost = 500;
+                    WeaponStats.WeaponDamage = 200;
+                    WeaponStats.NextUpgradeCost = 500;
                     break;
             }
-            return stats;
+        }
+        public override void UpgradeWeaponStats()
+        {
+            WeaponStats.WeaponLevel++;
+            SetWeaponStats();
         }
     }
 }

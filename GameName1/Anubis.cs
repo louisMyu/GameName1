@@ -78,6 +78,7 @@ namespace GameName1
             _circleBody.Mass = 5f;
             _circleBody.LinearDamping = 3f;
             _circleBody.Restitution = .7f;
+            LoadExplodedParts();
         }
         public static void LoadTextures()
         {
@@ -204,7 +205,9 @@ namespace GameName1
         }
         protected override void LoadExplodedParts()
         {
-
+            ExplodedParts.Add(TextureBank.GetTexture("AnubisPart1"));
+            ExplodedParts.Add(TextureBank.GetTexture("AnubisPart2"));
+            ExplodedParts.Add(TextureBank.GetTexture("AnubisPart3"));
         }
         public void DoCollision(Player player)
         {

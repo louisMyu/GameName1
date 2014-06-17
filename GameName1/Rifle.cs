@@ -210,26 +210,32 @@ namespace GameName1
                 UI.ActiveGibs.Add(gib);
             }
         }
-        public override WeaponStats GetWeaponStats(int level)
+        private static WeaponStats WeaponStats = new WeaponStats();
+        public override WeaponStats GetWeaponStats()
         {
-            WeaponStats stats = new WeaponStats();
-            stats.WeaponLevel = level;
-            switch (level)
+            return WeaponStats;
+        }
+        public override void SetWeaponStats()
+        {
+            switch (WeaponStats.WeaponLevel)
             {
                 case 0:
-                    stats.WeaponDamage = 10;
-                    stats.NextUpgradeCost = 100;
+                    WeaponStats.WeaponDamage = 10;
+                    WeaponStats.NextUpgradeCost = 100;
                     break;
                 case 1:
-                    stats.WeaponDamage = 12;
-                    stats.NextUpgradeCost = 200;
+                    WeaponStats.WeaponDamage = 12;
+                    WeaponStats.NextUpgradeCost = 200;
                     break;
                 case 2:
-                    stats.WeaponDamage = 18;
-                    stats.NextUpgradeCost = 500;
+                    WeaponStats.WeaponDamage = 18;
+                    WeaponStats.NextUpgradeCost = 500;
                     break;
             }
-            return stats;
+        }
+        public override void UpgradeWeaponStats()
+        {
+            WeaponStats.WeaponLevel++;
         }
     }
 }
