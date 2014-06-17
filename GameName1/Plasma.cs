@@ -185,6 +185,7 @@ namespace GameName1
         public override void UpgradeWeaponStats()
         {
             WeaponStats.WeaponLevel++;
+            SetWeaponStats();
         }
     }
     public class Bullet : GameObject
