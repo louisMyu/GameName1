@@ -196,7 +196,7 @@ namespace GameName1
         }
         public void DoCollision(Player player)
         {
-            //player.LifeTotal -= GetDamageAmount();
+            player.LifeTotal -= GetDamageAmount();
             ObjectManager.RemoveObject(this);
         }
         #endregion

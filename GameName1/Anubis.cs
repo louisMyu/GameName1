@@ -216,7 +216,7 @@ namespace GameName1
                 Vector2 dirOfPlayer = new Vector2(player.Position.X - Position.X, player.Position.Y - Position.Y);
                 dirOfPlayer *= 700f;
                 player.ApplyLinearForce(dirOfPlayer);
-                //player.LifeTotal -= GetDamageAmount();   
+                player.LifeTotal -= GetDamageAmount();   
             }
             
         }
