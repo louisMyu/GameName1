@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,8 @@ using System.Threading.Tasks;
 
 namespace GameName1
 {
-    [DataContract]
-    class Plasma : Weapon
-    {     
+    class Repeater : Weapon
+    {
         [IgnoreDataMember]
         private SpriteInfo m_SavedShotInfo;
         [IgnoreDataMember]
@@ -23,12 +23,11 @@ namespace GameName1
         public SpriteInfo CurrentShotInfo { get { return m_CurrentShotInfo; } set { m_CurrentShotInfo = value; } }
 
         private List<Bullet> m_Bullets = new List<Bullet>();
-        public Plasma() : base()
+        public Repeater() : base()
         {
             Name = "Plasma";
-            Spread = (float)Math.PI / 6;
             NumberOfBullets = 1;
-            FireRate = 3;
+            FireRate = 5;
             m_SightRange = 400;
             Knockback = 250f;
             CanMoveWhileShooting = true;
@@ -58,7 +57,7 @@ namespace GameName1
             //firing a shot, save the state
             if (shotFired && CanFire())
             {
-                Bullet temp = new Bullet(TextureBank.GetTexture("PlasmaBullet"), m_CurrentShotInfo, 20);
+                Bullet temp = new Bullet(TextureBank.GetTexture("RepeaterBullet"), m_CurrentShotInfo, 40);
                 temp.LoadContent();
                 m_Bullets.Add(temp);
                 m_ElapsedFrames = FireRate;
@@ -68,8 +67,8 @@ namespace GameName1
                     m_ShotSound.Stop();
                     m_ShotSound.Dispose();
                 }
-                m_ShotSound = SoundBank.GetSoundInstance("SoundPlasmaShot");
-                m_ShotSound.Play();
+                //m_ShotSound = SoundBank.GetSoundInstance("SoundRepeaterShot");
+                //m_ShotSound.Play();
             }
             if (m_Bullets.Count > 0)
             {
@@ -186,54 +185,6 @@ namespace GameName1
         {
             WeaponStats.WeaponLevel++;
             SetWeaponStats();
-        }
-    }
-    public class Bullet : GameObject
-    {
-        public int Velocity { get; set; }
-        private Vector2 m_Heading;
-        //time in frames that this bullet will exist
-        private int Life;
-        private Vector2 playerVelocity;
-        public Bullet(Texture2D tex, SpriteInfo info, int vel) : base()
-        {
-            Texture = tex;
-            Position = info.Position;
-            RotationAngle = info.Rotation;
-            m_Heading = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle));
-            Velocity = vel;
-            playerVelocity = info.PlayerVelocity;
-            Life = 25;
-        }
-
-        public override void LoadContent()
-        {
-            base.LoadContent();
-        }
-        public void Update(TimeSpan elapsedTime)
-        {
-            --Life;
-            Move((Velocity * m_Heading)+playerVelocity, elapsedTime);
-            m_Bounds.X = (int)Position.X - Width / 2;
-            m_Bounds.Y = (int)Position.Y - Height / 2;
-        }
-        public bool IsAlive()
-        {
-            return Life > 0;
-        }
-        public override void Draw(SpriteBatch _spriteBatch)
-        {
-            //base.Draw(_spriteBatch);
-            _spriteBatch.Draw(Texture, new Vector2(Bounds.X, Bounds.Y), null, Color.White, RotationAngle, new Vector2(Texture.Width/2, Texture.Height/2), 1.0f, SpriteEffects.None, 0f);
-        }
-
-        public bool CheckCollision(GameObject ob)
-        {
-            if (Bounds.Intersects(ob.Bounds))
-            {
-                return true;
-            }
-            return false;
         }
     }
 }
