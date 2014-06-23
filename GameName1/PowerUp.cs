@@ -131,7 +131,6 @@ namespace GameName1
         public WeaponPowerUp(WeaponType type)
         {
             Type = type;
-            
         }
         private void SetWeaponPowerUpTexture(WeaponType type)
         {
@@ -153,7 +152,7 @@ namespace GameName1
         }
         public override SoundEffectInstance GetPickupSound()
         {
-            m_PickupSound = SoundBank.GetSoundInstance("WeaponPickupSound");
+            m_PickupSound = SoundBank.GetSoundInstance("SoundWeaponPickup");
             return m_PickupSound;
         }
     }

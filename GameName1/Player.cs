@@ -97,6 +97,7 @@ namespace GameName1
             IsStopDown = false;
             DrawRedFlash = false;
         }
+        //check collisions with things
         public void CheckCollisions(out bool isDead, World _world)
         {
             //float nearestLength = float.MaxValue;
@@ -108,9 +109,6 @@ namespace GameName1
                 foreach (GameObject ob in gameObjectList)
                 {
                     if (ob is Player) { continue; }
-                    //TODO: seriously need to refactor this later
-                    //its good to find the nearest zombie when i run through entire zombie list, but probably not here
-
                     if (ob == null)
                     {
                         //need to handle null exeception here
@@ -153,7 +151,7 @@ namespace GameName1
                                     instantEffect.GetInstantEffect();
                                     WeaponSlot1Magic = null;
                                 }
-                                else if (WeaponSlot1Magic == null)
+                                else
                                 {
                                     CheatPowerUp cheat = ob as CheatPowerUp;
                                     WeaponSlot1Magic = cheat;
@@ -171,6 +169,7 @@ namespace GameName1
                 }
             }
         }
+        //check if our weapon hit anything
         public void CheckWeaponHits()
         {
             if (m_Weapon.Firing || m_Weapon.BulletsExist)
