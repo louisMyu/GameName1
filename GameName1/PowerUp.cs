@@ -100,7 +100,8 @@ namespace GameName1
         {
             Shotgun,
             Rifle,
-            Plasma
+            Plasma,
+            Repeater
         }
         private WeaponType Type;
         public static Weapon GetWeaponType(WeaponPowerUp p)
@@ -113,6 +114,8 @@ namespace GameName1
                     return new Rifle();
                 case WeaponType.Plasma:
                     return new Plasma();
+                case WeaponType.Repeater:
+                    return new Repeater();
                 default:
                     return new Shotgun();
             }
@@ -144,6 +147,9 @@ namespace GameName1
                     break;
                 case WeaponType.Plasma:
                     Texture = TextureBank.GetTexture("PlasmaIcon");
+                    break;
+                case WeaponType.Repeater:
+                    Texture = TextureBank.GetTexture("RepeaterIcon");
                     break;
                 default :
                     Texture = TextureBank.GetTexture("PlasmaIcon");
