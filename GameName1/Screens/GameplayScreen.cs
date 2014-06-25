@@ -53,7 +53,7 @@ namespace GameName1
         Song m_song;
         Random random = new Random();
         private GameState m_GameState;
-
+        private bool songPlaying = false;
         RenderTarget2D backgroundTexture;
         #endregion
 
@@ -107,7 +107,7 @@ namespace GameName1
             UserInterface.LoadContent(content, Game1.GameWidth, Game1.GameHeight);
             GlobalObjectManager.LoadContent();
 
-            m_song = SoundBank.GetSong("AuraQualic - DATA (FL Studio Remix)");
+            m_song = SoundBank.GetSong("PUNCHING-Edit");
             TimeToDeath = TimeSpan.FromSeconds(30);
             UserInterface.SetTimeToDeath(TimeToDeath);
 
@@ -175,6 +175,12 @@ namespace GameName1
                     switch (m_GameState)
                     {
                         case GameState.Countdown:
+                            if (!songPlaying)
+                            {
+                                songPlaying = true;
+                                MediaPlayer.Play(m_song);
+                                MediaPlayer.IsRepeating = true;
+                            }
                             m_CountdownTime -= customElapsedTime;
                             if (m_CountdownTime < TimeSpan.FromSeconds(1))
                             {
@@ -205,11 +211,11 @@ namespace GameName1
                             UserInterface.SetTimeToDeath(TimeToDeath);
                             //check if a game reset or zombie hit and save state and do the action here,
                             //so that the game will draw the zombie intersecting the player
-                            m_Player.Update(customElapsedTime);
                             foreach (GameObject g in ObjectManager.AllGameObjects)
                             {
                                 g.Update(m_Player, customElapsedTime);
                             }
+                            m_Player.Update(customElapsedTime);
                             bool b = false;
                             m_Player.CheckCollisions(out b, m_World);
                             if (b)
@@ -228,6 +234,7 @@ namespace GameName1
                         case GameState.Dying:
                             if (m_Player.isDead)
                             {
+                                MediaPlayer.Stop();
                                 PushDeathScreen();
                                 return;
                             }

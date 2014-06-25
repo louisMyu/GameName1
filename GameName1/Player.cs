@@ -89,7 +89,7 @@ namespace GameName1
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
-            m_Weapon = new Repeater();
+            m_Weapon = new Shotgun();
             Position = pos;
             isFireButtonDown = false;
             MaxLife = 100;
