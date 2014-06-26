@@ -45,6 +45,8 @@ namespace GameName1.Enemies
             LifeTotal = 40;
 
         }
+        private WolfHand Lefthand;
+        private WolfHand Righthand;
 
         private static Texture2D m_SlimeTrailTex;
         public void LoadContent(World world)
@@ -234,7 +236,48 @@ namespace GameName1.Enemies
         #endregion
         class WolfHand : GameObject, IEnemy
         {
+            [DataMember]
+            public int LifeTotal { get; set; }
+            private enum LeftOrRightHand
+            {
+                Left,
+                Right
+            }
+            private LeftOrRightHand WhichHand;
+            private WolfHand(LeftOrRightHand which)
+            {
+                if (which == LeftOrRightHand.Left)
+                {
+                    Texture = TextureBank.GetTexture("kevinZombie");
+                }
+                else
+                {
+                    Texture = TextureBank.GetTexture("kevinZombie");
+                }
+                WhichHand = which;
+            }
+            public static WolfHand[] MakeHands()
+            {
+                WolfHand[] hands = new WolfHand[2];
+                hands[0] = new WolfHand(LeftOrRightHand.Left);
+                hands[1] = new WolfHand(LeftOrRightHand.Right);
 
+                return hands;
+            }
+            public void Update(Wolf wolfBody)
+            {
+                switch (WhichHand)
+                {
+                    case LeftOrRightHand.Left:
+                        break;
+                    case LeftOrRightHand.Right:
+                        break;
+                }
+            }
+            private void SetTexture(Texture2D tex)
+            {
+                Texture = tex;
+            }
             public int GetHealth()
             {
                 throw new NotImplementedException();
@@ -242,7 +285,7 @@ namespace GameName1.Enemies
 
             public void AddToHealth(int amount)
             {
-                throw new NotImplementedException();
+                LifeTotal += amount;
             }
 
             public void ApplyLinearForce(Vector2 angle, float amount)
@@ -257,7 +300,7 @@ namespace GameName1.Enemies
 
             public int GetDamageAmount()
             {
-                throw new NotImplementedException();
+                return DAMAGE_AMOUNT;
             }
 
             public List<Texture2D> GetExplodedParts()
@@ -267,7 +310,8 @@ namespace GameName1.Enemies
 
             public void DoCollision(Player p)
             {
-                throw new NotImplementedException();
+                p.LifeTotal -= GetDamageAmount();
+                ObjectManager.RemoveObject(this);
             }
         }
     }
