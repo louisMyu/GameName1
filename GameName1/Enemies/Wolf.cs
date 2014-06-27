@@ -162,18 +162,13 @@ namespace GameName1.Enemies
         {
 
             spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
+            Lefthand.Draw(spriteBatch);
+            Righthand.Draw(spriteBatch);
         }
 
         public static void LoadTextures()
         {
-            if (m_Texture == null)
-            {
-                m_Texture = TextureBank.GetTexture("Slime");
-            }
-            if (m_SlimeTrailTex == null)
-            {
-                m_SlimeTrailTex = TextureBank.GetTexture("SlimeTrail");
-            }
+            
             //TODO load slime exploded textures here
         }
         #region IEnemy
@@ -266,11 +261,16 @@ namespace GameName1.Enemies
             }
             public void Update(Wolf wolfBody)
             {
+                RotationAngle = wolfBody.RotationAngle;
                 switch (WhichHand)
                 {
                     case LeftOrRightHand.Left:
+                        Position = wolfBody.Position;
+                        Position = new Vector2(Position.X -100, Position.Y);
                         break;
                     case LeftOrRightHand.Right:
+                        Position = wolfBody.Position;
+                        Position = new Vector2(Position.X + 100, Position.Y);
                         break;
                 }
             }
