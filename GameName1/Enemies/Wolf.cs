@@ -15,7 +15,6 @@ namespace GameName1.Enemies
     class Wolf : GameObject, IEnemy
     {
         private const int DAMAGE_AMOUNT = 5;
-        private static Random SlimeRandom = new Random();
         public enum MotionState
         {
             Wandering,
@@ -51,26 +50,8 @@ namespace GameName1.Enemies
         private static Texture2D m_SlimeTrailTex;
         public void LoadContent(World world)
         {
-            int dir = SlimeRandom.Next(4);
             m_Direction = new Vector2(0, 0);
-            switch (dir)
-            {
-                case 0:
-                    m_Direction.X = 1;
-                    break;
-                case 1:
-                    m_Direction.X = -1;
-                    break;
-                case 2:
-                    m_Direction.Y = 1;
-                    break;
-                case 3:
-                    m_Direction.Y = -1;
-                    break;
-                default:
-                    break;
-            }
-
+            m_Texture = TextureBank.GetTexture("Wolfbody");
             Width = m_Texture != null ? m_Texture.Width : 0;
             Height = m_Texture != null ? m_Texture.Height : 0;
 
@@ -123,31 +104,6 @@ namespace GameName1.Enemies
         }
         private void GetDirection()
         {
-            int check = SlimeRandom.Next(100);
-            //choose a cardinal direction or dont move
-            if (check == 0)
-            {
-                int dir = SlimeRandom.Next(4);
-                m_Direction = new Vector2(0, 0);
-                switch (dir)
-                {
-                    case 0:
-                        m_Direction.X = 1;
-                        break;
-                    case 1:
-                        m_Direction.X = -1;
-                        break;
-                    case 2:
-                        m_Direction.Y = 1;
-                        break;
-                    case 3:
-                        m_Direction.Y = -1;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            m_Direction = Vector2.Normalize(m_Direction);
 
         }
         public override void Update(Player player, TimeSpan elapsedTime)
