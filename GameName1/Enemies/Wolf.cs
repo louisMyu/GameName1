@@ -70,6 +70,10 @@ namespace GameName1.Enemies
             _circleBody.Mass = 5f;
             _circleBody.LinearDamping = 3f;
             _circleBody.Restitution = .5f;
+
+            Lefthand = new WolfHand(WolfHand.LeftOrRightHand.Left);
+            Righthand = new WolfHand(WolfHand.LeftOrRightHand.Right);
+
         }
 
         //moves a set amount per frame toward a certain location
@@ -189,13 +193,13 @@ namespace GameName1.Enemies
         {
             [DataMember]
             public int LifeTotal { get; set; }
-            private enum LeftOrRightHand
+            public enum LeftOrRightHand
             {
                 Left,
                 Right
             }
             private LeftOrRightHand WhichHand;
-            private WolfHand(LeftOrRightHand which)
+            public WolfHand(LeftOrRightHand which)
             {
                 if (which == LeftOrRightHand.Left)
                 {
@@ -207,14 +211,7 @@ namespace GameName1.Enemies
                 }
                 WhichHand = which;
             }
-            public static WolfHand[] MakeHands()
-            {
-                WolfHand[] hands = new WolfHand[2];
-                hands[0] = new WolfHand(LeftOrRightHand.Left);
-                hands[1] = new WolfHand(LeftOrRightHand.Right);
 
-                return hands;
-            }
             public void Update(Wolf wolfBody)
             {
                 RotationAngle = wolfBody.RotationAngle;
