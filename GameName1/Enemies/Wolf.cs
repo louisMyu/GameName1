@@ -219,11 +219,13 @@ namespace GameName1.Enemies
                 {
                     case LeftOrRightHand.Left:
                         Position = wolfBody.Position;
-                        Position = new Vector2(Position.X -100, Position.Y);
+                        Position = new Vector2(Position.X + (float) Math.Acos(Utilities.DegreesToRadians(270f))*15, 
+                                                Position.Y + (float)Math.Asin(Utilities.DegreesToRadians(270f))*15);
                         break;
                     case LeftOrRightHand.Right:
                         Position = wolfBody.Position;
-                        Position = new Vector2(Position.X + 100, Position.Y);
+                        Position = new Vector2(Position.X + (float)Math.Acos(Utilities.DegreesToRadians(90f)) * 15,
+                                                Position.Y + (float)Math.Asin(Utilities.DegreesToRadians(90f)) * 15);
                         break;
                 }
             }

@@ -119,7 +119,6 @@ namespace GameName1
                 default:
                     return new Shotgun();
             }
-            
         }
         public override void LoadContent()
         {
