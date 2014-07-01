@@ -47,7 +47,6 @@ namespace GameName1.Enemies
         private WolfHand Lefthand;
         private WolfHand Righthand;
 
-        private static Texture2D m_SlimeTrailTex;
         public void LoadContent(World world)
         {
             m_Direction = new Vector2(0, 0);
