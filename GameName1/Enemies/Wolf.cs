@@ -88,7 +88,7 @@ namespace GameName1.Enemies
             {
                 this.Position = simPosition;
             }
-            //get the wolf direction  
+            //get the wolf direction    
             GetDirection();
             RotationAngle = (float)Math.Atan2(m_Direction.Y, m_Direction.X);
             Vector2 amount = m_Direction * m_Speed;
