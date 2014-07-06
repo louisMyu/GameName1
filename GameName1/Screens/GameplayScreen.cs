@@ -107,7 +107,7 @@ namespace GameName1
             UserInterface.LoadContent(content, Game1.GameWidth, Game1.GameHeight);
             GlobalObjectManager.LoadContent();
 
-            m_song = SoundBank.GetSong("PUNCHING-Edit");
+            //m_song = SoundBank.GetSong("PUNCHING-Edit");
             TimeToDeath = TimeSpan.FromSeconds(30);
             UserInterface.SetTimeToDeath(TimeToDeath);
 
@@ -178,8 +178,8 @@ namespace GameName1
                             if (!songPlaying)
                             {
                                 songPlaying = true;
-                                MediaPlayer.Play(m_song);
-                                MediaPlayer.IsRepeating = true;
+                                //MediaPlayer.Play(m_song);
+                                //MediaPlayer.IsRepeating = true;
                             }
                             m_CountdownTime -= customElapsedTime;
                             if (m_CountdownTime < TimeSpan.FromSeconds(1))
@@ -193,43 +193,48 @@ namespace GameName1
                             //{
                             //    customElapsedTime = new TimeSpan((long)(customElapsedTime.Ticks * 0.5));
                             //}
-
-                            if (TimeToDeath < TimeSpan.FromSeconds(0))
+                            try
                             {
-                                //SlowMotion = true;
-                                //ResetGame();
-                                TimeToDeath = TimeSpan.FromTicks(0);
+                                if (TimeToDeath < TimeSpan.FromSeconds(0))
+                                {
+                                    //SlowMotion = true;
+                                    //ResetGame();
+                                    TimeToDeath = TimeSpan.FromTicks(0);
+                                    UserInterface.SetTimeToDeath(TimeToDeath);
+                                    m_GameState = GameState.Dying;
+                                    m_Player.SetPlayerToDyingState();
+                                    return;
+                                }
+                                TimeToDeath -= gameTime.ElapsedGameTime;
+                                // TODO: Add your update logic here
+                                UserInterface.ProcessInput(m_Player, TouchesCollected);
+                                UserInterface.Update(customElapsedTime);
                                 UserInterface.SetTimeToDeath(TimeToDeath);
-                                m_GameState = GameState.Dying;
-                                m_Player.SetPlayerToDyingState();
-                                return;
-                            }
-                            TimeToDeath -= gameTime.ElapsedGameTime;
-                            // TODO: Add your update logic here
-                            UserInterface.ProcessInput(m_Player, TouchesCollected);
-                            UserInterface.Update(customElapsedTime);
-                            UserInterface.SetTimeToDeath(TimeToDeath);
-                            //check if a game reset or zombie hit and save state and do the action here,
-                            //so that the game will draw the zombie intersecting the player
-                            foreach (GameObject g in ObjectManager.AllGameObjects)
-                            {
-                                g.Update(m_Player, customElapsedTime);
-                            }
-                            m_Player.Update(customElapsedTime);
-                            bool b = false;
-                            m_Player.CheckCollisions(out b, m_World);
-                            if (b)
-                            {
-                                m_GameState = GameState.Dying;
-                                //lets throw one update in here so we draw with the updated state
+                                //check if a game reset or zombie hit and save state and do the action here,
+                                //so that the game will draw the zombie intersecting the player
+                                foreach (GameObject g in ObjectManager.AllGameObjects)
+                                {
+                                    g.Update(m_Player, customElapsedTime);
+                                }
                                 m_Player.Update(customElapsedTime);
-                                return;
-                            }
-                            m_Player.CheckWeaponHits();
-                            //cleanup dead objects
-                            GlobalObjectManager.Update(customElapsedTime);
+                                bool b = false;
+                                m_Player.CheckCollisions(out b, m_World);
+                                if (b)
+                                {
+                                    m_GameState = GameState.Dying;
+                                    //lets throw one update in here so we draw with the updated state
+                                    m_Player.Update(customElapsedTime);
+                                    return;
+                                }
+                                m_Player.CheckWeaponHits();
+                                //cleanup dead objects
+                                GlobalObjectManager.Update(customElapsedTime);
 
-                            m_World.Step((float)1.0f/60f);
+                                m_World.Step((float)1.0f / 60f);
+                            }
+                            catch (Exception e)
+                            {
+                            }
                             break;
                         case GameState.Dying:
                             if (m_Player.isDead)

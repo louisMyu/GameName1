@@ -292,6 +292,7 @@ namespace GameName1
         //probably should add spawn face in here
         private void MakeSlime()
         {
+            SpawnWolf();
             bool nearPlayer = true;
             int x = 0;
             int y = 0;
@@ -339,6 +340,13 @@ namespace GameName1
             z.Position = temp;
             z.LoadContent(m_World);
             ObjectManager.AllGameObjects.Add(z);
+        }
+        private void SpawnWolf()
+        {
+            Wolf wolf = new Wolf();
+            wolf.Position = new Vector2(m_Player.Position.X + 50, m_Player.Position.Y + 50);
+            wolf.LoadContent(m_World);
+            ObjectManager.AllGameObjects.Add(wolf);
         }
     }
 }

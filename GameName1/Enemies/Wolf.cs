@@ -10,9 +10,9 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameName1.Enemies
+namespace GameName1
 {
-    class Wolf : GameObject, IEnemy
+    public class Wolf : GameObject, IEnemy
     {
         private const int DAMAGE_AMOUNT = 5;
         public enum MotionState
@@ -91,12 +91,12 @@ namespace GameName1.Enemies
             //get the wolf direction
             GetDirection();
             RotationAngle = (float)Math.Atan2(m_Direction.Y, m_Direction.X);
-            Vector2 amount = m_Direction * m_Speed;
-            base.Move(amount, elapsedTime);
-            Vector2 temp = new Vector2();
-            temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth - Width / 2);
-            temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight - Height / 2);
-            Position = temp;
+            //Vector2 amount = m_Direction * m_Speed;
+            //base.Move(amount, elapsedTime);
+            //Vector2 temp = new Vector2();
+            //temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth - Width / 2);
+            //temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight - Height / 2);
+            //Position = temp;
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
@@ -128,7 +128,6 @@ namespace GameName1.Enemies
         public static void LoadTextures()
         {
             
-            //TODO load slime exploded textures here
         }
         #region IEnemy
         public void CleanBody()
@@ -218,13 +217,13 @@ namespace GameName1.Enemies
                 {
                     case LeftOrRightHand.Left:
                         Position = wolfBody.Position;
-                        Position = new Vector2(Position.X + (float) Math.Acos(Utilities.DegreesToRadians(270f))*15, 
-                                                Position.Y + (float)Math.Asin(Utilities.DegreesToRadians(270f))*15);
+                        Position = new Vector2(Position.X + (float) Math.Acos(Utilities.DegreesToRadians(270f)+RotationAngle)*15, 
+                                                Position.Y + (float)Math.Asin(Utilities.DegreesToRadians(270f)+RotationAngle)*15);
                         break;
                     case LeftOrRightHand.Right:
                         Position = wolfBody.Position;
-                        Position = new Vector2(Position.X + (float)Math.Acos(Utilities.DegreesToRadians(90f)) * 15,
-                                                Position.Y + (float)Math.Asin(Utilities.DegreesToRadians(90f)) * 15);
+                        Position = new Vector2(Position.X + (float)Math.Acos(Utilities.DegreesToRadians(90f)+RotationAngle) * 15,
+                                                Position.Y + (float)Math.Asin(Utilities.DegreesToRadians(90f)+RotationAngle) * 15);
                         break;
                 }
             }
