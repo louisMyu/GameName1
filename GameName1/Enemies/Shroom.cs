@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace GameName1
 {
-    public class Wolf : GameObject, IEnemy
+    class Shroom : GameObject, IEnemy
     {
-        private const int DAMAGE_AMOUNT = 5;
+         private const int DAMAGE_AMOUNT = 5;
         public enum MotionState
         {
             Wandering,
@@ -38,14 +38,12 @@ namespace GameName1
 
         [DataMember]
         public MotionState State { get; set; }
-        public Wolf()
+        public Shroom()
             : base()
         {
             LifeTotal = 40;
 
         }
-        private WolfHand Lefthand;
-        private WolfHand Righthand;
 
         public void LoadContent(World world)
         {
@@ -69,11 +67,6 @@ namespace GameName1
             _circleBody.Mass = 5f;
             _circleBody.LinearDamping = 3f;
             _circleBody.Restitution = .5f;
-
-            Lefthand = new WolfHand(WolfHand.LeftOrRightHand.Left, this);
-            Righthand = new WolfHand(WolfHand.LeftOrRightHand.Right, this);
-            Lefthand.LoadContent();
-            Righthand.LoadContent();
 
         }
 
@@ -112,14 +105,12 @@ namespace GameName1
             ObjectManager.GetCell(Position).Add(this);
 
             bodyPosition = _circleBody.Position;
-            Lefthand.Update(this);
-            Righthand.Update(this);
+
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
-            Lefthand.Draw(spriteBatch);
-            Righthand.Draw(spriteBatch);
+
         }
 
         public static void LoadTextures()
@@ -184,88 +175,5 @@ namespace GameName1
             _circleBody.Position = bodyPosition;
         }
         #endregion
-        class WolfHand : GameObject, IEnemy
-        {
-            [DataMember]
-            public int LifeTotal { get; set; }
-            public enum LeftOrRightHand
-            {
-                Left,
-                Right
-            }
-            private LeftOrRightHand WhichHand;
-            public WolfHand(LeftOrRightHand which, Wolf body)
-            {
-                if (which == LeftOrRightHand.Left)
-                {
-                    Texture = TextureBank.GetTexture("kevinZombie");
-                }
-                else
-                {
-                    Texture = TextureBank.GetTexture("kevinZombie");
-                }
-                WhichHand = which;
-                Position = body.Position;
-            }
-
-            public void Update(Wolf wolfBody)
-            {
-                RotationAngle = wolfBody.RotationAngle;
-                Vector2 tempPos;
-                switch (WhichHand)
-                {
-                    case LeftOrRightHand.Left:
-                        Position = wolfBody.Position;
-                        tempPos = new Vector2((float)Math.Cos(RotationAngle - Math.PI / 2), (float)Math.Sin(RotationAngle - Math.PI / 2));
-                        Position += Vector2.Normalize(tempPos) * 55;
-                        break;
-                    case LeftOrRightHand.Right:
-                        Position = wolfBody.Position;
-                        tempPos = new Vector2((float)Math.Cos(RotationAngle + Math.PI / 2), (float)Math.Sin(RotationAngle + Math.PI / 2));
-                        Position += Vector2.Normalize(tempPos) * 55;
-                        break;
-                }
-            }
-            private void SetTexture(Texture2D tex)
-            {
-                Texture = tex;
-            }
-            public int GetHealth()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void AddToHealth(int amount)
-            {
-                LifeTotal += amount;
-            }
-
-            public void ApplyLinearForce(Vector2 angle, float amount)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void CleanBody()
-            {
-                throw new NotImplementedException();
-            }
-
-            public int GetDamageAmount()
-            {
-                return DAMAGE_AMOUNT;
-            }
-
-            public List<Texture2D> GetExplodedParts()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void DoCollision(Player p)
-            {
-                p.LifeTotal -= GetDamageAmount();
-                ObjectManager.RemoveObject(this);
-            }
-        }
     }
-
 }

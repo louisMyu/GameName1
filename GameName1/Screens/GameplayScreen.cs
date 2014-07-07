@@ -107,7 +107,7 @@ namespace GameName1
             UserInterface.LoadContent(content, Game1.GameWidth, Game1.GameHeight);
             GlobalObjectManager.LoadContent();
 
-            //m_song = SoundBank.GetSong("PUNCHING-Edit");
+            m_song = SoundBank.GetSong("PUNCHING-Edit");
             TimeToDeath = TimeSpan.FromSeconds(30);
             UserInterface.SetTimeToDeath(TimeToDeath);
 
@@ -178,8 +178,8 @@ namespace GameName1
                             if (!songPlaying)
                             {
                                 songPlaying = true;
-                                //MediaPlayer.Play(m_song);
-                                //MediaPlayer.IsRepeating = true;
+                                MediaPlayer.Play(m_song);
+                                MediaPlayer.IsRepeating = true;
                             }
                             m_CountdownTime -= customElapsedTime;
                             if (m_CountdownTime < TimeSpan.FromSeconds(1))

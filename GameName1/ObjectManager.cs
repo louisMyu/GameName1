@@ -167,6 +167,7 @@ namespace GameName1
             if ((FrameCounter % 150) == 0)
             {
                 SpawnFace();
+                SpawnWolf();
             }
             if (FrameCounter > 1000)
             {
@@ -292,7 +293,6 @@ namespace GameName1
         //probably should add spawn face in here
         private void MakeSlime()
         {
-            SpawnWolf();
             bool nearPlayer = true;
             int x = 0;
             int y = 0;

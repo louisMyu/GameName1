@@ -200,10 +200,9 @@ namespace GameName1
                 gib.LoadContent(gibTextures[i], pos);
                 //so we dont divide by zero
                 if (intersectingAngle.X == 0) intersectingAngle.X += 0.000001f;
-                float originalDegrees = Utilities.RadiansToDegrees((float)Math.Atan(intersectingAngle.Y/intersectingAngle.X));
-                if (intersectingAngle.X < 0) originalDegrees += 180;
-                float newDegrees = Utilities.NormalizeDegrees(originalDegrees) + randomDegree;
-                Vector2 change = new Vector2((float)Math.Cos(Utilities.DegreesToRadians(newDegrees)), (float)Math.Sin(Utilities.DegreesToRadians(newDegrees)));
+                float originalDegrees = (float)Math.Atan2(intersectingAngle.Y, intersectingAngle.X);
+                float newDegrees = Utilities.NormalizeRadians(originalDegrees) + Utilities.DegreesToRadians(randomDegree);
+                Vector2 change = new Vector2((float)Math.Cos(newDegrees), (float)Math.Sin(newDegrees));
                 gib.ApplyLinearForce(change, randomForce);
                 //should be randomixed
                 gib.ApplyTorque(randomTorque);

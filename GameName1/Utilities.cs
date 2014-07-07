@@ -60,6 +60,18 @@ namespace GameName1
             }
             return degrees;
         }
+        public static float NormalizeRadians(float radians)
+        {
+            while (radians < 0)
+            {
+                radians += 2*(float)Math.PI;
+            }
+            while (radians > 2 * Math.PI)
+            {
+                radians -= 2 * (float)Math.PI;
+            }
+            return radians;
+        }
         public static void Shuffle<T>(IList<T> list)
         {
             Random rng = new Random();
