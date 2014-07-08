@@ -348,5 +348,12 @@ namespace GameName1
             wolf.LoadContent(m_World);
             ObjectManager.AllGameObjects.Add(wolf);
         }
+        private void SpawnShroom()
+        {
+            Shroom mushroom = new Shroom();
+            mushroom.Position = new Vector2(m_Player.Position.X - 50, m_Player.Position.Y - 50);
+            mushroom.LoadContent(m_World);
+            ObjectManager.AllGameObjects.Add(mushroom);
+        }
     }
 }
