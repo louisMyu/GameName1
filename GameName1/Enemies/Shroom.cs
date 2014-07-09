@@ -14,7 +14,9 @@ namespace GameName1
 {
     class Shroom : GameObject, IEnemy
     {
-         private const int DAMAGE_AMOUNT = 5;
+        private const int DAMAGE_AMOUNT = 5;
+        private int PuffTimeExecute;
+        private float CurrentPuffTime;
         public enum MotionState
         {
             Wandering,
@@ -48,7 +50,7 @@ namespace GameName1
         public void LoadContent(World world)
         {
             m_Direction = new Vector2(0, 0);
-            m_Texture = TextureBank.GetTexture("WolfBody");
+            m_Texture = TextureBank.GetTexture("ShroomBody");
             Width = m_Texture != null ? m_Texture.Width : 0;
             Height = m_Texture != null ? m_Texture.Height : 0;
 
@@ -98,6 +100,10 @@ namespace GameName1
         {
 
         }
+        public void DoPuff()
+        {
+
+        }
         public override void Update(Player player, TimeSpan elapsedTime)
         {
             ObjectManager.GetCell(Position).Remove(this);
@@ -105,7 +111,11 @@ namespace GameName1
             ObjectManager.GetCell(Position).Add(this);
 
             bodyPosition = _circleBody.Position;
-
+            CurrentPuffTime += elapsedTime.Ticks;
+            if (CurrentPuffTime >= PuffTimeExecute)
+            {
+                DoPuff();
+            }
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -166,7 +176,7 @@ namespace GameName1
         {
             if (m_Texture == null)
             {
-                m_Texture = TextureBank.GetTexture("WolfBody");
+                m_Texture = TextureBank.GetTexture("ShroomTexture");
             }
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
