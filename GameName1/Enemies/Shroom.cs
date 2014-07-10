@@ -186,4 +186,8 @@ namespace GameName1
         }
         #endregion
     }
+    private class ShrromExplosion
+    {
+        private float AnimationTime;
+    }
 }
