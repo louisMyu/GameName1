@@ -77,7 +77,7 @@ namespace GameName1
 
         }
 
-        //moves a set amount per frame toward a certain location
+        //moves a set amount per frame toward a certain location 
         public override void Move(Microsoft.Xna.Framework.Vector2 loc, TimeSpan elapsedTime)
         {
             //should really just use the Sim's position for everything instead of converting from one to another
