@@ -185,9 +185,9 @@ namespace GameName1
             _circleBody.Position = bodyPosition;
         }
         #endregion
-    }
-    private class ShrromExplosion
-    {
-        private float AnimationTime;
+        private class ShrromExplosion
+        {
+            private float AnimationTime;
+        }
     }
 }

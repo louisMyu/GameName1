@@ -221,7 +221,8 @@ namespace GameName1
         }
         public void DrawBackground(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(m_Background, new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(m_Background, new Vector2(0, 0), null, Color.White, 0.0f, new Vector2(GameWidth / 2, GameHeight / 2), 
+                            Utilities.GetSpriteScaling(new Vector2(GameWidth, GameHeight), new Vector2(m_Background.Width, m_Background.Height)), SpriteEffects.None, 0.0f);
         }
         public void DrawActiveGibs(SpriteBatch spriteBatch)
         {
@@ -241,7 +242,12 @@ namespace GameName1
         }
         public void DrawDeathTimer(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(ColunaFont, TimeToDeath.ToString(@"mm\:ss\:ff"), new Vector2(GameWidth - 175, 300), Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
+            string timeToDeathString = TimeToDeath.ToString(@"mm\:ss\:ff");
+            Vector2 textSize = ColunaFont.MeasureString(timeToDeathString);
+            Vector2 viewport = new Vector2(GameWidth - PlayfieldBottom, GameHeight);
+            Vector2 textPosition = (viewport - textSize) / 2;
+            textPosition.X += PlayfieldBottom;
+            spriteBatch.DrawString(ColunaFont, timeToDeathString, textPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
         }
 
         public void DrawCountdown(SpriteBatch spriteBatch, TimeSpan countdown)
