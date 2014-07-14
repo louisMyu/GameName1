@@ -221,7 +221,7 @@ namespace GameName1
         }
         public void DrawBackground(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(m_Background, new Vector2(0, 0), null, Color.White, 0.0f, new Vector2(GameWidth / 2, GameHeight / 2), 
+            spriteBatch.Draw(m_Background, new Vector2(GameWidth / 2, GameHeight / 2), null, Color.White, 0.0f, new Vector2(GameWidth / 2, GameHeight / 2), 
                             Utilities.GetSpriteScaling(new Vector2(GameWidth, GameHeight), new Vector2(m_Background.Width, m_Background.Height)), SpriteEffects.None, 0.0f);
         }
         public void DrawActiveGibs(SpriteBatch spriteBatch)
