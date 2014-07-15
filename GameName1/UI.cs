@@ -244,10 +244,12 @@ namespace GameName1
         {
             string timeToDeathString = TimeToDeath.ToString(@"mm\:ss\:ff");
             Vector2 textSize = ColunaFont.MeasureString(timeToDeathString);
-            Vector2 viewport = new Vector2(GameWidth - PlayfieldBottom, GameHeight);
+            Vector2 viewport = new Vector2(GameWidth, GameHeight);
             Vector2 textPosition = (viewport - textSize) / 2;
-            textPosition.X += PlayfieldBottom;
-            spriteBatch.DrawString(ColunaFont, timeToDeathString, textPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
+            textPosition.X += (textSize.X / 2);
+            textPosition.Y += textSize.Y / 2;
+            spriteBatch.DrawString(ColunaFont, timeToDeathString, textPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f), 
+                                    new Vector2(textSize.X/2, textSize.Y/2), new Vector2(1, 1), SpriteEffects.None, 0.0f);
         }
 
         public void DrawCountdown(SpriteBatch spriteBatch, TimeSpan countdown)
