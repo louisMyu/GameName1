@@ -243,6 +243,7 @@ namespace GameName1
         public void DrawDeathTimer(SpriteBatch spriteBatch)
         {
             string timeToDeathString = TimeToDeath.ToString(@"mm\:ss\:ff");
+            
             Vector2 textSize = ColunaFont.MeasureString(timeToDeathString);
             Vector2 viewport = new Vector2(GameWidth, GameHeight);
             Vector2 textPosition = (viewport - textSize) / 2;
@@ -255,7 +256,13 @@ namespace GameName1
         public void DrawCountdown(SpriteBatch spriteBatch, TimeSpan countdown)
         {
             string countdownString = countdown.ToString(@"ss");
-            spriteBatch.DrawString(ColunaFont, countdownString, new Vector2(GameWidth - 175, 500), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), new Vector2(3, 2), SpriteEffects.None, 0.0f);
+            Vector2 textSize = ColunaFont.MeasureString(countdownString);
+            Vector2 viewport = new Vector2(GameWidth, GameHeight);
+            Vector2 textPosition = (viewport - textSize) / 2;
+            textPosition.X += (textSize.X / 2);
+            textPosition.Y += textSize.Y / 2;
+            spriteBatch.DrawString(ColunaFont, countdownString, textPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f),
+                         new Vector2(textSize.X / 2, textSize.Y / 2), new Vector2(1, 1), SpriteEffects.None, 0.0f);
         }
 
         public void SetTimeToDeath(TimeSpan time)
