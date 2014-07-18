@@ -267,8 +267,10 @@ namespace GameName1
 
         public void SetTimeToDeath(TimeSpan time)
         {
-
             TimeToDeath = time;
+
+
+
         }
     }
 }
