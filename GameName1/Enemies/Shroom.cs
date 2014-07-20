@@ -69,7 +69,6 @@ namespace GameName1
             _circleBody.Mass = 5f;
             _circleBody.LinearDamping = 3f;
             _circleBody.Restitution = .5f;
-
         }
 
         //moves a set amount per frame toward a certain location
