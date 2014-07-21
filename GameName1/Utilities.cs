@@ -233,4 +233,22 @@ namespace GameName1
     {
         void Draw(SpriteBatch sprite, Rectangle position);
     }
+    //class for integrating a looping animation
+    public class AnimationTimer
+    {
+        public class AnimationFrame
+        {
+            public AnimationFrame(
+        }
+        float currentTime = 0f;
+
+        public AnimationTimer()
+        {
+
+        }
+        public void Update(GameTime gameTime)
+        {
+            currentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+    }
 }

@@ -50,7 +50,7 @@ namespace GameName1
         public void LoadContent(World world)
         {
             m_Direction = new Vector2(0, 0);
-            m_Texture = TextureBank.GetTexture("ShroomBody");
+            m_Texture = TextureBank.GetTexture("ShroomEyeClosed");
             Width = m_Texture != null ? m_Texture.Width : 0;
             Height = m_Texture != null ? m_Texture.Height : 0;
 
