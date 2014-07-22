@@ -102,4 +102,58 @@ namespace GameName1
             return Animating || !Finished;
         }
     }
+    //class for integrating a looping animation
+    public class AnimationTimer
+    {
+        float m_CurrentTime = 0f;
+        int m_CurrentFrame;
+        float[] m_Intervals;
+        int m_NumberOfFrames;
+        bool m_Looping;
+        bool m_isDone;
+        public event EventHandler<AnimationTimerEventArgs> IntervalOcccured;
+        public AnimationTimer(float[] intervals, EventHandler<AnimationTimerEventArgs> handler, bool isLoop)
+        {
+            m_Intervals = intervals;
+            IntervalOcccured += handler;
+            m_CurrentFrame = 0;
+            m_Looping = isLoop;
+            m_NumberOfFrames = intervals.Length;
+            m_isDone = false;
+        }
+        public void Update(GameTime gameTime)
+        {
+            if (m_isDone) return;
+            m_CurrentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (m_CurrentTime > m_Intervals[m_CurrentFrame])
+            {
+                if (m_CurrentFrame == m_NumberOfFrames)
+                {
+                    if (m_Looping)
+                    {
+                        m_CurrentFrame = 0;
+                    }
+                    else
+                    {
+                        m_isDone = true;
+                    }
+                }
+                else
+                {
+                    ++m_CurrentFrame;
+                    IntervalOcccured.Invoke(this, new AnimationTimerEventArgs(m_CurrentFrame));
+                }
+                m_CurrentTime = 0;
+            }
+        }
+    }
+    public class AnimationTimerEventArgs : EventArgs
+    {
+        int m_FrameIndex;
+        public AnimationTimerEventArgs(int index)
+        {
+            m_FrameIndex = index;
+        }
+        public int FrameIndex { get { return m_FrameIndex; } }
+    }
 }
