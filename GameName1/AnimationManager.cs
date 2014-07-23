@@ -111,8 +111,9 @@ namespace GameName1
         int m_NumberOfFrames;
         bool m_Looping;
         bool m_isDone;
+        string m_Name;
         public event EventHandler<AnimationTimerEventArgs> IntervalOcccured;
-        public AnimationTimer(float[] intervals, EventHandler<AnimationTimerEventArgs> handler, bool isLoop)
+        public AnimationTimer(float[] intervals, string name, EventHandler<AnimationTimerEventArgs> handler, bool isLoop)
         {
             m_Intervals = intervals;
             IntervalOcccured += handler;
@@ -120,12 +121,15 @@ namespace GameName1
             m_Looping = isLoop;
             m_NumberOfFrames = intervals.Length;
             m_isDone = false;
+            m_Name = name;
         }
         public void Update(GameTime gameTime)
         {
+            //the animation is done with no looping
             if (m_isDone) return;
+
             m_CurrentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (m_CurrentTime > m_Intervals[m_CurrentFrame])
+            if (m_CurrentTime > m_Intervals[m_CurrentFrame+1])
             {
                 if (m_CurrentFrame == m_NumberOfFrames)
                 {
@@ -141,7 +145,7 @@ namespace GameName1
                 else
                 {
                     ++m_CurrentFrame;
-                    IntervalOcccured.Invoke(this, new AnimationTimerEventArgs(m_CurrentFrame));
+                    IntervalOcccured.Invoke(this, new AnimationTimerEventArgs(m_CurrentFrame, m_Name));
                 }
                 m_CurrentTime = 0;
             }
@@ -150,10 +154,14 @@ namespace GameName1
     public class AnimationTimerEventArgs : EventArgs
     {
         int m_FrameIndex;
-        public AnimationTimerEventArgs(int index)
+        string m_AnimationName;
+
+        public AnimationTimerEventArgs(int index, string name)
         {
             m_FrameIndex = index;
+            m_AnimationName = name;
         }
         public int FrameIndex { get { return m_FrameIndex; } }
+        public string AnimationName { get { return m_AnimationName; } }
     }
 }

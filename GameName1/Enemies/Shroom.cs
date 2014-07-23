@@ -14,6 +14,10 @@ namespace GameName1
 {
     class Shroom : GameObject, IEnemy
     {
+        private AnimationTimer m_BlinkingTimer;
+        float[] m_BlinkingIntervals = new float[3];
+        string[] m_BlinkingTextures = new string[3];
+        const string BlinkAnimationName = "BlinkingAnimation";
         private const int DAMAGE_AMOUNT = 5;
         private int PuffTimeExecute;
         private float CurrentPuffTime;
@@ -44,9 +48,22 @@ namespace GameName1
             : base()
         {
             LifeTotal = 40;
+            m_BlinkingIntervals[0] = -1;
+            m_BlinkingIntervals[1] = 500;
+            m_BlinkingIntervals[2] = 1500;
+
+            m_BlinkingTimer = new AnimationTimer(m_BlinkingIntervals, BlinkAnimationName, HandleAnimation, true);
 
         }
-
+        private void HandleAnimation(object o, AnimationTimerEventArgs e)
+        {
+            switch (e.AnimationName)
+            {
+                case BlinkAnimationName:
+                    m_Texture = TextureBank.GetTexture(m_BlinkingTextures[e.FrameIndex]);
+                    break;
+            }
+        }
         public void LoadContent(World world)
         {
             m_Direction = new Vector2(0, 0);
@@ -69,6 +86,10 @@ namespace GameName1
             _circleBody.Mass = 5f;
             _circleBody.LinearDamping = 3f;
             _circleBody.Restitution = .5f;
+            foreach (string s in m_BlinkingTextures)
+            {
+                TextureBank.GetTexture(s);
+            }
         }
 
         //moves a set amount per frame toward a certain location
