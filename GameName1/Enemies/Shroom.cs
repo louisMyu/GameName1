@@ -19,7 +19,6 @@ namespace GameName1
         string[] m_BlinkingTextures = new string[3];
         const string BlinkAnimationName = "BlinkingAnimation";
         private const int DAMAGE_AMOUNT = 5;
-        private int PuffTimeExecute;
         private float CurrentPuffTime;
         public enum MotionState
         {
@@ -48,10 +47,12 @@ namespace GameName1
             : base()
         {
             LifeTotal = 40;
-            m_BlinkingIntervals[0] = -1;
-            m_BlinkingIntervals[1] = 500;
-            m_BlinkingIntervals[2] = 1500;
-
+            m_BlinkingIntervals[0] = 500;
+            m_BlinkingIntervals[1] = 1000;
+            m_BlinkingIntervals[2] = 1000;
+            m_BlinkingTextures[0] = "ShroomEye1";
+            m_BlinkingTextures[1] = "ShroomEye2";
+            m_BlinkingTextures[2] = "ShroomEye3";
             m_BlinkingTimer = new AnimationTimer(m_BlinkingIntervals, BlinkAnimationName, HandleAnimation, true);
 
         }
@@ -67,7 +68,6 @@ namespace GameName1
         public void LoadContent(World world)
         {
             m_Direction = new Vector2(0, 0);
-            m_Texture = TextureBank.GetTexture("ShroomEyeClosed");
             Width = m_Texture != null ? m_Texture.Width : 0;
             Height = m_Texture != null ? m_Texture.Height : 0;
 
@@ -90,6 +90,7 @@ namespace GameName1
             {
                 TextureBank.GetTexture(s);
             }
+            m_Texture = TextureBank.GetTexture(m_BlinkingTextures[0]);
         }
 
         //moves a set amount per frame toward a certain location

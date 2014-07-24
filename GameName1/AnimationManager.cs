@@ -128,8 +128,8 @@ namespace GameName1
             //the animation is done with no looping
             if (m_isDone) return;
 
-            m_CurrentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (m_CurrentTime > m_Intervals[m_CurrentFrame+1])
+            m_CurrentTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (m_CurrentTime > m_Intervals[m_CurrentFrame])
             {
                 if (m_CurrentFrame == m_NumberOfFrames)
                 {
