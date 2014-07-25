@@ -90,6 +90,8 @@ namespace GameName1
             {
                 TextureBank.GetTexture(s);
             }
+
+
             m_Texture = TextureBank.GetTexture(m_BlinkingTextures[0]);
         }
 
