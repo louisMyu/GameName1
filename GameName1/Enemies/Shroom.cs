@@ -65,6 +65,7 @@ namespace GameName1
                     break;
             }
         }
+
         public void LoadContent(World world)
         {
             m_Direction = new Vector2(0, 0);
