@@ -123,19 +123,21 @@ namespace GameName1
             m_isDone = false;
             m_Name = name;
         }
-        public void Update(GameTime gameTime)
+        public void Update(TimeSpan gameTime)
         {
             //the animation is done with no looping
             if (m_isDone) return;
 
-            m_CurrentTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            m_CurrentTime += (float)gameTime.TotalMilliseconds;
             if (m_CurrentTime > m_Intervals[m_CurrentFrame])
             {
+                ++m_CurrentFrame;
                 if (m_CurrentFrame == m_NumberOfFrames)
                 {
                     if (m_Looping)
                     {
                         m_CurrentFrame = 0;
+                        IntervalOcccured.Invoke(this, new AnimationTimerEventArgs(m_CurrentFrame, m_Name));
                     }
                     else
                     {
@@ -144,7 +146,6 @@ namespace GameName1
                 }
                 else
                 {
-                    ++m_CurrentFrame;
                     IntervalOcccured.Invoke(this, new AnimationTimerEventArgs(m_CurrentFrame, m_Name));
                 }
                 m_CurrentTime = 0;

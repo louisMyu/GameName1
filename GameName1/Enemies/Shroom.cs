@@ -15,8 +15,8 @@ namespace GameName1
     class Shroom : GameObject, IEnemy
     {
         private AnimationTimer m_BlinkingTimer;
-        float[] m_BlinkingIntervals = new float[3];
-        string[] m_BlinkingTextures = new string[3];
+        float[] m_BlinkingIntervals = new float[2];
+        string[] m_BlinkingTextures = new string[2];
         const string BlinkAnimationName = "BlinkingAnimation";
         private const int DAMAGE_AMOUNT = 5;
         private float CurrentPuffTime;
@@ -47,12 +47,10 @@ namespace GameName1
             : base()
         {
             LifeTotal = 40;
-            m_BlinkingIntervals[0] = 500;
+            m_BlinkingIntervals[0] = 2500;
             m_BlinkingIntervals[1] = 1000;
-            m_BlinkingIntervals[2] = 1000;
-            m_BlinkingTextures[0] = "ShroomEye1";
-            m_BlinkingTextures[1] = "ShroomEye2";
-            m_BlinkingTextures[2] = "ShroomEye3";
+            m_BlinkingTextures[0] = "ShroomEyeClosed";
+            m_BlinkingTextures[1] = "ShroomEyeOpen";
             m_BlinkingTimer = new AnimationTimer(m_BlinkingIntervals, BlinkAnimationName, HandleAnimation, true);
 
         }
@@ -91,8 +89,6 @@ namespace GameName1
             {
                 TextureBank.GetTexture(s);
             }
-
-
             m_Texture = TextureBank.GetTexture(m_BlinkingTextures[0]);
         }
 
@@ -135,11 +131,7 @@ namespace GameName1
             ObjectManager.GetCell(Position).Add(this);
 
             bodyPosition = _circleBody.Position;
-            CurrentPuffTime += elapsedTime.Ticks;
-            if (CurrentPuffTime >= PuffTimeExecute)
-            {
-                DoPuff();
-            }
+            m_BlinkingTimer.Update(elapsedTime);
         }
         public override void Draw(SpriteBatch spriteBatch)
         {

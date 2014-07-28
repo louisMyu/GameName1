@@ -164,10 +164,10 @@ namespace GameName1
             {
                 SpawnZombie();
             }
-            if ((FrameCounter % 150) == 0)
+            if ((FrameCounter % 250) == 0)
             {
                 SpawnFace();
-                SpawnWolf();
+                SpawnShroom();
             }
             if (FrameCounter > 1000)
             {
@@ -348,12 +348,15 @@ namespace GameName1
             wolf.LoadContent(m_World);
             ObjectManager.AllGameObjects.Add(wolf);
         }
+        private bool shroomSpawned = false;
         private void SpawnShroom()
         {
+            if (shroomSpawned) return;
             Shroom mushroom = new Shroom();
-            mushroom.Position = new Vector2(m_Player.Position.X - 50, m_Player.Position.Y - 50);
+            mushroom.Position = new Vector2(m_Player.Position.X - 150, m_Player.Position.Y - 150);
             mushroom.LoadContent(m_World);
             ObjectManager.AllGameObjects.Add(mushroom);
+            shroomSpawned = true;
         }
     }
 }
