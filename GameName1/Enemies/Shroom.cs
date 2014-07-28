@@ -19,7 +19,6 @@ namespace GameName1
         string[] m_BlinkingTextures = new string[2];
         const string BlinkAnimationName = "BlinkingAnimation";
         private const int DAMAGE_AMOUNT = 5;
-        private float CurrentPuffTime;
         public enum MotionState
         {
             Wandering,
@@ -31,7 +30,7 @@ namespace GameName1
         [IgnoreDataMember]
         static private Texture2D m_Texture = null;
         [IgnoreDataMember]
-        private float m_Speed = 1.5f;
+        private float m_Speed = 2.5f;
         [DataMember]
         public float Speed { get { return m_Speed; } set { m_Speed = value; } }
 
@@ -52,7 +51,7 @@ namespace GameName1
             m_BlinkingTextures[0] = "ShroomEyeClosed";
             m_BlinkingTextures[1] = "ShroomEyeOpen";
             m_BlinkingTimer = new AnimationTimer(m_BlinkingIntervals, BlinkAnimationName, HandleAnimation, true);
-
+            circleRadius = 65;
         }
         private void HandleAnimation(object o, AnimationTimerEventArgs e)
         {
@@ -90,11 +89,20 @@ namespace GameName1
                 TextureBank.GetTexture(s);
             }
             m_Texture = TextureBank.GetTexture(m_BlinkingTextures[0]);
+
+            circleCenter = Position;
+            circleCenter.Y += circleRadius;
         }
 
+        private Vector2 circleCenter;
+        private float circleRadius;
+        bool backAndForth = true;
+        float moveTime;
+        float circleTime = 0;
         //moves a set amount per frame toward a certain location
         public override void Move(Microsoft.Xna.Framework.Vector2 loc, TimeSpan elapsedTime)
         {
+            circleTime += (float)elapsedTime.TotalMilliseconds;
             //should really just use the Sim's position for everything instead of converting from one to another
             Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
             if (float.IsNaN(simPosition.X) || float.IsNaN(simPosition.Y))
@@ -105,9 +113,28 @@ namespace GameName1
             {
                 this.Position = simPosition;
             }
-            //get the wolf direction
-            GetDirection();
-            RotationAngle = (float)Math.Atan2(m_Direction.Y, m_Direction.X);
+            moveTime += (float)elapsedTime.TotalSeconds;
+            if (backAndForth)
+            {
+                circleCenter.X += 1;
+            }
+            else
+            {
+                circleCenter.X -= 1;
+            }
+            if (moveTime > 5)
+            {
+                backAndForth = !backAndForth;
+                moveTime = 0;
+            }
+            float speedScale = (float) (0.001 * 2 * Math.PI) / Speed;
+            float angle = circleTime * speedScale;
+            if (angle > Math.PI * 2) circleTime = 0;
+            Vector2 newPos = new Vector2();
+            newPos.X = circleCenter.X + (float)Math.Sin(angle) * circleRadius;
+            newPos.Y = circleCenter.Y + (float)Math.Cos(angle) * circleRadius;
+            Position = newPos;
+            RotationAngle = (float)Math.PI / 2;
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
@@ -116,10 +143,7 @@ namespace GameName1
             m_Bounds.X = (int)Position.X - Width / 2;
             m_Bounds.Y = (int)Position.Y - Height / 2;
         }
-        private void GetDirection()
-        {
-
-        }
+        
         public void DoPuff()
         {
 
@@ -136,7 +160,6 @@ namespace GameName1
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
-
         }
 
         public static void LoadTextures()
