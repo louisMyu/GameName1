@@ -66,6 +66,12 @@ namespace GameName1
         public void LoadContent(World world)
         {
             m_Direction = new Vector2(0, 0);
+            foreach (string s in m_BlinkingTextures)
+            {
+                TextureBank.GetTexture(s);
+            }
+            m_Texture = TextureBank.GetTexture(m_BlinkingTextures[0]);
+
             Width = m_Texture != null ? m_Texture.Width : 0;
             Height = m_Texture != null ? m_Texture.Height : 0;
 
@@ -84,11 +90,7 @@ namespace GameName1
             _circleBody.Mass = 5f;
             _circleBody.LinearDamping = 3f;
             _circleBody.Restitution = .5f;
-            foreach (string s in m_BlinkingTextures)
-            {
-                TextureBank.GetTexture(s);
-            }
-            m_Texture = TextureBank.GetTexture(m_BlinkingTextures[0]);
+            
 
             circleCenter = Position;
             circleCenter.Y += circleRadius;
@@ -127,7 +129,7 @@ namespace GameName1
                 backAndForth = !backAndForth;
                 moveTime = 0;
             }
-            float speedScale = (float) (0.001 * 2 * Math.PI) / Speed;
+            float speedScale = (float)(0.001 * 2 * Math.PI) / Speed;
             float angle = circleTime * speedScale;
             if (angle > Math.PI * 2) circleTime = 0;
             Vector2 newPos = new Vector2();

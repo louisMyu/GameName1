@@ -353,7 +353,7 @@ namespace GameName1
         {
             if (shroomSpawned) return;
             Shroom mushroom = new Shroom();
-            mushroom.Position = new Vector2(m_Player.Position.X, m_Player.Position.Y - 150);
+            mushroom.Position = new Vector2(m_Player.Position.X + 150, m_Player.Position.Y - 150);
             mushroom.LoadContent(m_World);
             ObjectManager.AllGameObjects.Add(mushroom);
             shroomSpawned = true;
