@@ -18,6 +18,8 @@ namespace GameName1
         float[] m_BlinkingIntervals = new float[2];
         string[] m_BlinkingTextures = new string[2];
         const string BlinkAnimationName = "BlinkingAnimation";
+
+        int pufftime;
         private const int DAMAGE_AMOUNT = 5;
         public enum MotionState
         {
@@ -52,6 +54,7 @@ namespace GameName1
             m_BlinkingTextures[1] = "ShroomEyeOpen";
             m_BlinkingTimer = new AnimationTimer(m_BlinkingIntervals, BlinkAnimationName, HandleAnimation, true);
             circleRadius = 65;
+            pufftime = 10;
         }
         private void HandleAnimation(object o, AnimationTimerEventArgs e)
         {
@@ -229,6 +232,17 @@ namespace GameName1
         private class ShrromExplosion
         {
             private float AnimationTime;
+        }
+        class Puff : GameObject 
+        {
+            const string m_AnimationName = "PuffAnimation";
+
+            AnimationTimer animationTimer;
+            Texture[] textures;
+            private void HandleAnimation(object o, AnimationTimerEventArgs e)
+            {
+                m_Texture = 
+            }
         }
     }
 }
