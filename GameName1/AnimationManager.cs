@@ -165,4 +165,16 @@ namespace GameName1
         public int FrameIndex { get { return m_FrameIndex; } }
         public string AnimationName { get { return m_AnimationName; } }
     }
+    public class Animation
+    {
+        string[] animationNames;
+        float[] animationTimes;
+        AnimationTimer timer;
+
+        public Animation(string[] names, float[] times, EventHandler<AnimationTimerEventArgs> callback)
+        {
+            animationNames = names;
+            times = animationTimes;
+        }
+    }
 }
