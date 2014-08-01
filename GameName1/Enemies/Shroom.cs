@@ -236,12 +236,37 @@ namespace GameName1
         class Puff : GameObject 
         {
             const string m_AnimationName = "PuffAnimation";
-
             AnimationTimer animationTimer;
-            Texture[] textures;
+            string[] textures;
+            float[] intervals;
             private void HandleAnimation(object o, AnimationTimerEventArgs e)
             {
-                m_Texture = 
+                m_Texture = TextureBank.GetTexture(textures[e.FrameIndex]);
+                m_Bounds.Width = m_Texture.Width;
+                m_Bounds.Height = m_Texture.Height;
+            }
+
+            public Puff()
+            {
+                textures[0] = "PuffAnimation1";
+                textures[1] = "PuffAnimation2";
+                textures[2] = "PuffAnimation3";
+                textures[3] = "PuffAnimation4";
+                intervals[0] = 500;
+                intervals[1] = 1000;
+                intervals[2] = 1000;
+                intervals[3] = 1000;
+            }
+            public override void Update(Player player, TimeSpan elapsedTime)
+            {
+                if (animationTimer != null)
+                {
+                    animationTimer.Update(elapsedTime);
+                }
+            }
+            public void Trigger()
+            {
+                animationTimer = new AnimationTimer(intervals, m_AnimationName, HandleAnimation, false);
             }
         }
     }
