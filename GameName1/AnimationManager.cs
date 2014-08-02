@@ -111,6 +111,7 @@ namespace GameName1
         int m_NumberOfFrames;
         bool m_Looping;
         bool m_isDone;
+        public bool Done { get { return m_isDone; } }
         string m_Name;
         public event EventHandler<AnimationTimerEventArgs> IntervalOcccured;
         public AnimationTimer(float[] intervals, string name, EventHandler<AnimationTimerEventArgs> handler, bool isLoop)

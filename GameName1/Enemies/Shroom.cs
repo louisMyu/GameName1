@@ -19,7 +19,9 @@ namespace GameName1
         string[] m_BlinkingTextures = new string[2];
         const string BlinkAnimationName = "BlinkingAnimation";
 
-        int pufftime;
+        double pufftime;
+        double currentPuffTime;
+        List<Puff> PuffList = new List<Puff>();
         private const int DAMAGE_AMOUNT = 5;
         public enum MotionState
         {
@@ -151,7 +153,7 @@ namespace GameName1
         
         public void DoPuff()
         {
-
+            PuffList.Add(new Puff());
         }
         public override void Update(Player player, TimeSpan elapsedTime)
         {
@@ -159,6 +161,15 @@ namespace GameName1
             Move(player.Position, elapsedTime);
             ObjectManager.GetCell(Position).Add(this);
 
+            currentPuffTime += elapsedTime.TotalSeconds;
+            if (currentPuffTime > pufftime)
+            {
+                DoPuff();
+            }
+            foreach (Puff p in PuffList)
+            {
+                p.Update(player, elapsedTime);
+            }
             bodyPosition = _circleBody.Position;
             m_BlinkingTimer.Update(elapsedTime);
         }
@@ -229,10 +240,6 @@ namespace GameName1
             _circleBody.Position = bodyPosition;
         }
         #endregion
-        private class ShrromExplosion
-        {
-            private float AnimationTime;
-        }
         class Puff : GameObject 
         {
             const string m_AnimationName = "PuffAnimation";
@@ -256,12 +263,19 @@ namespace GameName1
                 intervals[1] = 1000;
                 intervals[2] = 1000;
                 intervals[3] = 1000;
+                CanDelete = false;
             }
             public override void Update(Player player, TimeSpan elapsedTime)
             {
                 if (animationTimer != null)
                 {
                     animationTimer.Update(elapsedTime);
+                    if (animationTimer.Done)
+                    {
+                        animationTimer.IntervalOcccured -= HandleAnimation;
+                        animationTimer = null;
+                        CanDelete = true;
+                    }
                 }
             }
             public void Trigger()
