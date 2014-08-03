@@ -277,6 +277,7 @@ namespace GameName1
                         CanDelete = true;
                     }
                 }
+
             }
             public void Trigger()
             {
