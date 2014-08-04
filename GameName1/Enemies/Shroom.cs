@@ -255,6 +255,7 @@ namespace GameName1
 
             public Puff()
             {
+
                 textures[0] = "PuffAnimation1";
                 textures[1] = "PuffAnimation2";
                 textures[2] = "PuffAnimation3";
