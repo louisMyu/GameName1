@@ -170,6 +170,8 @@ namespace GameName1
             {
                 p.Update(player, elapsedTime);
             }
+            PuffList.RemoveAll(p => p.CanDelete);
+
             bodyPosition = _circleBody.Position;
             m_BlinkingTimer.Update(elapsedTime);
         }

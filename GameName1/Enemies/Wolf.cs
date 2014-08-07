@@ -47,6 +47,9 @@ namespace GameName1
         private WolfHand Lefthand;
         private WolfHand Righthand;
 
+        private const string m_MoveHandsString = "MoveHandsAnimation";
+        private AnimationTimer MoveHandsTimer;
+        private float[] moveHandsIntervals;
         public void LoadContent(World world)
         {
             m_Direction = new Vector2(0, 0);
@@ -75,8 +78,25 @@ namespace GameName1
             Lefthand.LoadContent();
             Righthand.LoadContent();
 
-        }
+            moveHandsIntervals = new float[5];
+            moveHandsIntervals[0] = 1000;
+            moveHandsIntervals[1] = 1000;
+            moveHandsIntervals[2] = 1000;
+            moveHandsIntervals[3] = 1000;
+            moveHandsIntervals[4] = 1000;
+            MoveHandsTimer = new AnimationTimer(moveHandsIntervals, m_MoveHandsString, AnimationHandler, false);
 
+        }
+        private void AnimationHandler(object o, AnimationTimerEventArgs e)
+        {
+            switch (e.AnimationName)
+            {
+                case m_MoveHandsString:
+                    //in here i would move the hands a certain amount in the direction that they are moving
+                    //depending on which animation interval that im in
+                    break;
+            }
+        }
         //moves a set amount per frame toward a certain location 
         public override void Move(Microsoft.Xna.Framework.Vector2 loc, TimeSpan elapsedTime)
         {
