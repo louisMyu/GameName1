@@ -89,11 +89,34 @@ namespace GameName1
         }
         private void AnimationHandler(object o, AnimationTimerEventArgs e)
         {
+
             switch (e.AnimationName)
             {
                 case m_MoveHandsString:
+                    Vector2 amount = m_Direction;
+                    amount.Normalize();
                     //in here i would move the hands a certain amount in the direction that they are moving
                     //depending on which animation interval that im in
+                    switch (e.FrameIndex)
+                    {
+                        case 0:
+                            amount *= 5;
+                            break;
+                        case 1:
+                            amount *= 10;
+                            break;
+                        case 2:
+                            amount *= 5;
+                            break;
+                        case 3:
+                            amount *= 10;
+                            break;
+                        case 4:
+                            amount *= 10;
+                            break;
+                    }
+                    Lefthand.Move(amount, TimeSpan.FromSeconds(0));
+                    Righthand.Move(amount, TimeSpan.FromSeconds(0));
                     break;
             }
         }
