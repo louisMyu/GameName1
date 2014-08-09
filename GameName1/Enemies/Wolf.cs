@@ -114,6 +114,7 @@ namespace GameName1
                         case 4:
                             amount *= 10;
                             break;
+
                     }
                     Lefthand.Move(amount, TimeSpan.FromSeconds(0));
                     Righthand.Move(amount, TimeSpan.FromSeconds(0));
