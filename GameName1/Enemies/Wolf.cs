@@ -124,6 +124,7 @@ namespace GameName1
         //moves a set amount per frame toward a certain location 
         public override void Move(Microsoft.Xna.Framework.Vector2 loc, TimeSpan elapsedTime)
         {
+
             //should really just use the Sim's position for everything instead of converting from one to another
             Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
             if (float.IsNaN(simPosition.X) || float.IsNaN(simPosition.Y))
