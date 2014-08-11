@@ -114,7 +114,6 @@ namespace GameName1
                         case 4:
                             amount *= 10;
                             break;
-
                     }
                     Lefthand.Move(amount, TimeSpan.FromSeconds(0));
                     Righthand.Move(amount, TimeSpan.FromSeconds(0));
@@ -159,6 +158,7 @@ namespace GameName1
             bodyPosition = _circleBody.Position;
             Lefthand.Update(this);
             Righthand.Update(this);
+            MoveHandsTimer.Update(elapsedTime);
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -210,6 +210,11 @@ namespace GameName1
         {
             player.LifeTotal -= GetDamageAmount();
             ObjectManager.RemoveObject(this);
+        }
+        public PowerUp DropItem()
+        {
+            PowerUp p = new WeaponPowerUp(WeaponPowerUp.WeaponType.Repeater);
+            return p;
         }
         #endregion
         #region Save/Load
@@ -309,6 +314,10 @@ namespace GameName1
             {
                 p.LifeTotal -= GetDamageAmount();
                 ObjectManager.RemoveObject(this);
+            }
+            public PowerUp DropItem()
+            {
+                return null;
             }
         }
     }

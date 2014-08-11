@@ -20,7 +20,7 @@ namespace GameName1
         public static List<PowerUp> PowerUpItems;
 
         public static Random ZombieRandom = new Random();
-        public long FrameCounter = 0;
+        public double FrameCounter = 0;
         public static bool itemMade = false;
         public static bool face = false;
         public static Player m_Player;
@@ -160,24 +160,27 @@ namespace GameName1
         {
             CleanUp();
 
-            if (FrameCounter % 100 == 0 && NumZombies < MaxZombies)
+            if (FrameCounter % 2000 == 0 && NumZombies < MaxZombies)
             {
                 SpawnZombie();
             }
-            if ((FrameCounter % 250) == 0)
+            if ((FrameCounter % 4000) == 0)
             {
                 SpawnFace();
                 SpawnShroom();
             }
-            if (FrameCounter > 1000)
+            if (FrameCounter % 5500 == 0)
             {
                 MakeItem();
+            }
+            if (FrameCounter > 15000)
+            {
                 FrameCounter = 0;
                 MakeSlime();
             }
             else
             {
-                ++FrameCounter;
+                FrameCounter += elapsedTime.TotalMilliseconds;
             }
         }
         public void Draw(SpriteBatch _spriteBatch)
@@ -275,7 +278,6 @@ namespace GameName1
             int powerUpType = ZombieRandom.Next(2);
             if (powerUpType == 0) 
             {
-                //m_PowerUp = new CheatPowerUp((CheatPowerUp.CheatTypes)ZombieRandom.Next(3));
                 m_PowerUp = new CheatPowerUp(CheatPowerUp.CheatTypes.Time);
             }
             else if (powerUpType == 1)

@@ -234,6 +234,11 @@ namespace GameName1
             player.LifeTotal -= GetDamageAmount();
             ObjectManager.RemoveObject(this);
         }
+        public PowerUp DropItem()
+        {
+            PowerUp p = new CheatPowerUp(CheatPowerUp.CheatTypes.Time);
+            return p;
+        }
         #endregion
         #region Save/Load
         public override void Save()

@@ -199,6 +199,11 @@ namespace GameName1
             player.LifeTotal -= GetDamageAmount();
             ObjectManager.RemoveObject(this);
         }
+        public PowerUp DropItem()
+        {
+            PowerUp p = new WeaponPowerUp(WeaponPowerUp.WeaponType.Shotgun);
+            return p;
+        }
         #endregion
         #region Save/Load
         public override void Save()

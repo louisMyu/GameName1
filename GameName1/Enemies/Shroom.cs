@@ -185,6 +185,11 @@ namespace GameName1
             
         }
         #region IEnemy
+        public PowerUp DropItem()
+        {
+            PowerUp p = new WeaponPowerUp(WeaponPowerUp.WeaponType.Rifle);
+            return p;
+        }
         public void CleanBody()
         {
             if (_circleBody != null)
