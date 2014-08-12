@@ -175,10 +175,10 @@ namespace GameName1
             spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
         }
         #region IEnemy
-        public PowerUp DropItem()
+        public void DropItem()
         {
             PowerUp p = new CheatPowerUp(CheatPowerUp.CheatTypes.Wrath);
-            return p;
+            p.LoadContent();
         }
         public void CleanBody()
         {

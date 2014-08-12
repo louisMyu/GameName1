@@ -17,6 +17,7 @@ namespace GameName1
         int GetDamageAmount();
         List<Texture2D> GetExplodedParts();
         void DoCollision(Player p);
-        PowerUp DropItem(); 
+        //this should create and add the item to the object manager
+        void DropItem(); 
     }
 }

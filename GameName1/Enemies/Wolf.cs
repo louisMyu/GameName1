@@ -211,10 +211,10 @@ namespace GameName1
             player.LifeTotal -= GetDamageAmount();
             ObjectManager.RemoveObject(this);
         }
-        public PowerUp DropItem()
+        public void DropItem()
         {
             PowerUp p = new WeaponPowerUp(WeaponPowerUp.WeaponType.Repeater);
-            return p;
+            p.LoadContent();
         }
         #endregion
         #region Save/Load
@@ -315,9 +315,8 @@ namespace GameName1
                 p.LifeTotal -= GetDamageAmount();
                 ObjectManager.RemoveObject(this);
             }
-            public PowerUp DropItem()
+            public void DropItem()
             {
-                return null;
             }
         }
     }
