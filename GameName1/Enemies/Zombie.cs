@@ -51,7 +51,6 @@ namespace GameName1
             LifeTotal = 40;
             
         }
-        
         public void LoadContent(World world)
         {
             m_State = MotionState.Locked;
@@ -77,7 +76,6 @@ namespace GameName1
             _circleBody.LinearDamping = 3f;
             _circleBody.Restitution = 1f;
             LoadExplodedParts();
-            
         }
         public static void LoadTextures()
         {
@@ -101,8 +99,6 @@ namespace GameName1
             {
                 this.Position = simPosition;
             }
-
-
             switch (m_State)
             {
                 case MotionState.Wandering:
