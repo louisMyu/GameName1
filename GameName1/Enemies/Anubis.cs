@@ -179,13 +179,15 @@ namespace GameName1
         {
             PowerUp p = new CheatPowerUp(CheatPowerUp.CheatTypes.Wrath);
             p.LoadContent();
+            p.Position = Position;
+            ObjectManager.PowerUpItems.Add(p);
+            ObjectManager.GetCell(p.Position).Add(p);
         }
         public void CleanBody()
         {
             if (_circleBody != null)
             {
                 GameplayScreen.m_World.RemoveBody(_circleBody);
-
             }
         }
         public List<Texture2D> GetExplodedParts()
@@ -224,7 +226,6 @@ namespace GameName1
                 player.ApplyLinearForce(dirOfPlayer);
                 player.LifeTotal -= GetDamageAmount();   
             }
-            
         }
         #endregion
         #region Save/Load

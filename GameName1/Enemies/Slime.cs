@@ -238,6 +238,9 @@ namespace GameName1
         {
             PowerUp p = new CheatPowerUp(CheatPowerUp.CheatTypes.Time);
             p.LoadContent();
+            p.Position = Position;
+            ObjectManager.PowerUpItems.Add(p);
+            ObjectManager.GetCell(p.Position).Add(p);
         }
         #endregion
         #region Save/Load

@@ -215,6 +215,9 @@ namespace GameName1
         {
             PowerUp p = new WeaponPowerUp(WeaponPowerUp.WeaponType.Repeater);
             p.LoadContent();
+            p.Position = Position;
+            ObjectManager.PowerUpItems.Add(p);
+            ObjectManager.GetCell(p.Position).Add(p);
         }
         #endregion
         #region Save/Load

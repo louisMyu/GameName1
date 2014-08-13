@@ -188,6 +188,10 @@ namespace GameName1
         public void DropItem()
         {
             PowerUp p = new WeaponPowerUp(WeaponPowerUp.WeaponType.Rifle);
+            p.LoadContent();
+            p.Position = Position;
+            ObjectManager.PowerUpItems.Add(p);
+            ObjectManager.GetCell(p.Position).Add(p);
         }
         public void CleanBody()
         {
