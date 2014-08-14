@@ -198,8 +198,8 @@ namespace GameName1
         public void DropItem()
         {
             PowerUp p = new WeaponPowerUp(WeaponPowerUp.WeaponType.Shotgun);
-            p.LoadContent();
             p.Position = Position;
+            p.LoadContent();
             ObjectManager.PowerUpItems.Add(p);
             ObjectManager.GetCell(p.Position).Add(p);
         }

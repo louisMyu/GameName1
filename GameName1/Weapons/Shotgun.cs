@@ -129,6 +129,7 @@ namespace GameName1
                         if (enemy.GetHealth() <= 0)
                         {
                             ExplodeEnemy(intersectingAngle, enemy, ob.Position);
+                            enemy.DropItem();
                             return true;
                         }
                         enemy.ApplyLinearForce(intersectingAngle, Knockback);
