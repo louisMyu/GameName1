@@ -164,7 +164,7 @@ namespace GameName1
             currentPuffTime += elapsedTime.TotalSeconds;
             if (currentPuffTime > pufftime)
             {
-                DoPuff();
+                //DoPuff();
             }
             foreach (Puff p in PuffList)
             {

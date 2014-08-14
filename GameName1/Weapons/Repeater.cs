@@ -83,6 +83,7 @@ namespace GameName1
         public override bool CheckCollision(GameObject ob)
         {
             bool hit = false;
+
             foreach (Bullet b in m_Bullets)
             {
                 hit = b.CheckCollision(ob);
