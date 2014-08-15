@@ -103,6 +103,7 @@ namespace GameName1
         }
         public void AddHitArea(Rectangle rec)
         {
+
             HitableObjects.Add(rec);
         }
         public void AddDrawArea(Rectangle area, DrawableArea tex)
