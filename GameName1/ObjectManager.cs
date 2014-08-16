@@ -30,6 +30,7 @@ namespace GameName1
         private static int MaxZombies = 5;
         private PowerUp m_PowerUp;
 
+        private List<SpawnTimer> m_SpawnTimers;
         public void Init(Player p, ContentManager content, World world)
         {
             m_Player = p;
@@ -63,6 +64,13 @@ namespace GameName1
             PowerUpItems = new List<PowerUp>();
             SlimeTrails = new List<SlimeTrail>();
             AllGameObjects = new List<GameObject>();
+
+            m_SpawnTimers = new List<SpawnTimer>();
+            SpawnTimer ZombieSpawnTimer = new SpawnTimer(2000);
+            SpawnTimer FaceSpawnTimer = new SpawnTimer(4000);
+            SpawnTimer ShroomSpawnTimer = new SpawnTimer(4000);
+            SpawnTimer ItemSpawnTimer = new SpawnTimer(5500);
+            SpawnTimer SlimeSpawnTimer = new SpawnTimer(10000);
         }
 
         public static List<GameObject> GetCell(Vector2 position)
@@ -156,11 +164,12 @@ namespace GameName1
                 }
             }
         }
+
         public void Update(TimeSpan elapsedTime)
         {
             CleanUp();
 
-            if (FrameCounter % 2000 == 0 && NumZombies < MaxZombies)
+            if (FrameCounter % 2000 < 1 && NumZombies < MaxZombies)
             {
                 SpawnZombie();
             }
@@ -360,5 +369,25 @@ namespace GameName1
             ObjectManager.AllGameObjects.Add(mushroom);
             shroomSpawned = true;
         }
+        public class SpawnTimer
+        {
+            double Timer = 0;
+            double SpawnTime;
+            public SpawnTimer(double spawntime)
+            {
+                SpawnTime = spawntime;
+            }
+            public bool Update(TimeSpan elapsedTime)
+            {
+                Timer += elapsedTime.TotalMilliseconds;
+                if (Timer >= SpawnTime)
+                {
+                    Timer = 0;
+                    return true;
+                }
+                return false;
+            }
+        }
     }
+
 }
