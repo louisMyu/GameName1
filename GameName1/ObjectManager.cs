@@ -66,11 +66,11 @@ namespace GameName1
             AllGameObjects = new List<GameObject>();
 
             m_SpawnTimers = new List<SpawnTimer>();
-            SpawnTimer ZombieSpawnTimer = new SpawnTimer(2000);
-            SpawnTimer FaceSpawnTimer = new SpawnTimer(4000);
-            SpawnTimer ShroomSpawnTimer = new SpawnTimer(4000);
-            SpawnTimer ItemSpawnTimer = new SpawnTimer(5500);
-            SpawnTimer SlimeSpawnTimer = new SpawnTimer(10000);
+            m_SpawnTimers.Add(new SpawnTimer(2000, SpawnZombie));
+            m_SpawnTimers.Add(new SpawnTimer(4000, SpawnFace));
+            m_SpawnTimers.Add(new SpawnTimer(4000, SpawnShroom));
+            m_SpawnTimers.Add(new SpawnTimer(5500, MakeItem));
+            m_SpawnTimers.Add(new SpawnTimer(10000, MakeSlime));
         }
 
         public static List<GameObject> GetCell(Vector2 position)
@@ -154,6 +154,7 @@ namespace GameName1
             }
             AllGameObjects.RemoveAll(x => x.CanDelete);
             PowerUpItems.RemoveAll(x => x.CanDelete);
+
             for (int i = 0; i < SlimeTrails.Count; ++i)
             {
                 SlimeTrails[i].Update();
@@ -169,27 +170,9 @@ namespace GameName1
         {
             CleanUp();
 
-            if (FrameCounter % 2000 < 1 && NumZombies < MaxZombies)
+            foreach (SpawnTimer timer in m_SpawnTimers)
             {
-                SpawnZombie();
-            }
-            if ((FrameCounter % 4000) == 0)
-            {
-                SpawnFace();
-                SpawnShroom();
-            }
-            if (FrameCounter % 5500 == 0)
-            {
-                MakeItem();
-            }
-            if (FrameCounter > 15000)
-            {
-                FrameCounter = 0;
-                MakeSlime();
-            }
-            else
-            {
-                FrameCounter += elapsedTime.TotalMilliseconds;
+                timer.Update(elapsedTime);
             }
         }
         public void Draw(SpriteBatch _spriteBatch)
@@ -369,23 +352,25 @@ namespace GameName1
             ObjectManager.AllGameObjects.Add(mushroom);
             shroomSpawned = true;
         }
+        public delegate void SpawnDelegate();
         public class SpawnTimer
         {
             double Timer = 0;
             double SpawnTime;
-            public SpawnTimer(double spawntime)
+            SpawnDelegate callback;
+            public SpawnTimer(double spawntime, SpawnDelegate cb)
             {
                 SpawnTime = spawntime;
+                callback = cb;
             }
-            public bool Update(TimeSpan elapsedTime)
+            public void Update(TimeSpan elapsedTime)
             {
                 Timer += elapsedTime.TotalMilliseconds;
                 if (Timer >= SpawnTime)
                 {
                     Timer = 0;
-                    return true;
+                    callback();
                 }
-                return false;
             }
         }
     }
