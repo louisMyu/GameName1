@@ -31,6 +31,7 @@ namespace GameName1
         private PowerUp m_PowerUp;
 
         private List<SpawnTimer> m_SpawnTimers;
+        private double GameTimer = 0;
         public void Init(Player p, ContentManager content, World world)
         {
             m_Player = p;
@@ -66,11 +67,11 @@ namespace GameName1
             AllGameObjects = new List<GameObject>();
 
             m_SpawnTimers = new List<SpawnTimer>();
-            m_SpawnTimers.Add(new SpawnTimer(2000, SpawnZombie));
-            m_SpawnTimers.Add(new SpawnTimer(4000, SpawnFace));
-            m_SpawnTimers.Add(new SpawnTimer(4000, SpawnShroom));
-            m_SpawnTimers.Add(new SpawnTimer(5500, MakeItem));
-            m_SpawnTimers.Add(new SpawnTimer(10000, MakeSlime));
+            m_SpawnTimers.Add(new SpawnTimer(2000, SpawnZombie, "Zombie"));
+            m_SpawnTimers.Add(new SpawnTimer(4000, SpawnFace, "Anubis"));
+            m_SpawnTimers.Add(new SpawnTimer(4000, SpawnShroom, "Shroom"));
+            m_SpawnTimers.Add(new SpawnTimer(5500, MakeItem, "Item"));
+            m_SpawnTimers.Add(new SpawnTimer(10000, MakeSlime, "Slime"));
         }
 
         public static List<GameObject> GetCell(Vector2 position)
@@ -168,11 +169,16 @@ namespace GameName1
 
         public void Update(TimeSpan elapsedTime)
         {
+            GameTimer += elapsedTime.TotalMilliseconds;
             CleanUp();
-
+            m_SpawnTimers.RemoveAll(x => x.CanDelete);
             foreach (SpawnTimer timer in m_SpawnTimers)
             {
                 timer.Update(elapsedTime);
+            }
+            if (GameTimer > 60000 && GameTimer < 65000)
+            {
+                m_SpawnTimers.RemoveAll(x => x.Name == "Anubis");
             }
         }
         public void Draw(SpriteBatch _spriteBatch)
@@ -355,16 +361,21 @@ namespace GameName1
         public delegate void SpawnDelegate();
         public class SpawnTimer
         {
+            public string Name;
+            public bool CanDelete;
             double Timer = 0;
             double SpawnTime;
             SpawnDelegate callback;
-            public SpawnTimer(double spawntime, SpawnDelegate cb)
+            public SpawnTimer(double spawntime, SpawnDelegate cb, string name)
             {
                 SpawnTime = spawntime;
                 callback = cb;
+                CanDelete = false;
+                Name = name;
             }
             public void Update(TimeSpan elapsedTime)
             {
+                if (CanDelete) return;
                 Timer += elapsedTime.TotalMilliseconds;
                 if (Timer >= SpawnTime)
                 {
