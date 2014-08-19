@@ -358,6 +358,10 @@ namespace GameName1
             ObjectManager.AllGameObjects.Add(mushroom);
             shroomSpawned = true;
         }
+        public PowerUp MakeRandomItem()
+        {
+            return new CheatPowerUp(CheatPowerUp.CheatTypes.Time);
+        }
         public delegate void SpawnDelegate();
         public class SpawnTimer
         {
