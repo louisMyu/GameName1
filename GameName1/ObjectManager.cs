@@ -351,6 +351,7 @@ namespace GameName1
         private bool shroomSpawned = false;
         private void SpawnShroom()
         {
+
             if (shroomSpawned) return;
             Shroom mushroom = new Shroom();
             mushroom.Position = new Vector2(m_Player.Position.X + 150, m_Player.Position.Y - 150);
