@@ -361,6 +361,12 @@ namespace GameName1
         }
         public PowerUp MakeRandomItem()
         {
+            Random r = new Random();
+            int x = r.Next(0, 10);
+            if (x == 5)
+            {
+                return new WeaponPowerUp(WeaponPowerUp.WeaponType.Shotgun);
+            }
             return new CheatPowerUp(CheatPowerUp.CheatTypes.Time);
         }
         public delegate void SpawnDelegate();
