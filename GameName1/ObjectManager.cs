@@ -223,7 +223,6 @@ namespace GameName1
         }
         public void ResetGame()
         {
-
             ClearGrid();
             AllGameObjects.Clear();
             FrameCounter = 0;
