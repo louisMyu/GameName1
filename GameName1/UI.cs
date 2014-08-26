@@ -247,10 +247,11 @@ namespace GameName1
             Vector2 textSize = ColunaFont.MeasureString(timeToDeathString);
             Vector2 viewport = new Vector2(GameWidth, GameHeight);
             Vector2 textPosition = (viewport - textSize) / 2;
+            Vector2 fontScaling = Utilities.GetSpriteScaling(new Vector2((int)(GameHeight * 0.5), (int)(GameWidth * 0.5)), textSize);
             textPosition.X += (textSize.X / 2);
             textPosition.Y += textSize.Y / 2;
             spriteBatch.DrawString(ColunaFont, timeToDeathString, textPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f), 
-                                    new Vector2(textSize.X/2, textSize.Y/2), new Vector2(1, 1), SpriteEffects.None, 0.0f);
+                                    new Vector2(textSize.X/2, textSize.Y/2), fontScaling, SpriteEffects.None, 0.0f);
         }
 
         public void DrawCountdown(SpriteBatch spriteBatch, TimeSpan countdown)
@@ -262,10 +263,11 @@ namespace GameName1
             //the top and botton should be 10% each of the entire height
             //the left and right would be 15% of the entire width
             //this means the scaling should be (70% of the width, 80% of the height)
+            Vector2 fontScaling = Utilities.GetSpriteScaling(new Vector2((int)(GameHeight * 0.5), (int)(GameWidth * 0.5)), textSize);
             textPosition.X += (textSize.X / 2);
             textPosition.Y += textSize.Y / 2;
             spriteBatch.DrawString(ColunaFont, countdownString, textPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f),
-                         new Vector2(textSize.X / 2, textSize.Y / 2), new Vector2(1, 1), SpriteEffects.None, 0.0f);
+                         new Vector2(textSize.X / 2, textSize.Y / 2), fontScaling, SpriteEffects.None, 0.0f);
         }
 
         public void SetTimeToDeath(TimeSpan time)
