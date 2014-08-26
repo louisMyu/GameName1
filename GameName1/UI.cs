@@ -259,6 +259,9 @@ namespace GameName1
             Vector2 textSize = ColunaFont.MeasureString(countdownString);
             Vector2 viewport = new Vector2(GameWidth, GameHeight);
             Vector2 textPosition = (viewport - textSize) / 2;
+            //the top and botton should be 10% each of the entire height
+            //the left and right would be 15% of the entire width
+            //this means the scaling should be (70% of the width, 80% of the height)
             textPosition.X += (textSize.X / 2);
             textPosition.Y += textSize.Y / 2;
             spriteBatch.DrawString(ColunaFont, countdownString, textPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f),
