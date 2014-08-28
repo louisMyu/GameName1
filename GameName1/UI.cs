@@ -270,6 +270,7 @@ namespace GameName1
                          new Vector2(textSize.X / 2, textSize.Y / 2), fontScaling, SpriteEffects.None, 0.0f);
         }
 
+
         public void SetTimeToDeath(TimeSpan time)
         {
             TimeToDeath = time;
