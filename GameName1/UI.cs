@@ -94,6 +94,23 @@ namespace GameName1
             ThumbStickPressed = false;
             ThumbStickPoint = StopButtonPosition;
             ActiveGibs.Clear();
+
+            Vector2 viewport = new Vector2(GameWidth-PlayfieldBottom, GameHeight);
+            Vector2 textSize = ColunaFont.MeasureString("00:00:00");
+            DeathTimerScale = Utilities.GetSpriteScaling(new Vector2((int)(GameHeight * 0.5), (int)(GameWidth * 0.5)), textSize);
+            Vector2 textPosition = (viewport - textSize) / 2;
+            textPosition.X += (textSize.X / 2) + PlayfieldBottom/2;
+            textPosition.Y += textSize.Y / 2;
+            DeathTimerPosition = textPosition;
+            DeathTimerOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
+
+            textSize = ColunaFont.MeasureString("00");
+            CountdownScale = Utilities.GetSpriteScaling(new Vector2((int)(GameHeight * 0.5), (int)(GameWidth * 0.5)), textSize);
+            textPosition = (viewport - textSize) / 2;
+            textPosition.X += (textSize.X / 2) ;
+            textPosition.Y += textSize.Y / 2;
+            CountdownPosition = textPosition;
+            CountdownOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
         }
 
         public void Update(TimeSpan elapsedTime)
@@ -240,34 +257,25 @@ namespace GameName1
             }
             BakedGibs.Clear();
         }
+
+        private Vector2 DeathTimerScale;
+        private Vector2 DeathTimerOrigin;
+        private Vector2 DeathTimerPosition;
         public void DrawDeathTimer(SpriteBatch spriteBatch)
         {
             string timeToDeathString = TimeToDeath.ToString(@"mm\:ss\:ff");
-            
-            Vector2 textSize = ColunaFont.MeasureString(timeToDeathString);
-            Vector2 viewport = new Vector2(GameWidth, GameHeight);
-            Vector2 textPosition = (viewport - textSize) / 2;
-            Vector2 fontScaling = Utilities.GetSpriteScaling(new Vector2((int)(GameHeight * 0.5), (int)(GameWidth * 0.5)), textSize);
-            textPosition.X += (textSize.X / 2);
-            textPosition.Y += textSize.Y / 2;
-            spriteBatch.DrawString(ColunaFont, timeToDeathString, textPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f), 
-                                    new Vector2(textSize.X/2, textSize.Y/2), fontScaling, SpriteEffects.None, 0.0f);
+            spriteBatch.DrawString(ColunaFont, timeToDeathString, DeathTimerPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f), 
+                                    DeathTimerOrigin, DeathTimerScale, SpriteEffects.None, 0.0f);
         }
 
+        private Vector2 CountdownScale;
+        private Vector2 CountdownOrigin;
+        private Vector2 CountdownPosition;
         public void DrawCountdown(SpriteBatch spriteBatch, TimeSpan countdown)
         {
             string countdownString = countdown.ToString(@"ss");
-            Vector2 textSize = ColunaFont.MeasureString(countdownString);
-            Vector2 viewport = new Vector2(GameWidth, GameHeight);
-            Vector2 textPosition = (viewport - textSize) / 2;
-            //the top and botton should be 10% each of the entire height
-            //the left and right would be 15% of the entire width
-            //this means the scaling should be (70% of the width, 80% of the height)
-            Vector2 fontScaling = Utilities.GetSpriteScaling(new Vector2((int)(GameHeight * 0.5), (int)(GameWidth * 0.5)), textSize);
-            textPosition.X += (textSize.X / 2);
-            textPosition.Y += textSize.Y / 2;
-            spriteBatch.DrawString(ColunaFont, countdownString, textPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f),
-                         new Vector2(textSize.X / 2, textSize.Y / 2), fontScaling, SpriteEffects.None, 0.0f);
+            spriteBatch.DrawString(ColunaFont, countdownString, CountdownPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f),
+                         CountdownOrigin, CountdownScale, SpriteEffects.None, 0.0f);
         }
 
         public void SetTimeToDeath(TimeSpan time)
