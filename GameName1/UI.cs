@@ -98,8 +98,8 @@ namespace GameName1
             Vector2 viewport = new Vector2(GameWidth-PlayfieldBottom, GameHeight);
             Vector2 textSize = ColunaFont.MeasureString("00:00:00");
             DeathTimerScale = Utilities.GetSpriteScaling(new Vector2((int)(GameHeight * 0.5), (int)(GameWidth * 0.5)), textSize);
-            Vector2 textPosition = (viewport - textSize) / 2;
-            textPosition.X += (textSize.X / 2) + PlayfieldBottom/2;
+            Vector2 textPosition = (viewport) / 2;
+            textPosition.X += PlayfieldBottom - ((textSize.Y * DeathTimerScale.Y)/2);
             textPosition.Y += textSize.Y / 2;
             DeathTimerPosition = textPosition;
             DeathTimerOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
