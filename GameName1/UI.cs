@@ -95,20 +95,18 @@ namespace GameName1
             ThumbStickPoint = StopButtonPosition;
             ActiveGibs.Clear();
 
-            Vector2 viewport = new Vector2(GameWidth-PlayfieldBottom, GameHeight);
+            Vector2 viewport = new Vector2(GameWidth - PlayfieldBottom, GameHeight);
             Vector2 textSize = ColunaFont.MeasureString("00:00:00");
-            DeathTimerScale = Utilities.GetSpriteScaling(new Vector2((int)(GameHeight * 0.5), (int)(GameWidth * 0.5)), textSize);
+            DeathTimerScale = Utilities.GetSpriteScaling(new Vector2((int)((viewport.Y) * 0.5), (int)((viewport.X) * 0.5)), textSize);
             Vector2 textPosition = (viewport) / 2;
-            textPosition.X += PlayfieldBottom - (textSize.Y/2);
-            textPosition.Y += textSize.Y / 2;
+            textPosition.X += PlayfieldBottom;
             DeathTimerPosition = textPosition;
             DeathTimerOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
 
             textSize = ColunaFont.MeasureString("00");
-            CountdownScale = Utilities.GetSpriteScaling(new Vector2((int)(GameHeight * 0.4), (int)(GameWidth * 0.4)), textSize);
+            CountdownScale = Utilities.GetSpriteScaling(new Vector2((int)(viewport.Y * 0.4), (int)(viewport.X * 0.5)), textSize);
             textPosition = (viewport) / 2;
-            textPosition.X += PlayfieldBottom - (textSize.Y/2);
-            textPosition.Y += textSize.Y / 2;
+            textPosition.X += PlayfieldBottom;
             CountdownPosition = textPosition;
             CountdownOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
         }
