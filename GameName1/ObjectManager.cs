@@ -221,6 +221,7 @@ namespace GameName1
             }
             obj.CanDelete = true;
         }
+
         public void ResetGame()
         {
             ClearGrid();

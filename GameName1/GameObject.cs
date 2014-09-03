@@ -62,6 +62,13 @@ namespace GameName1
             {
                 m_Bounds = new Rectangle();
             }
+            if (Texture != null)
+            {
+                Origin.X = Texture.X / 2;
+                Origin.Y = Texture.Y / 2;
+            }
+            RotationAngle = (float)Math.PI / 2;
+
         }
         public virtual void Init(float x, float y)
         {

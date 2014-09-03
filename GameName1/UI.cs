@@ -104,7 +104,7 @@ namespace GameName1
             DeathTimerOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
 
             textSize = ColunaFont.MeasureString("00");
-            CountdownScale = Utilities.GetSpriteScaling(new Vector2((int)(viewport.Y * 0.4), (int)(viewport.X * 0.5)), textSize);
+            CountdownScale = Utilities.GetSpriteScaling(new Vector2((int)(viewport.Y * 0.35), (int)(viewport.X * 0.45)), textSize);
             textPosition = (viewport) / 2;
             textPosition.X += PlayfieldBottom;
             CountdownPosition = textPosition;

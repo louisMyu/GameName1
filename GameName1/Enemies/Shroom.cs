@@ -32,7 +32,7 @@ namespace GameName1
         [DataMember]
         public Vector2 bodyPosition { get; set; }
         [IgnoreDataMember]
-        static private Texture2D m_Texture = null;
+        private Texture2D m_Texture = null;
         [IgnoreDataMember]
         private float m_Speed = 2.5f;
         [DataMember]
@@ -153,7 +153,7 @@ namespace GameName1
         
         public void DoPuff()
         {
-            PuffList.Add(new Puff());
+            PuffList.Add(new Puff(Position));
         }
         public override void Update(Player player, TimeSpan elapsedTime)
         {
@@ -164,7 +164,7 @@ namespace GameName1
             currentPuffTime += elapsedTime.TotalSeconds;
             if (currentPuffTime > pufftime)
             {
-                //DoPuff();
+                DoPuff();
             }
             foreach (Puff p in PuffList)
             {
@@ -256,15 +256,18 @@ namespace GameName1
             AnimationTimer animationTimer;
             string[] textures;
             float[] intervals;
+
             private void HandleAnimation(object o, AnimationTimerEventArgs e)
             {
-                m_Texture = TextureBank.GetTexture(textures[e.FrameIndex]);
-                m_Bounds.Width = m_Texture.Width;
-                m_Bounds.Height = m_Texture.Height;
+                Texture = TextureBank.GetTexture(textures[e.FrameIndex]);
+                m_Bounds.Width = Texture.Width;
+                m_Bounds.Height = Texture.Height;
             }
 
-            public Puff()
+            public Puff(Vector2 pos) : base()
             {
+                textures = new string[4];
+                intervals = new float[4];
                 textures[0] = "PuffAnimation1";
                 textures[1] = "PuffAnimation2";
                 textures[2] = "PuffAnimation3";
@@ -274,6 +277,10 @@ namespace GameName1
                 intervals[2] = 1000;
                 intervals[3] = 1000;
                 CanDelete = false;
+                this.Trigger();
+                Position = pos;
+                Texture = TextureBank.GetTexture(textures[0]);
+                ObjectManager.GetCell(Position).Add(this);
             }
             public override void Update(Player player, TimeSpan elapsedTime)
             {
@@ -285,13 +292,17 @@ namespace GameName1
                         animationTimer.IntervalOcccured -= HandleAnimation;
                         animationTimer = null;
                         CanDelete = true;
+                        ObjectManager.GetCell(Position).Remove(this);
                     }
                 }
 
             }
             public void Trigger()
             {
-                animationTimer = new AnimationTimer(intervals, m_AnimationName, HandleAnimation, false);
+                if (animationTimer == null)
+                {
+                    animationTimer = new AnimationTimer(intervals, m_AnimationName, HandleAnimation, false);
+                }
             }
         }
     }
