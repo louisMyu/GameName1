@@ -64,8 +64,7 @@ namespace GameName1
             }
             if (Texture != null)
             {
-                Origin.X = Texture.X / 2;
-                Origin.Y = Texture.Y / 2;
+                Origin = new Vector2(Texture.Width, Texture.Height);
             }
             RotationAngle = (float)Math.PI / 2;
 
