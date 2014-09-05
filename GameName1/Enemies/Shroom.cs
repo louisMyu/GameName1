@@ -56,7 +56,7 @@ namespace GameName1
             m_BlinkingTextures[1] = "ShroomEyeOpen";
             m_BlinkingTimer = new AnimationTimer(m_BlinkingIntervals, BlinkAnimationName, HandleAnimation, true);
             circleRadius = 65;
-            pufftime = 10;
+            pufftime = 5;
         }
         private void HandleAnimation(object o, AnimationTimerEventArgs e)
         {
@@ -165,6 +165,7 @@ namespace GameName1
             if (currentPuffTime > pufftime)
             {
                 DoPuff();
+                currentPuffTime = 0;
             }
             foreach (Puff p in PuffList)
             {
@@ -178,6 +179,10 @@ namespace GameName1
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
+            foreach (Puff p in PuffList)
+            {
+                p.Draw(spriteBatch);
+            }
         }
 
         public static void LoadTextures()
@@ -272,10 +277,10 @@ namespace GameName1
                 textures[1] = "PuffAnimation2";
                 textures[2] = "PuffAnimation3";
                 textures[3] = "PuffAnimation4";
-                intervals[0] = 500;
-                intervals[1] = 1000;
-                intervals[2] = 1000;
-                intervals[3] = 1000;
+                intervals[0] = 50;
+                intervals[1] = 60;
+                intervals[2] = 60;
+                intervals[3] = 60;
                 CanDelete = false;
                 this.Trigger();
                 Position = pos;

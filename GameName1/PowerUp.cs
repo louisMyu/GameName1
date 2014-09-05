@@ -139,16 +139,16 @@ namespace GameName1
             switch (type)
             {
                 case WeaponType.Shotgun:
-                    Texture = TextureBank.GetTexture("ShotgunIcon");
+                    Texture = TextureBank.GetTexture("Item_S");
                     break;
                 case WeaponType.Rifle:
-                    Texture = TextureBank.GetTexture("RifleIcon");
+                    Texture = TextureBank.GetTexture("Item_L");
                     break;
                 case WeaponType.Plasma:
-                    Texture = TextureBank.GetTexture("PlasmaIcon");
+                    Texture = TextureBank.GetTexture("Item_P");
                     break;
                 case WeaponType.Repeater:
-                    Texture = TextureBank.GetTexture("RepeaterIcon");
+                    Texture = TextureBank.GetTexture("Item_R");
                     break;
                 default :
                     Texture = TextureBank.GetTexture("PlasmaIcon");
