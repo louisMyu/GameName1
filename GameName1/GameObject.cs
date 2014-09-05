@@ -64,7 +64,7 @@ namespace GameName1
             }
             if (Texture != null)
             {
-                Origin = new Vector2(Texture.Width, Texture.Height);
+                Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
             }
             RotationAngle = (float)Math.PI / 2;
 
@@ -73,6 +73,7 @@ namespace GameName1
         {
             Position = new Vector2(x, y);
         }
+
 
         public virtual void Update(Player player, TimeSpan elapsedTime)
         {
