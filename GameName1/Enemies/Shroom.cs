@@ -98,7 +98,7 @@ namespace GameName1
             circleCenter = Position;
             circleCenter.Y += circleRadius;
 
-            puffExplosion = new Puff(Position);
+            puffExplosion = new Puff();
         }
         private Puff puffExplosion;
         private Vector2 circleCenter;
@@ -265,7 +265,7 @@ namespace GameName1
                 m_Bounds.Height = Texture.Height;
             }
 
-            public Puff(Vector2 pos) : base()
+            public Puff() : base()
             {
                 textures = new string[4];
                 intervals = new float[4];
@@ -276,11 +276,8 @@ namespace GameName1
                 intervals[0] = 50;
                 intervals[1] = 60;
                 intervals[2] = 60;
-                intervals[3] = 60;
+                intervals[3] = 1000;
                 canDraw = false;
-                Position = pos;
-                Texture = TextureBank.GetTexture(textures[0]);
-                ObjectManager.GetCell(Position).Add(this);
             }
             public override void Update(Player player, TimeSpan elapsedTime)
             {
@@ -301,6 +298,8 @@ namespace GameName1
             {
                 animationTimer = new AnimationTimer(intervals, m_AnimationName, HandleAnimation, false);
                 canDraw = true;
+                Texture = TextureBank.GetTexture(textures[0]);
+                ObjectManager.GetCell(Position).Add(this);
             }
             public override void Draw(SpriteBatch spriteBatch)
             {
