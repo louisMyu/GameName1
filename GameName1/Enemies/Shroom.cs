@@ -21,7 +21,6 @@ namespace GameName1
 
         double pufftime;
         double currentPuffTime;
-        List<Puff> PuffList = new List<Puff>();
         private const int DAMAGE_AMOUNT = 5;
         public enum MotionState
         {
@@ -99,9 +98,9 @@ namespace GameName1
             circleCenter = Position;
             circleCenter.Y += circleRadius;
 
-            PuffList.Add(new Puff(Position));
+            puffExplosion = new Puff(Position);
         }
-
+        private Puff puffExplosion;
         private Vector2 circleCenter;
         private float circleRadius;
         bool backAndForth = true;
@@ -156,7 +155,8 @@ namespace GameName1
         
         public void DoPuff()
         {
-            
+            puffExplosion.Position = Position;
+            puffExplosion.Trigger();
         }
         public override void Update(Player player, TimeSpan elapsedTime)
         {
@@ -170,11 +170,7 @@ namespace GameName1
                 DoPuff();
                 currentPuffTime = 0;
             }
-            foreach (Puff p in PuffList)
-            {
-                p.Update(player, elapsedTime);
-            }
-            PuffList.RemoveAll(p => p.CanDelete);
+            puffExplosion.Update(player, elapsedTime);
 
             bodyPosition = _circleBody.Position;
             m_BlinkingTimer.Update(elapsedTime);
@@ -182,10 +178,7 @@ namespace GameName1
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(m_Texture, Position, null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
-            foreach (Puff p in PuffList)
-            {
-                p.Draw(spriteBatch);
-            }
+            puffExplosion.Draw(spriteBatch);
         }
 
         public static void LoadTextures()
@@ -284,7 +277,7 @@ namespace GameName1
                 intervals[1] = 60;
                 intervals[2] = 60;
                 intervals[3] = 60;
-                canDraw = true;
+                canDraw = false;
                 Position = pos;
                 Texture = TextureBank.GetTexture(textures[0]);
                 ObjectManager.GetCell(Position).Add(this);
@@ -306,9 +299,14 @@ namespace GameName1
             }
             public void Trigger()
             {
-                if (animationTimer == null)
+                animationTimer = new AnimationTimer(intervals, m_AnimationName, HandleAnimation, false);
+                canDraw = true;
+            }
+            public override void Draw(SpriteBatch spriteBatch)
+            {
+                if (canDraw)
                 {
-                    animationTimer = new AnimationTimer(intervals, m_AnimationName, HandleAnimation, false);
+                    base.Draw(spriteBatch);
                 }
             }
         }
