@@ -96,9 +96,10 @@ namespace GameName1
             _circleBody.LinearDamping = 3f;
             _circleBody.Restitution = .5f;
             
-
             circleCenter = Position;
             circleCenter.Y += circleRadius;
+
+            PuffList.Add(new Puff(Position));
         }
 
         private Vector2 circleCenter;
@@ -149,11 +150,13 @@ namespace GameName1
 
             m_Bounds.X = (int)Position.X - Width / 2;
             m_Bounds.Y = (int)Position.Y - Height / 2;
+
+            
         }
         
         public void DoPuff()
         {
-            PuffList.Add(new Puff(Position));
+            
         }
         public override void Update(Player player, TimeSpan elapsedTime)
         {
@@ -178,7 +181,7 @@ namespace GameName1
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(m_Texture, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(m_Texture, Position, null, Color.White, RotationAngle, m_Origin, 1.0f, SpriteEffects.None, 0f);
             foreach (Puff p in PuffList)
             {
                 p.Draw(spriteBatch);
@@ -261,7 +264,7 @@ namespace GameName1
             AnimationTimer animationTimer;
             string[] textures;
             float[] intervals;
-
+            public bool canDraw;
             private void HandleAnimation(object o, AnimationTimerEventArgs e)
             {
                 Texture = TextureBank.GetTexture(textures[e.FrameIndex]);
@@ -281,8 +284,7 @@ namespace GameName1
                 intervals[1] = 60;
                 intervals[2] = 60;
                 intervals[3] = 60;
-                CanDelete = false;
-                this.Trigger();
+                canDraw = true;
                 Position = pos;
                 Texture = TextureBank.GetTexture(textures[0]);
                 ObjectManager.GetCell(Position).Add(this);
@@ -296,7 +298,7 @@ namespace GameName1
                     {
                         animationTimer.IntervalOcccured -= HandleAnimation;
                         animationTimer = null;
-                        CanDelete = true;
+                        canDraw = false;
                         ObjectManager.GetCell(Position).Remove(this);
                     }
                 }
