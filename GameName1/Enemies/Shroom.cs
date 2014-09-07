@@ -100,6 +100,7 @@ namespace GameName1
 
             puffExplosion = new Puff();
         }
+
         private Puff puffExplosion;
         private Vector2 circleCenter;
         private float circleRadius;
