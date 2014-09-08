@@ -264,6 +264,7 @@ namespace GameName1
                 Texture = TextureBank.GetTexture(textures[e.FrameIndex]);
                 m_Bounds.Width = Texture.Width;
                 m_Bounds.Height = Texture.Height;
+                Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
             }
 
             public Puff() : base()
@@ -277,7 +278,7 @@ namespace GameName1
                 intervals[0] = 50;
                 intervals[1] = 60;
                 intervals[2] = 60;
-                intervals[3] = 1000;
+                intervals[3] = 400;
                 canDraw = false;
             }
             public override void Update(Player player, TimeSpan elapsedTime)
@@ -301,6 +302,7 @@ namespace GameName1
                 canDraw = true;
                 Texture = TextureBank.GetTexture(textures[0]);
                 ObjectManager.GetCell(Position).Add(this);
+                Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
             }
             public override void Draw(SpriteBatch spriteBatch)
             {
