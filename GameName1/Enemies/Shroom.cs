@@ -281,6 +281,7 @@ namespace GameName1
                 intervals[3] = 400;
                 canDraw = false;
             }
+
             public override void Update(Player player, TimeSpan elapsedTime)
             {
                 if (animationTimer != null)
