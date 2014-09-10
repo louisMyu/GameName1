@@ -269,16 +269,32 @@ namespace GameName1
 
             public Puff() : base()
             {
-                textures = new string[4];
-                intervals = new float[4];
+                textures = new string[12];
+                intervals = new float[12];
                 textures[0] = "PuffAnimation1";
                 textures[1] = "PuffAnimation2";
                 textures[2] = "PuffAnimation3";
                 textures[3] = "PuffAnimation4";
+                textures[4] = "PuffAnimation1";
+                textures[5] = "PuffAnimation2";
+                textures[6] = "PuffAnimation3";
+                textures[7] = "PuffAnimation4";
+                textures[8] = "PuffAnimation1";
+                textures[9] = "PuffAnimation2";
+                textures[10] = "PuffAnimation3";
+                textures[11] = "PuffAnimation4";
                 intervals[0] = 50;
                 intervals[1] = 60;
                 intervals[2] = 60;
                 intervals[3] = 400;
+                intervals[4] = 50;
+                intervals[5] = 60;
+                intervals[6] = 60;
+                intervals[7] = 400;
+                intervals[8] = 50;
+                intervals[9] = 60;
+                intervals[10] = 60;
+                intervals[11] = 400;
                 canDraw = false;
             }
 
