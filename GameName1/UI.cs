@@ -150,60 +150,64 @@ namespace GameName1
             p.Moving = true;
             bool isFireDown = false;
             bool isStopDown = false;
-            foreach (TouchLocation touch in input) {
-                if (touch.Id == ThumbStickPointId)
-                {
-                    if (touch.State == TouchLocationState.Released)
-                    {
-                        ThumbStickPressed = false;
-                        ThumbStickPoint = StopButtonPosition;
-                        ThumbStickPointOffset = new Vector2(0, 0);
-                        continue;
-                    }
-                    ThumbStickPointOffset = new Vector2(touch.Position.X - (StopButtonPosition.X + (StopButtonRec.Width / 2)), touch.Position.Y - (StopButtonPosition.Y + (StopButtonRec.Height / 2)));
-                }
-                if (touch.State == TouchLocationState.Released)
-                {
-                    continue;
-                }
-                Vector2 vec = touch.Position;
-                //give a little leeway so its smoother to touch the bottom of the playfield
-                //the player movement clamping will prevent it going off screen
-                if (vec.X < PlayfieldBottom - 20)
-                {
-                    //in the fire button area
-                    if (Utilities.PointIntersectsRectangle(vec, m_FireButtonRec))
-                    {
-                        m_FireButtonColor = Color.Orange;
-                        isFireDown = true;
-                    }
-                    if (Utilities.PointIntersectsRectangle(vec, StopButtonRec))
-                    {
-                        if (ThumbStickPressed && ThumbStickPointId == touch.Id && touch.State == TouchLocationState.Moved)
-                        {
-                            m_StopButtonColor = Color.Orange;
-                            isStopDown = true;
-                            //position to draw the thumbstick, offset for origin placement
-                            ThumbStickPoint = new Vector2(vec.X - StopButtonRec.Width / 2, vec.Y - StopButtonRec.Height / 2);
-                            ThumbStickAngle = (float)Math.Atan2(vec.Y - (StopButtonPosition.Y +(StopButtonRec.Height / 2)), vec.X - (StopButtonPosition.X + (StopButtonRec.Width / 2)));
-                        }
-                        else if (!ThumbStickPressed)
-                        {
-                            m_StopButtonColor = Color.Orange;
-                            isStopDown = true;
-                            ThumbStickPointId = touch.Id;
-                            ThumbStickPressed = true;
-                            //position to draw the thumbstick, offset for origin placement
-                            ThumbStickPoint = new Vector2(vec.X - StopButtonRec.Width / 2, vec.Y - StopButtonRec.Height / 2);
-                            ThumbStickAngle = (float)Math.Atan2(vec.Y - (StopButtonPosition.Y + (StopButtonRec.Height / 2)), vec.X - (StopButtonPosition.X + (StopButtonRec.Width / 2)));
-                            ThumbStickPointOffset = new Vector2(vec.X - (StopButtonPosition.X + (StopButtonRec.Width/2)), vec.Y - (StopButtonPosition.Y + (StopButtonRec.Height/2)));
-                        }
-                    }
-                    if (Utilities.PointIntersectsRectangle(vec, WeaponSlotRec))
-                    {
-                        p.StartCheatEffect();
-                    }
-                }
+            //foreach (TouchLocation touch in input) 
+            //{
+            //    if (touch.Id == ThumbStickPointId)
+            //    {
+            //        if (touch.State == TouchLocationState.Released)
+            //        {
+            //            ThumbStickPressed = false;
+            //            ThumbStickPoint = StopButtonPosition;
+            //            ThumbStickPointOffset = new Vector2(0, 0);
+            //            continue;
+            //        }
+            //        ThumbStickPointOffset = new Vector2(touch.Position.X - (StopButtonPosition.X + (StopButtonRec.Width / 2)), touch.Position.Y - (StopButtonPosition.Y + (StopButtonRec.Height / 2)));
+            //    }
+            //    if (touch.State == TouchLocationState.Released)
+            //    {
+            //        continue;
+            //    }
+            //    Vector2 vec = touch.Position;
+            //    //give a little leeway so its smoother to touch the bottom of the playfield
+            //    //the player movement clamping will prevent it going off screen
+            //    if (vec.X < PlayfieldBottom - 20)
+            //    {
+            //        //in the fire button area
+            //        if (Utilities.PointIntersectsRectangle(vec, m_FireButtonRec))
+            //        {
+            //            m_FireButtonColor = Color.Orange;
+            //            isFireDown = true;
+            //        }
+            //        if (Utilities.PointIntersectsRectangle(vec, StopButtonRec))
+            //        {
+            //            if (ThumbStickPressed && ThumbStickPointId == touch.Id && touch.State == TouchLocationState.Moved)
+            //            {
+            //                m_StopButtonColor = Color.Orange;
+            //                isStopDown = true;
+            //                //position to draw the thumbstick, offset for origin placement
+            //                ThumbStickPoint = new Vector2(vec.X - StopButtonRec.Width / 2, vec.Y - StopButtonRec.Height / 2);
+            //                ThumbStickAngle = (float)Math.Atan2(vec.Y - (StopButtonPosition.Y +(StopButtonRec.Height / 2)), vec.X - (StopButtonPosition.X + (StopButtonRec.Width / 2)));
+            //            }
+            //            else if (!ThumbStickPressed)
+            //            {
+            //                m_StopButtonColor = Color.Orange;
+            //                isStopDown = true;
+            //                ThumbStickPointId = touch.Id;
+            //                ThumbStickPressed = true;
+            //                //position to draw the thumbstick, offset for origin placement
+            //                ThumbStickPoint = new Vector2(vec.X - StopButtonRec.Width / 2, vec.Y - StopButtonRec.Height / 2);
+            //                ThumbStickAngle = (float)Math.Atan2(vec.Y - (StopButtonPosition.Y + (StopButtonRec.Height / 2)), vec.X - (StopButtonPosition.X + (StopButtonRec.Width / 2)));
+            //                ThumbStickPointOffset = new Vector2(vec.X - (StopButtonPosition.X + (StopButtonRec.Width/2)), vec.Y - (StopButtonPosition.Y + (StopButtonRec.Height/2)));
+            //            }
+            //        }
+            //        if (Utilities.PointIntersectsRectangle(vec, WeaponSlotRec))
+            //        {
+            //            p.StartCheatEffect();
+            //        }
+            //    }
+            //}
+            foreach (TouchLocation touch in input)
+            {
             }
             p.ProcessInput(isFireDown, isStopDown);
         }

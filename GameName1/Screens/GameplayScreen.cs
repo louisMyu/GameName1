@@ -306,22 +306,22 @@ namespace GameName1
                 case GameState.Dying:
                 case GameState.Playing:
                     _spriteBatch.Begin();
-                    _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), UserInterface.BackGroundHueColor);
+                    _spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), UserInterface.BackGroundHueColor);
                     UserInterface.DrawDeathTimer(_spriteBatch);
                     GlobalObjectManager.DrawSlimeTrails(_spriteBatch);
                     GlobalObjectManager.DrawPowerUps(_spriteBatch);
                     UserInterface.DrawActiveGibs(_spriteBatch);
                     GlobalObjectManager.Draw(_spriteBatch);
                     m_Player.Draw(_spriteBatch);
-                    UserInterface.Draw(_spriteBatch, m_Player);
+                    //UserInterface.Draw(_spriteBatch, m_Player);
                     _spriteBatch.End();
                     break;
                 case GameState.Countdown:
                     _spriteBatch.Begin();
-                    _spriteBatch.Draw(backgroundTexture, new Vector2(UI.OFFSET, 0), UserInterface.BackGroundHueColor);
+                    _spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), UserInterface.BackGroundHueColor);
                     //GlobalObjectManager.Draw(_spriteBatch);
                     //m_Player.Draw(_spriteBatch);
-                    UserInterface.Draw(_spriteBatch, m_Player);
+                    //UserInterface.Draw(_spriteBatch, m_Player);
                     UserInterface.DrawCountdown(_spriteBatch, m_CountdownTime);
                     _spriteBatch.End();
                     break;
