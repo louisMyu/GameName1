@@ -283,18 +283,18 @@ namespace GameName1
                 textures[9] = "PuffAnimation10";
                 textures[10] = "PuffAnimation11";
                 textures[11] = "PuffAnimation12";
-                intervals[0] = 50;
-                intervals[1] = 60;
-                intervals[2] = 60;
-                intervals[3] = 400;
+                intervals[0] = 40;
+                intervals[1] = 50;
+                intervals[2] = 50;
+                intervals[3] = 50;
                 intervals[4] = 50;
                 intervals[5] = 60;
-                intervals[6] = 60;
-                intervals[7] = 400;
-                intervals[8] = 50;
+                intervals[6] = 50;
+                intervals[7] = 50;
+                intervals[8] = 60;
                 intervals[9] = 60;
                 intervals[10] = 60;
-                intervals[11] = 400;
+                intervals[11] = 90;
                 canDraw = false;
             }
 

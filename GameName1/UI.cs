@@ -79,7 +79,7 @@ namespace GameName1
             PlayfieldBottom = OFFSET;
             GameWidth = width;
             GameHeight = height;
-            m_Background = content.Load<Texture2D>("Louis-game-background");
+            m_Background = content.Load<Texture2D>("Louis-game-backgroundFULL");
             //FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2), GameHeight - m_FireButton.Height - 150);
             FireButtonPosition = new Vector2(0, GameHeight - m_FireButton.Height - 150);
             StopButtonPosition = new Vector2(FireButtonPosition.X, 60);
@@ -208,6 +208,19 @@ namespace GameName1
             //}
             foreach (TouchLocation touch in input)
             {
+                Vector2 vec = touch.Position;
+                if (vec.Y > GameHeight / 2)
+                {
+                    isFireDown = true;
+                }
+                else if (vec.Y <= GameHeight / 2 && vec.X > GameWidth / 2)
+                {
+
+                }
+                else if (vec.Y <= GameHeight / 2 && vec.X <= GameWidth / 2)
+                {
+
+                }
             }
             p.ProcessInput(isFireDown, isStopDown);
         }
