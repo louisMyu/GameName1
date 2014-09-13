@@ -47,7 +47,8 @@ namespace GameName1
         private int ThumbStickPointId;
         private bool ThumbStickPressed;
         private SpriteFont ColunaFont;
-        public static float ThumbStickAngle;
+        //public static float ThumbStickAngle;
+        public static float RotationDelta;
 
         private int BackGroundHueCounter = -250;
         public Color BackGroundHueColor = new Color(255,0,0);
@@ -206,6 +207,7 @@ namespace GameName1
             //        }
             //    }
             //}
+            RotationDelta = 0;
             foreach (TouchLocation touch in input)
             {
                 Vector2 vec = touch.Position;
@@ -215,11 +217,11 @@ namespace GameName1
                 }
                 else if (vec.Y <= GameHeight / 2 && vec.X > GameWidth / 2)
                 {
-
+                    RotationDelta = (float)(Math.PI *(-7 / 180.0));
                 }
                 else if (vec.Y <= GameHeight / 2 && vec.X <= GameWidth / 2)
                 {
-
+                    RotationDelta = (float)(Math.PI * (7 / 180.0));
                 }
             }
             p.ProcessInput(isFireDown, isStopDown);

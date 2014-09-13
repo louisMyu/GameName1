@@ -220,7 +220,7 @@ namespace GameName1
             {
                 base.Move(loc, elapsedTime);
                 Vector2 temp = new Vector2();
-                temp.X = MathHelper.Clamp(Position.X, 0 + UI.OFFSET, Game1.GameWidth);
+                temp.X = MathHelper.Clamp(Position.X, 0, Game1.GameWidth);
                 temp.Y = MathHelper.Clamp(Position.Y, 0, Game1.GameHeight);
                 Position = temp;
                 m_Bounds.X = (int)Position.X - Width / 2;
@@ -325,7 +325,7 @@ namespace GameName1
                         }
                         if (!m_Weapon.Firing)
                         {
-                            RotationAngle = UI.ThumbStickAngle;
+                            RotationAngle += UI.RotationDelta;
                         }
                     }
                     if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
