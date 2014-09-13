@@ -224,6 +224,7 @@ namespace GameName1
                     RotationDelta = (float)(Math.PI * (7 / 180.0));
                 }
             }
+
             p.ProcessInput(isFireDown, isStopDown);
         }
 
