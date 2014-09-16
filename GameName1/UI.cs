@@ -48,6 +48,8 @@ namespace GameName1
         private bool ThumbStickPressed;
         private SpriteFont ColunaFont;
         //public static float ThumbStickAngle;
+        private Rectangle m_TurnLeftRec;
+        private Rectangle m_TurnRightRec;
         public static float RotationDelta;
 
         private int BackGroundHueCounter = -250;

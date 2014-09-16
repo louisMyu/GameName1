@@ -68,9 +68,7 @@ namespace GameName1
         public virtual void Init(float x, float y)
         {
             Position = new Vector2(x, y);
-
         }
-
 
         public virtual void Update(Player player, TimeSpan elapsedTime)
         {
