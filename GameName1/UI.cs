@@ -50,6 +50,8 @@ namespace GameName1
         //public static float ThumbStickAngle;
         private Rectangle m_TurnLeftRec;
         private Rectangle m_TurnRightRec;
+        private Texture2D TurnLeftTex;
+        private Texture2D TurnRightTex;
         public static float RotationDelta;
 
         private int BackGroundHueCounter = -250;
@@ -82,7 +84,8 @@ namespace GameName1
             PlayfieldBottom = OFFSET;
             GameWidth = width;
             GameHeight = height;
-            m_Background = content.Load<Texture2D>("Louis-game-backgroundFULL");
+            //m_Background = content.Load<Texture2D>("Louis-game-backgroundFULL");
+            m_Background = content.Load<Texture2D>("Louis-game-background");
             //FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2), GameHeight - m_FireButton.Height - 150);
             FireButtonPosition = new Vector2(0, GameHeight - m_FireButton.Height - 150);
             StopButtonPosition = new Vector2(FireButtonPosition.X, 60);
@@ -97,6 +100,15 @@ namespace GameName1
             ThumbStickPressed = false;
             ThumbStickPoint = StopButtonPosition;
             ActiveGibs.Clear();
+
+            int turnButtonWidth = (int)Math.Floor(GameWidth * .2);
+            m_TurnLeftRec = new Rectangle((int)Math.Floor(GameWidth * .07), 
+                (int)Math.Floor(GameHeight * .05), turnButtonWidth, turnButtonWidth);
+
+            m_TurnRightRec = new Rectangle((int)Math.Floor(GameWidth * .07),
+                (int)GameHeight - (int)Math.Floor(GameHeight * .05) - turnButtonWidth, turnButtonWidth, turnButtonWidth);
+            TurnLeftTex = TextureBank.GetTexture("rotate_left-128");
+            TurnRightTex = TextureBank.GetTexture("rotate_right-128");
 
             Vector2 viewport = new Vector2(GameWidth - PlayfieldBottom, GameHeight);
             Vector2 textSize = ColunaFont.MeasureString("00:00:00");
@@ -213,17 +225,18 @@ namespace GameName1
             foreach (TouchLocation touch in input)
             {
                 Vector2 vec = touch.Position;
-                if (vec.Y > GameHeight / 2)
-                {
-                    isFireDown = true;
-                }
-                else if (vec.Y <= GameHeight / 2 && vec.X > GameWidth / 2)
+                
+                if (Utilities.PointIntersectsRectangle(vec, m_TurnLeftRec))
                 {
                     RotationDelta = (float)(Math.PI *(-7 / 180.0));
                 }
-                else if (vec.Y <= GameHeight / 2 && vec.X <= GameWidth / 2)
+                else if (Utilities.PointIntersectsRectangle(vec, m_TurnRightRec))
                 {
                     RotationDelta = (float)(Math.PI * (7 / 180.0));
+                }
+                else
+                {
+                    isFireDown = true;
                 }
             }
 
@@ -232,29 +245,31 @@ namespace GameName1
 
         public void Draw(SpriteBatch spriteBatch, Player p)
         {
-            spriteBatch.Draw(m_StatusBackground, m_StatusBackgroundPosition, null, Color.White, 0.0f, new Vector2(0.0f,0.0f), m_StatusBackGroundScale, SpriteEffects.None, 0.0f);
-            //TODO CHANGE THE MAGIC NUMBERS HERE                                                          \/\/\/
-            spriteBatch.DrawString(m_SpriteFont, "Life: " + p.LifeTotal, new Vector2(PlayfieldBottom - 50, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
-            spriteBatch.DrawString(m_SpriteFont, "XP: " + p.Score, new Vector2(PlayfieldBottom - 80, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
-            spriteBatch.Draw(m_FireButton, FireButtonPosition, null, m_FireButtonColor, 0.0f, new Vector2(0, 0), m_FireButtonScale, SpriteEffects.None, 0);
-            spriteBatch.Draw(m_ThumbStickBottomTexture, StopButtonPosition, null, m_StopButtonColor, 0.0f, new Vector2(0,0), m_StopButtonScale, SpriteEffects.None, 0);
+            //spriteBatch.Draw(m_StatusBackground, m_StatusBackgroundPosition, null, Color.White, 0.0f, new Vector2(0.0f,0.0f), m_StatusBackGroundScale, SpriteEffects.None, 0.0f);
+            ////TODO CHANGE THE MAGIC NUMBERS HERE                                                          \/\/\/
+            //spriteBatch.DrawString(m_SpriteFont, "Life: " + p.LifeTotal, new Vector2(PlayfieldBottom - 50, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
+            //spriteBatch.DrawString(m_SpriteFont, "XP: " + p.Score, new Vector2(PlayfieldBottom - 80, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
+            //spriteBatch.Draw(m_FireButton, FireButtonPosition, null, m_FireButtonColor, 0.0f, new Vector2(0, 0), m_FireButtonScale, SpriteEffects.None, 0);
+            //spriteBatch.Draw(m_ThumbStickBottomTexture, StopButtonPosition, null, m_StopButtonColor, 0.0f, new Vector2(0,0), m_StopButtonScale, SpriteEffects.None, 0);
             
-            spriteBatch.Draw(m_ThumbStickTopTexture, ThumbStickPoint, null, Color.White, 0.0f, new Vector2(0, 0), m_StopButtonScale, SpriteEffects.None, 0);
+            //spriteBatch.Draw(m_ThumbStickTopTexture, ThumbStickPoint, null, Color.White, 0.0f, new Vector2(0, 0), m_StopButtonScale, SpriteEffects.None, 0);
 
-            if (p.WeaponSlot1Magic != null)
-            {
-                Texture2D tempTex = p.WeaponSlot1Magic.Texture;
-                Vector2 tempScale = Utilities.GetSpriteScaling(new Vector2(WeaponSlotRec.Width, WeaponSlotRec.Height), new Vector2(tempTex.Width, tempTex.Height));
-                spriteBatch.Draw(tempTex, WeaponSlotPosition, null, m_Weapon1ButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(tempTex.Width / 2, tempTex.Height / 2), tempScale, SpriteEffects.None, 0);
-            }
-            else
-            {
-                spriteBatch.Draw(m_FireButton, WeaponSlotPosition, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), WeaponSlotScale, SpriteEffects.None, 0);
-            }
+            //if (p.WeaponSlot1Magic != null)
+            //{
+            //    Texture2D tempTex = p.WeaponSlot1Magic.Texture;
+            //    Vector2 tempScale = Utilities.GetSpriteScaling(new Vector2(WeaponSlotRec.Width, WeaponSlotRec.Height), new Vector2(tempTex.Width, tempTex.Height));
+            //    spriteBatch.Draw(tempTex, WeaponSlotPosition, null, m_Weapon1ButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(tempTex.Width / 2, tempTex.Height / 2), tempScale, SpriteEffects.None, 0);
+            //}
+            //else
+            //{
+            //    spriteBatch.Draw(m_FireButton, WeaponSlotPosition, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), WeaponSlotScale, SpriteEffects.None, 0);
+            //}
             if (p.DrawRedFlash)
             {
                 spriteBatch.Draw(p.RedFlashTexture, new Vector2(PlayfieldBottom, 0), null, Color.White, 0, new Vector2(0,0),Utilities.GetSpriteScaling(new Vector2(GameWidth-PlayfieldBottom, GameHeight), new Vector2(p.RedFlashTexture.Width, p.RedFlashTexture.Height)) ,SpriteEffects.None, 0);
             }
+            spriteBatch.Draw(TurnLeftTex, m_TurnLeftRec, Color.White);
+            spriteBatch.Draw(TurnRightTex, m_TurnRightRec, Color.Wheat);
         }
         public void DrawBackground(SpriteBatch spriteBatch)
         {
