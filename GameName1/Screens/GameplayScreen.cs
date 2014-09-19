@@ -34,7 +34,8 @@ namespace GameName1
         {
             Countdown,
             Playing,
-            Dying
+            Dying,
+            MainScreen
         }
         #region Fields
 
@@ -71,7 +72,7 @@ namespace GameName1
             GlobalObjectManager = new ObjectManager();
             isLoaded = false;
             isUpdated = false;
-            m_GameState = GameState.Countdown;
+            m_GameState = GameState.MainScreen;
             m_CountdownTime = TimeSpan.FromSeconds(5.5);
         }
 
@@ -115,13 +116,11 @@ namespace GameName1
             Slime.LoadTextures();
             Anubis.LoadTextures();
 
-            isLoaded = true;
+            
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
             backgroundTexture = new RenderTarget2D(ScreenManager.GraphicsDevice, viewport.Width, viewport.Height, false,
                                             SurfaceFormat.Color, DepthFormat.None, ScreenManager.GraphicsDevice.PresentationParameters.MultiSampleCount, RenderTargetUsage.PreserveContents);
-            // once the load has finished, we use ResetElapsedTime to tell the game's
-            // timing mechanism that we have just finished a very long frame, and that
-            // it should not try to catch up.
+            
 
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
 
@@ -130,9 +129,15 @@ namespace GameName1
             spriteBatch.Begin();
             UserInterface.DrawBackground(spriteBatch);
             spriteBatch.End();
+
+            // once the load has finished, we use ResetElapsedTime to tell the game's
+            // timing mechanism that we have just finished a very long frame, and that
+            // it should not try to catch up.
             ScreenManager.Game.ResetElapsedTime();
 
             m_World.Step(0f);
+
+            isLoaded = true;
         }
 
 
@@ -163,7 +168,7 @@ namespace GameName1
             {
                 isPaused = false;
             }
-            if (IsActive)
+            if (IsActive || m_GameState == GameState.MainScreen)
             {
                 TimeSpan customElapsedTime = gameTime.ElapsedGameTime;
                 try
@@ -174,6 +179,13 @@ namespace GameName1
                     }
                     switch (m_GameState)
                     {
+                        case GameState.MainScreen:
+                            if (!songPlaying)
+                            {
+
+                            }
+
+                            break;
                         case GameState.Countdown:
                             if (!songPlaying)
                             {
@@ -317,6 +329,11 @@ namespace GameName1
                     //m_Player.Draw(_spriteBatch);
                     UserInterface.Draw(_spriteBatch, m_Player);
                     UserInterface.DrawCountdown(_spriteBatch, m_CountdownTime);
+                    _spriteBatch.End();
+                    break;
+                case GameState.MainScreen:
+                    _spriteBatch.Begin();
+                    _spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), Color.White);
                     _spriteBatch.End();
                     break;
             }

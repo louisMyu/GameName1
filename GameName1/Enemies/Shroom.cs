@@ -156,8 +156,8 @@ namespace GameName1
         
         public void DoPuff()
         {
-            puffExplosion.Position = Position;
-            puffExplosion.Trigger();
+            //puffExplosion.Position = Position;
+            //puffExplosion.Trigger();
         }
         public override void Update(Player player, TimeSpan elapsedTime)
         {
@@ -261,7 +261,7 @@ namespace GameName1
             public bool canDraw;
             private void HandleAnimation(object o, AnimationTimerEventArgs e)
             {
-                Texture = TextureBank.GetTexture(textures[e.FrameIndex]);
+                //Texture = TextureBank.GetTexture(textures[e.FrameIndex]);
                 m_Bounds.Width = Texture.Width;
                 m_Bounds.Height = Texture.Height;
                 Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);

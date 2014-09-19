@@ -30,7 +30,6 @@ namespace GameName1
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             m_ScreenManager = new ScreenManager(this);
-            m_ScreenManager.Initialize();
         }
 
         /// <summary>
@@ -60,8 +59,11 @@ namespace GameName1
             //}
             ////init object manager and set objects for it
             //GlobalObjectManager.Init(m_Player, Content, m_World);
-            m_ScreenManager.AddScreen(new BackgroundScreen(), null);
-            m_ScreenManager.AddScreen(new MainMenuScreen(), null);
+            //m_ScreenManager.AddScreen(new BackgroundScreen(), null);
+            //m_ScreenManager.AddScreen(new MainMenuScreen(), null);
+            m_ScreenManager.AddScreen(new GameplayScreen(), null);
+            m_ScreenManager.AddScreen(new CustomMenuScreen(), null);
+            m_ScreenManager.Initialize();
             base.Initialize();
         }
 
@@ -95,8 +97,14 @@ namespace GameName1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            m_ScreenManager.Update(gameTime);
-            base.Update(gameTime);
+            try
+            {
+                m_ScreenManager.Update(gameTime);
+                base.Update(gameTime);
+            }
+            catch (Exception e)
+            {
+            }
         }
 
         /// <summary>

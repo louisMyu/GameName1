@@ -175,7 +175,10 @@ namespace GameName1
         {
             return screen.ScreenManager.Font.LineSpacing;
         }
-
+        public virtual int GetHeight()
+        {
+            return 0;
+        }
 
         /// <summary>
         /// Queries how wide the entry is, used for centering on the screen.
@@ -184,7 +187,10 @@ namespace GameName1
         {
             return (int)screen.ScreenManager.Font.MeasureString(Text).X;
         }
-
+        public virtual int GetWidth()
+        {
+            return 0;
+        }
 
         #endregion
     }

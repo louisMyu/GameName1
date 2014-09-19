@@ -1,22 +1,10 @@
-#region File Description
-//-----------------------------------------------------------------------------
-// MainMenuScreen.cs
-//
-// Microsoft XNA Community Game Platform
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
-#endregion
-
-#region Using Statements
+﻿#region Using Statements
 using Microsoft.Xna.Framework;
 #endregion
 
 namespace GameName1
 {
-    /// <summary>
-    /// The main menu screen is the first thing displayed when the game starts up.
-    /// </summary>
-    class MainMenuScreen : MenuScreen
+    class CustomMenuScreen : MenuScreen
     {
         #region Initialization
 
@@ -24,7 +12,7 @@ namespace GameName1
         /// <summary>
         /// Constructor fills in the menu contents.
         /// </summary>
-        public MainMenuScreen()
+        public CustomMenuScreen()
             : base("Main Menu")
         {
             // Create our menu entries.
@@ -46,7 +34,10 @@ namespace GameName1
 
         #region Handle Input
 
-
+        protected override Rectangle GetMenuEntryHitBounds(MenuEntry entry)
+        {
+            return new Rectangle((int)entry.Position.X, (int)entry.Position.Y, entry.GetWidth(), entry.GetHeight());
+        }
         /// <summary>
         /// Event handler for when the Play Game menu entry is selected.
         /// </summary>

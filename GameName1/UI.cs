@@ -317,6 +317,9 @@ namespace GameName1
         {
             TimeToDeath = time;
         }
-
+        public void DrawMainMenu(SpriteBatch spriteBatch)
+        {
+            
+        }
     }
 }
