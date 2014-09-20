@@ -191,7 +191,10 @@ namespace GameName1
         {
             return 0;
         }
+        public virtual void UpdatePosition()
+        {
 
+        }
         #endregion
     }
 }

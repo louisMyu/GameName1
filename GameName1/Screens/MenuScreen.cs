@@ -31,7 +31,7 @@ namespace GameName1
 
         protected List<MenuEntry> menuEntries = new List<MenuEntry>();
         int selectedEntry = 0;
-        string menuTitle;
+        protected string menuTitle;
 
         #endregion
 
