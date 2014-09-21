@@ -44,7 +44,7 @@ namespace GameName1
         }
         public override void UpdatePosition()
         {
-            
+            //
         }
     }
 }
