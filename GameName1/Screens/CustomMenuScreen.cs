@@ -10,7 +10,8 @@ namespace GameName1
     {
         #region Initialization
 
-
+        private CustomMenuEntry gameMenuEntry;
+        private CustomMenuEntry optionMenuEntry;
         /// <summary>
         /// Constructor fills in the menu contents.
         /// </summary>
@@ -19,18 +20,17 @@ namespace GameName1
         {
             // Create our menu entries.
             Rectangle playGameRec = new Rectangle(100, 50, 50, 200);
-            CustomMenuEntry playGameMenuEntry = new CustomMenuEntry(playGameRec, "Play Game");
+            gameMenuEntry = new CustomMenuEntry(playGameRec, "Play Game");
             Rectangle optionRec = new Rectangle(100, 400, 50, 150);
-            CustomMenuEntry optionsMenuEntry = new CustomMenuEntry(optionRec, "Options");
+            optionMenuEntry = new CustomMenuEntry(optionRec, "Options");
 
             // Hook up menu event handlers.
-            playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
-            optionsMenuEntry.Selected += OptionsMenuEntrySelected;
+            gameMenuEntry.Selected += PlayGameMenuEntrySelected;
+            optionMenuEntry.Selected += OptionsMenuEntrySelected;
 
-            // Add entries to the menu.
-            MenuEntries.Add(playGameMenuEntry);
-            MenuEntries.Add(optionsMenuEntry);
             IsPopup = true;
+            menuEntries.Add(gameMenuEntry);
+            menuEntries.Add(optionMenuEntry);
         }
 
 
@@ -40,7 +40,11 @@ namespace GameName1
 
         protected override Rectangle GetMenuEntryHitBounds(MenuEntry entry)
         {
-            return new Rectangle((int)entry.Position.X, (int)entry.Position.Y, entry.GetWidth(), entry.GetHeight());
+            if (entry is CustomMenuEntry)
+            {
+                return ((CustomMenuEntry)entry).Bounds;
+            }
+            return new Rectangle();
         }
         /// <summary>
         /// Event handler for when the Play Game menu entry is selected.
@@ -79,7 +83,7 @@ namespace GameName1
         /// Allows the screen the chance to position the menu entries. By default
         /// all menu entries are lined up in a vertical list, centered on the screen.
         /// </summary>
-        protected virtual void UpdateMenuEntryLocations()
+        protected override void UpdateMenuEntryLocations()
         {
             // Make the menu slide into place during transitions, using a
             // power curve to make things look more interesting (this makes
@@ -87,27 +91,45 @@ namespace GameName1
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
             // start at Y = 175; each X value is generated per entry
-            Vector2 position = new Vector2(0f, 175f);
+            //Vector2 position = new Vector2(0f, 175f);
+            Vector2 playGamePosition = new Vector2(gameMenuEntry.Bounds.X, gameMenuEntry.Bounds.Y);
+            playGamePosition.X += gameMenuEntry.Bounds.Width / 2;
+            playGamePosition.Y += gameMenuEntry.Bounds.Height / 2;
+            Vector2 optionsPosition = new Vector2(optionMenuEntry.Bounds.X, optionMenuEntry.Bounds.Y);
+            optionsPosition.X += 
+            if (ScreenState == ScreenState.TransitionOn)
+                playGamePosition.Y -= transitionOffset * 256;
+            else
+                playGamePosition.Y += transitionOffset * 512;
 
-            // update each menu entry's location in turn
-            for (int i = 0; i < menuEntries.Count; i++)
-            {
-                MenuEntry menuEntry = menuEntries[i];
+            // set the entry's position
+            gameMenuEntry.Position = playGamePosition;
 
-                // each entry is to be centered horizontally
-                position.X = ScreenManager.GraphicsDevice.Viewport.Width / 2 - menuEntry.GetWidth(this) / 2;
+            if (ScreenState == ScreenState.TransitionOn)
+                optionsPosition.Y += transitionOffset * 256;
+            else
+                optionsPosition.Y -= transitionOffset * 512;
+            optionMenuEntry.Position = optionsPosition;
 
-                if (ScreenState == ScreenState.TransitionOn)
-                    position.X -= transitionOffset * 256;
-                else
-                    position.X += transitionOffset * 512;
+            //// update each menu entry's location in turn
+            //for (int i = 0; i < menuEntries.Count; i++)
+            //{
+            //    MenuEntry menuEntry = menuEntries[i];
 
-                // set the entry's position
-                menuEntry.Position = position;
+            //    // each entry is to be centered horizontally
+            //    position.X = ScreenManager.GraphicsDevice.Viewport.Width / 2 - menuEntry.GetWidth(this) / 2;
 
-                // move down for the next entry the size of this entry plus our padding
-                position.Y += menuEntry.GetHeight(this) + (menuEntryPadding * 2);
-            }
+            //    if (ScreenState == ScreenState.TransitionOn)
+            //        position.X -= transitionOffset * 256;
+            //    else
+            //        position.X += transitionOffset * 512;
+
+            //    // set the entry's position
+            //    menuEntry.Position = position;
+
+            //    // move down for the next entry the size of this entry plus our padding
+            //    position.Y += menuEntry.GetHeight(this) + (menuEntryPadding * 2);
+            //}
         }
         /// <summary>
         /// Draws the menu.
@@ -124,15 +146,11 @@ namespace GameName1
             spriteBatch.Begin();
 
             // Draw each menu entry in turn.
-            for (int i = 0; i < menuEntries.Count; i++)
-            {
-                MenuEntry menuEntry = menuEntries[i];
 
-                bool isSelected = IsActive;
+            bool isSelected = IsActive;
 
-                menuEntry.Draw(this, isSelected, gameTime);
-            }
-
+            gameMenuEntry.Draw(this, isSelected, gameTime);
+            optionMenuEntry.Draw(this, isSelected, gameTime);
             // Make the menu slide into place during transitions, using a
             // power curve to make things look more interesting (this makes
             // the movement slow down as it nears the end).

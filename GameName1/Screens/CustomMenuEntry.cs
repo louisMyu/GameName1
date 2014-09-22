@@ -6,7 +6,7 @@ namespace GameName1
 {
     class CustomMenuEntry : MenuEntry
     {
-        private Rectangle Bounds;
+        public Rectangle Bounds;
 
         public CustomMenuEntry(string text)
             : base(text)
@@ -39,12 +39,8 @@ namespace GameName1
             Vector2 textSize = font.MeasureString(text);
             Vector2 origin = textSize / 2;
 
-            spriteBatch.DrawString(font, text, position, color, 0,
-                                   origin, new Vector2(1,1), SpriteEffects.None, 0);
-        }
-        public override void UpdatePosition()
-        {
-            //
+            spriteBatch.DrawString(font, text, position, color, Utilities.DegreesToRadians(90.0f),
+                                   origin, 1.0f, SpriteEffects.None, 0);
         }
     }
 }
