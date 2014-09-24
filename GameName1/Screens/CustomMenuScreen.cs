@@ -99,6 +99,7 @@ namespace GameName1
             optionsPosition.X += 
             if (ScreenState == ScreenState.TransitionOn)
                 playGamePosition.Y -= transitionOffset * 256;
+
             else
                 playGamePosition.Y += transitionOffset * 512;
 
