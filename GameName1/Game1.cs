@@ -61,7 +61,7 @@ namespace GameName1
             //GlobalObjectManager.Init(m_Player, Content, m_World);
             //m_ScreenManager.AddScreen(new BackgroundScreen(), null);
             //m_ScreenManager.AddScreen(new MainMenuScreen(), null);
-            m_ScreenManager.AddScreen(new GameplayScreen(), null);
+            m_ScreenManager.AddScreen(new GameplayScreen(GameplayScreen.GameState.MainScreen), null);
             m_ScreenManager.AddScreen(new CustomMenuScreen(), null);
             m_ScreenManager.Initialize();
             base.Initialize();
@@ -76,6 +76,7 @@ namespace GameName1
                 // Create a new SpriteBatch, which can be used to draw textures.
                 _spriteBatch = new SpriteBatch(GraphicsDevice);
                 m_ScreenManager.LoadContent(GraphicsDevice, _spriteBatch);
+                
                 UpgradeMenuScreen.LoadUpgradeFields();
             // TODO: use this.Content to load your game content here
         }
