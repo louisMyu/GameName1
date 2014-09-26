@@ -283,6 +283,7 @@ namespace GameName1
                     {
                         KickedBack = false;
                     }
+                    m_Moving = true;
                     ObjectManager.GetCell(Position).Remove(this);
                     //should really just use the Sim's position for everything instead of converting from one to another
                     Vector2 simPosition = ConvertUnits.ToDisplayUnits(_circleBody.Position);
@@ -325,11 +326,15 @@ namespace GameName1
                         }
                         if (!m_Weapon.Firing)
                         {
-
                             //RotationAngle += UI.RotationDelta;
-                            RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
- 
+
+                                RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
+                            
                         }
+                    }
+                    if (IsStopDown)
+                    {
+                        m_Moving = false;
                     }
                     if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
                     {

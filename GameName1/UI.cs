@@ -234,9 +234,15 @@ namespace GameName1
                 //{
                 //    RotationDelta = (float)(Math.PI * (7 / 180.0));
                 //}
-                
-                
+
+                if (vec.Y > GameHeight / 2)
+                {
                     isFireDown = true;
+                }
+                else
+                {
+                    isStopDown = true;
+                }
                 
             }
 
