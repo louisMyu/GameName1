@@ -84,8 +84,8 @@ namespace GameName1
             PlayfieldBottom = OFFSET;
             GameWidth = width;
             GameHeight = height;
-            //m_Background = content.Load<Texture2D>("Louis-game-backgroundFULL");
-            m_Background = content.Load<Texture2D>("Louis-game-background");
+            m_Background = content.Load<Texture2D>("Louis-game-backgroundFULL");
+            //m_Background = content.Load<Texture2D>("Louis-game-background");
             //FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2), GameHeight - m_FireButton.Height - 150);
             FireButtonPosition = new Vector2(0, GameHeight - m_FireButton.Height - 150);
             StopButtonPosition = new Vector2(FireButtonPosition.X, 60);
@@ -226,18 +226,18 @@ namespace GameName1
             {
                 Vector2 vec = touch.Position;
                 
-                if (Utilities.PointIntersectsRectangle(vec, m_TurnLeftRec))
-                {
-                    RotationDelta = (float)(Math.PI *(-7 / 180.0));
-                }
-                else if (Utilities.PointIntersectsRectangle(vec, m_TurnRightRec))
-                {
-                    RotationDelta = (float)(Math.PI * (7 / 180.0));
-                }
-                else
-                {
+                //if (Utilities.PointIntersectsRectangle(vec, m_TurnLeftRec))
+                //{
+                //    RotationDelta = (float)(Math.PI *(-7 / 180.0));
+                //}
+                //else if (Utilities.PointIntersectsRectangle(vec, m_TurnRightRec))
+                //{
+                //    RotationDelta = (float)(Math.PI * (7 / 180.0));
+                //}
+                
+                
                     isFireDown = true;
-                }
+                
             }
 
             p.ProcessInput(isFireDown, isStopDown);
@@ -268,8 +268,8 @@ namespace GameName1
             {
                 spriteBatch.Draw(p.RedFlashTexture, new Vector2(PlayfieldBottom, 0), null, Color.White, 0, new Vector2(0,0),Utilities.GetSpriteScaling(new Vector2(GameWidth-PlayfieldBottom, GameHeight), new Vector2(p.RedFlashTexture.Width, p.RedFlashTexture.Height)) ,SpriteEffects.None, 0);
             }
-            spriteBatch.Draw(TurnLeftTex, m_TurnLeftRec, Color.White);
-            spriteBatch.Draw(TurnRightTex, m_TurnRightRec, Color.Wheat);
+            //spriteBatch.Draw(TurnLeftTex, m_TurnLeftRec, Color.White);
+            //spriteBatch.Draw(TurnRightTex, m_TurnRightRec, Color.Wheat);
         }
         public void DrawBackground(SpriteBatch spriteBatch)
         {

@@ -325,7 +325,10 @@ namespace GameName1
                         }
                         if (!m_Weapon.Firing)
                         {
-                            RotationAngle += UI.RotationDelta;
+
+                            //RotationAngle += UI.RotationDelta;
+                            RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
+ 
                         }
                     }
                     if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
