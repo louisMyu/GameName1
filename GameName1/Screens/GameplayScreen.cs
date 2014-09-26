@@ -30,7 +30,7 @@ namespace GameName1
     /// </summary>
     class GameplayScreen : GameScreen
     {
-        private enum GameState
+        public enum GameState
         {
             Countdown,
             Playing,
@@ -64,7 +64,7 @@ namespace GameName1
         /// <summary>
         /// Constructor.
         /// </summary>
-        public GameplayScreen()
+        public GameplayScreen(GameState state)
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -72,7 +72,7 @@ namespace GameName1
             GlobalObjectManager = new ObjectManager();
             isLoaded = false;
             isUpdated = false;
-            m_GameState = GameState.MainScreen;
+            m_GameState = state;
             m_CountdownTime = TimeSpan.FromSeconds(5.5);
         }
 
@@ -184,7 +184,7 @@ namespace GameName1
                             {
 
                             }
-
+                            //probably put some wandering enemies here
                             break;
                         case GameState.Countdown:
                             if (!songPlaying)

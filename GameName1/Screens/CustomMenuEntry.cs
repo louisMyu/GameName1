@@ -12,10 +12,9 @@ namespace GameName1
             : base(text)
         {
         }
-        public CustomMenuEntry(Rectangle bounds, string text)
-            : base(text)
+        public void SetBounds(Rectangle rec)
         {
-            Bounds = bounds;
+            Bounds = rec;
         }
         public override int GetHeight()
         {

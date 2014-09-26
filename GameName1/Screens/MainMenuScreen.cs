@@ -53,7 +53,7 @@ namespace GameName1
         void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,
-                               new GameplayScreen());
+                               new GameplayScreen(GameplayScreen.GameState.Countdown));
         }
 
 
