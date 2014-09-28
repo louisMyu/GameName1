@@ -1,14 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Resources;
+using System.Windows.Threading;
 
 namespace GameName1
 {
+    
     class DeathMenu : MenuScreen
     {
+        SoundEffectInstance song;
         #region Initialization
 
 
@@ -36,15 +43,22 @@ namespace GameName1
             MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(ExitGameMenuEntry);
             IsPopup = true;
+            song = SoundBank.GetSoundInstance("menuMusic");
+            StartbackgroundMusic();
         }
 
 
         #endregion
-
+        private void StartbackgroundMusic()
+        {
+            song.IsLooped = true;
+            song.Play();
+        }
         #region Handle Input
 
         void NewGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
+            song.Stop();
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen(GameplayScreen.GameState.Countdown)); 
         }
 
@@ -53,6 +67,8 @@ namespace GameName1
         /// </summary>
         void ExitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
+            song.Stop();
+            
             ScreenManager.Game.Exit();
         }
 
@@ -73,6 +89,7 @@ namespace GameName1
         /// </summary>
         protected override void OnCancel(PlayerIndex playerIndex)
         {
+            song.Stop();
             ExitScreen();
         }
         #endregion

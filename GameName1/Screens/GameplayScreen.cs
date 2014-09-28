@@ -184,7 +184,7 @@ namespace GameName1
                             {
 
                             }
-                            //probably put some wandering enemies here
+                            //put some wandering enemies here
                             break;
                         case GameState.Countdown:
                             if (!songPlaying)
