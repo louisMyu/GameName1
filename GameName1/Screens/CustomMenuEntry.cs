@@ -7,14 +7,19 @@ namespace GameName1
     class CustomMenuEntry : MenuEntry
     {
         public Rectangle Bounds;
-
+        public static Texture2D testTexture;
         public CustomMenuEntry(string text)
             : base(text)
         {
+
         }
         public void SetBounds(Rectangle rec)
         {
             Bounds = rec;
+            if (testTexture == null)
+            {
+                testTexture = TextureBank.GetTexture("blank");
+            }
         }
         public override int GetHeight()
         {
@@ -38,8 +43,9 @@ namespace GameName1
             Vector2 textSize = font.MeasureString(text);
             Vector2 origin = textSize / 2;
 
-            spriteBatch.DrawString(font, text, position, color, Utilities.DegreesToRadians(90.0f),
+            spriteBatch.DrawString(font, text, position, color, 0,
                                    origin, 1.0f, SpriteEffects.None, 0);
+            spriteBatch.Draw(testTexture, Bounds, Color.Black);
         }
     }
 }

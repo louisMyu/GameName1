@@ -305,7 +305,7 @@ namespace GameName1
                     }
                     else
                     {
-                        Vector2 acceleration = new Vector2(Input.CurrentAccelerometerValues.X, Input.CurrentAccelerometerValues.Y);
+                        Vector2 acceleration = new Vector2(-Input.CurrentAccelerometerValues.Y, Input.CurrentAccelerometerValues.X);
                         if (acceleration.LengthSquared() > Input.Tilt_Threshold)
                         {
                             m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X * 30, -(Math.Abs(acceleration.X) * VELOCITY), Math.Abs(acceleration.X) * VELOCITY),

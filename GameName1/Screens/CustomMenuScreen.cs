@@ -35,8 +35,8 @@ namespace GameName1
         public void LoadBounds()
         {
             GraphicsDevice graphics = ScreenManager.GraphicsDevice;
-            Rectangle playGameRec = new Rectangle((int)(graphics.Viewport.Width * 0.2), (int)(graphics.Viewport.Height * .1), 50, 200);
-            Rectangle optionRec = new Rectangle((int)(graphics.Viewport.Width * 0.2), (int)(graphics.Viewport.Height - graphics.Viewport.Height * .1 - 200), 50, 200);
+            Rectangle playGameRec = new Rectangle((int)(graphics.Viewport.Width * 0.1), (int)(graphics.Viewport.Height - graphics.Viewport.Height * .1 - Utilities.RatioFrom1280(50)), Utilities.RatioFrom720(200), Utilities.RatioFrom1280(50));
+            Rectangle optionRec = new Rectangle((int)(graphics.Viewport.Width - graphics.Viewport.Width * 0.1 - 200), (int)(graphics.Viewport.Height - graphics.Viewport.Height * .1 - 50), 200, 50);
             gameMenuEntry.SetBounds(playGameRec);
             optionMenuEntry.SetBounds(optionRec);
         }
@@ -107,17 +107,17 @@ namespace GameName1
             optionsPosition.Y += optionMenuEntry.Bounds.Height / 2;
 
             if (ScreenState == ScreenState.TransitionOn)
-                playGamePosition.Y -= transitionOffset * 256;
+                playGamePosition.X -= transitionOffset * 256;
             else
-                playGamePosition.Y -= transitionOffset * 512;
+                playGamePosition.X -= transitionOffset * 512;
 
             // set the entry's position
             gameMenuEntry.Position = playGamePosition;
 
             if (ScreenState == ScreenState.TransitionOn)
-                optionsPosition.Y += transitionOffset * 256;
+                optionsPosition.X += transitionOffset * 256;
             else
-                optionsPosition.Y += transitionOffset * 512;
+                optionsPosition.X += transitionOffset * 512;
             optionMenuEntry.Position = optionsPosition;
         }
         /// <summary>
@@ -155,9 +155,9 @@ namespace GameName1
             Color titleColor = new Color(192, 192, 192) * TransitionAlpha;
             float titleScale = 1.25f;
 
-            titlePosition.X += transitionOffset * 100;
+            titlePosition.Y -= transitionOffset * 100;
 
-            spriteBatch.DrawString(font, menuTitle, titlePosition, titleColor, Utilities.DegreesToRadians(90.0f),
+            spriteBatch.DrawString(font, menuTitle, titlePosition, titleColor, 0,
                                    titleOrigin, titleScale, SpriteEffects.None, 0);
 
             spriteBatch.End();

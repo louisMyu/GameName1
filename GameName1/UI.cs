@@ -235,7 +235,7 @@ namespace GameName1
                 //    RotationDelta = (float)(Math.PI * (7 / 180.0));
                 //}
 
-                if (vec.Y > GameHeight / 2)
+                if (vec.X > GameWidth / 2)
                 {
                     isFireDown = true;
                 }
@@ -279,8 +279,7 @@ namespace GameName1
         }
         public void DrawBackground(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(m_Background, new Vector2(GameWidth / 2, GameHeight / 2), null, Color.White, 0.0f, new Vector2(GameWidth / 2, GameHeight / 2), 
-                            Utilities.GetSpriteScaling(new Vector2(GameWidth, GameHeight), new Vector2(m_Background.Width, m_Background.Height)), SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(m_Background, new Vector2(0, 0), null, Color.White, 0.0f, new Vector2(0,0), new Vector2(1,1), SpriteEffects.None, 0.0f);
         }
         public void DrawActiveGibs(SpriteBatch spriteBatch)
         {
@@ -305,7 +304,7 @@ namespace GameName1
         public void DrawDeathTimer(SpriteBatch spriteBatch)
         {
             string timeToDeathString = TimeToDeath.ToString(@"mm\:ss\:ff");
-            spriteBatch.DrawString(ColunaFont, timeToDeathString, DeathTimerPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f), 
+            spriteBatch.DrawString(ColunaFont, timeToDeathString, DeathTimerPosition, Color.Blue * 0.45f, 0, 
                                     DeathTimerOrigin, DeathTimerScale, SpriteEffects.None, 0.0f);
         }
 
@@ -315,7 +314,7 @@ namespace GameName1
         public void DrawCountdown(SpriteBatch spriteBatch, TimeSpan countdown)
         {
             string countdownString = countdown.ToString(@"ss");
-            spriteBatch.DrawString(ColunaFont, countdownString, CountdownPosition, Color.Blue * 0.45f, Utilities.DegreesToRadians(90.0f),
+            spriteBatch.DrawString(ColunaFont, countdownString, CountdownPosition, Color.Blue * 0.45f, 0,
                          CountdownOrigin, CountdownScale, SpriteEffects.None, 0.0f);
         }
 

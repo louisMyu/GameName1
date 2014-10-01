@@ -42,7 +42,7 @@ namespace GameName1
         {
             AccelerometerReading reading = e.Reading;
             Vector3 newAcceration = new Vector3();
-            newAcceration.X = (float)(reading.AccelerationX * AccelerometerAlpha + reading.AccelerationX * (1.0f - AccelerometerAlpha)) + 0.25f;
+            newAcceration.X = (float)(reading.AccelerationX * AccelerometerAlpha + reading.AccelerationX * (1.0f - AccelerometerAlpha)) + 0.20f;
             newAcceration.Y = (float)(reading.AccelerationY * AccelerometerAlpha + reading.AccelerationY * (1.0f - AccelerometerAlpha));
             newAcceration.Z = (float)(reading.AccelerationZ * AccelerometerAlpha + reading.AccelerationZ * (1.0f - AccelerometerAlpha));
             CurrentAccelerometerValues = newAcceration;

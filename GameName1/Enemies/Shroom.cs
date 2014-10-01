@@ -142,7 +142,6 @@ namespace GameName1
             newPos.X = circleCenter.X + (float)Math.Sin(angle) * circleRadius;
             newPos.Y = circleCenter.Y + (float)Math.Cos(angle) * circleRadius;
             Position = newPos;
-            RotationAngle = (float)Math.PI / 2;
             if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
