@@ -110,18 +110,15 @@ namespace GameName1
             TurnLeftTex = TextureBank.GetTexture("rotate_left-128");
             TurnRightTex = TextureBank.GetTexture("rotate_right-128");
 
-            Vector2 viewport = new Vector2(GameWidth - PlayfieldBottom, GameHeight);
+            Vector2 viewport = new Vector2(GameWidth, GameHeight);
             Vector2 textSize = ColunaFont.MeasureString("00:00:00");
             DeathTimerScale = Utilities.GetSpriteScaling(new Vector2((int)((viewport.Y) * 0.5), (int)((viewport.X) * 0.5)), textSize);
             Vector2 textPosition = (viewport) / 2;
-            textPosition.X += PlayfieldBottom;
             DeathTimerPosition = textPosition;
             DeathTimerOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
 
             textSize = ColunaFont.MeasureString("00");
-            CountdownScale = Utilities.GetSpriteScaling(new Vector2((int)(viewport.Y * 0.35), (int)(viewport.X * 0.45)), textSize);
-            textPosition = (viewport) / 2;
-            textPosition.X += PlayfieldBottom;
+            CountdownScale = Utilities.GetSpriteScaling(new Vector2((int)(viewport.Y * 0.45), (int)(viewport.X * 0.35)), textSize);
             CountdownPosition = textPosition;
             CountdownOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
         }
