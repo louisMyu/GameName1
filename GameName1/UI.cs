@@ -121,6 +121,7 @@ namespace GameName1
             CountdownScale = Utilities.GetSpriteScaling(new Vector2((int)(viewport.Y * 0.45), (int)(viewport.X * 0.35)), textSize);
             CountdownPosition = textPosition;
             CountdownOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
+
         }
 
         public void Update(TimeSpan elapsedTime)
