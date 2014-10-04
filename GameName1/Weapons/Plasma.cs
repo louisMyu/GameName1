@@ -195,6 +195,19 @@ namespace GameName1
         //time in frames that this bullet will exist
         private int Life;
         private Vector2 playerVelocity;
+
+        string[] textures;
+        float[] intervals;
+        public bool canDraw;
+        private void HandleAnimation(object o, AnimationTimerEventArgs e)
+        {
+            Texture = TextureBank.GetTexture(textures[e.FrameIndex]);
+            m_Bounds.Width = Texture.Width;
+            m_Bounds.Height = Texture.Height;
+            Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+        }
+
+        //TODO: a bullet's life should be based on time or distance and not draw calls
         public Bullet(Texture2D tex, SpriteInfo info, int vel) : base()
         {
             Texture = tex;
