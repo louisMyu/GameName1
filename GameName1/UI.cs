@@ -16,15 +16,7 @@ namespace GameName1
         private Texture2D m_StatusBackground;
         public static SpriteFont m_SpriteFont;
         private Texture2D m_FireButton;
-        private Texture2D m_ThumbStickBottomTexture;
-        private Texture2D m_ThumbStickTopTexture;
 
-        private Color m_FireButtonColor = Color.White;
-        private Color m_StopButtonColor = Color.White;
-        private Vector2 FireButtonPosition;
-        private Vector2 StopButtonPosition;
-        private Vector2 WeaponSlotPosition;
-        private Color m_Weapon1ButtonColor = Color.White;
 
         public static int OFFSET = 175;
         private Vector2 m_StatusBackgroundPosition;
@@ -35,23 +27,14 @@ namespace GameName1
         private float GameWidth;
         private float GameHeight;
         
-        private Rectangle m_FireButtonRec;
-        private Vector2 m_FireButtonScale;
-        public static Rectangle StopButtonRec;
-        private Vector2 m_StopButtonScale;
-        private Rectangle WeaponSlotRec;
-        private Vector2 WeaponSlotScale;
-        private Vector2 ThumbStickPoint;
+
+        //private Vector2 ThumbStickPoint;
         //how much the thumbstick is currently offset from the center in pixels
         public static Vector2 ThumbStickPointOffset;
-        private int ThumbStickPointId;
-        private bool ThumbStickPressed;
+        //private int ThumbStickPointId;
+        //private bool ThumbStickPressed;
         private SpriteFont ColunaFont;
         //public static float ThumbStickAngle;
-        private Rectangle m_TurnLeftRec;
-        private Rectangle m_TurnRightRec;
-        private Texture2D TurnLeftTex;
-        private Texture2D TurnRightTex;
         public static float RotationDelta;
 
         private int BackGroundHueCounter = -250;
@@ -76,8 +59,6 @@ namespace GameName1
             m_SpriteFont = content.Load<SpriteFont>("Retrofont");
             ColunaFont = content.Load<SpriteFont>("ColunaFont");
             m_FireButton = content.Load<Texture2D>("FireBtn");
-            m_ThumbStickBottomTexture = content.Load<Texture2D>("ThumbstickBottom");
-            m_ThumbStickTopTexture = content.Load<Texture2D>("ThumbstickTop");
 
             m_StatusBackgroundPosition = new Vector2(0, 0);
             m_StatusBackGroundScale = Utilities.GetSpriteScaling(new Vector2(OFFSET, height), new Vector2(m_StatusBackground.Width, m_StatusBackground.Height));
@@ -85,30 +66,8 @@ namespace GameName1
             GameWidth = width;
             GameHeight = height;
             m_Background = content.Load<Texture2D>("Louis-game-backgroundFULL");
-            //m_Background = content.Load<Texture2D>("Louis-game-background");
-            //FireButtonPosition = new Vector2((PlayfieldBottom/2)  - (m_FireButton.Width/2), GameHeight - m_FireButton.Height - 150);
-            FireButtonPosition = new Vector2(0, GameHeight - m_FireButton.Height - 150);
-            StopButtonPosition = new Vector2(FireButtonPosition.X, 60);
-            m_FireButtonRec = new Rectangle((int)FireButtonPosition.X, (int)FireButtonPosition.Y, PlayfieldBottom, 300);
-            m_FireButtonScale = Utilities.GetSpriteScaling(new Vector2(m_FireButtonRec.Width, m_FireButtonRec.Height), new Vector2(m_FireButton.Width, m_FireButton.Height));
-            StopButtonRec = new Rectangle((int)StopButtonPosition.X, (int)StopButtonPosition.Y, PlayfieldBottom, PlayfieldBottom);
-            m_StopButtonScale = Utilities.GetSpriteScaling(new Vector2(StopButtonRec.Width, StopButtonRec.Height), new Vector2(m_ThumbStickBottomTexture.Width, m_ThumbStickBottomTexture.Height));
-            //scaling from double playFieldBottom so that it is square
-            WeaponSlotScale = Utilities.GetSpriteScaling(new Vector2(PlayfieldBottom, PlayfieldBottom), new Vector2(m_FireButton.Width, m_FireButton.Height));
-            WeaponSlotPosition = new Vector2(FireButtonPosition.X + ((m_FireButton.Width*WeaponSlotScale.X)/2), StopButtonPosition.Y + StopButtonRec.Height + 150 + ((m_FireButton.Height*WeaponSlotScale.Y)/2));
-            WeaponSlotRec = new Rectangle((int)(WeaponSlotPosition.X - ((m_FireButton.Width*WeaponSlotScale.X)/2)), (int)(WeaponSlotPosition.Y - ((m_FireButton.Height*WeaponSlotScale.Y)/2)), PlayfieldBottom, PlayfieldBottom);
-            ThumbStickPressed = false;
-            ThumbStickPoint = StopButtonPosition;
+
             ActiveGibs.Clear();
-
-            int turnButtonWidth = (int)Math.Floor(GameWidth * .2);
-            m_TurnLeftRec = new Rectangle((int)Math.Floor(GameWidth * .07), 
-                (int)Math.Floor(GameHeight * .05), turnButtonWidth, turnButtonWidth);
-
-            m_TurnRightRec = new Rectangle((int)Math.Floor(GameWidth * .07),
-                (int)GameHeight - (int)Math.Floor(GameHeight * .05) - turnButtonWidth, turnButtonWidth, turnButtonWidth);
-            TurnLeftTex = TextureBank.GetTexture("rotate_left-128");
-            TurnRightTex = TextureBank.GetTexture("rotate_right-128");
 
             Vector2 viewport = new Vector2(GameWidth, GameHeight);
             Vector2 textSize = ColunaFont.MeasureString("00:00:00");
@@ -158,8 +117,6 @@ namespace GameName1
 
         public void ProcessInput(Player p, TouchCollection input)
         {
-            m_FireButtonColor = Color.White;
-            m_StopButtonColor = Color.White;
             p.Moving = true;
             bool isFireDown = false;
             bool isStopDown = false;
@@ -223,15 +180,6 @@ namespace GameName1
             foreach (TouchLocation touch in input)
             {
                 Vector2 vec = touch.Position;
-                
-                //if (Utilities.PointIntersectsRectangle(vec, m_TurnLeftRec))
-                //{
-                //    RotationDelta = (float)(Math.PI *(-7 / 180.0));
-                //}
-                //else if (Utilities.PointIntersectsRectangle(vec, m_TurnRightRec))
-                //{
-                //    RotationDelta = (float)(Math.PI * (7 / 180.0));
-                //}
 
                 if (vec.X > GameWidth / 2)
                 {

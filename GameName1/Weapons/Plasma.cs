@@ -28,7 +28,7 @@ namespace GameName1
             Name = "Plasma";
             Spread = (float)Math.PI / 6;
             NumberOfBullets = 1;
-            FireRate = 3;
+            FireRate = 5;
             m_SightRange = 400;
             Knockback = 250f;
             CanMoveWhileShooting = true;

@@ -374,17 +374,17 @@ namespace GameName1
                 case PlayerState.Normal:
                     if (IsStopDown)
                     {
-                        Vector2 aimScale = Utilities.GetSpriteScaling(new Vector2(UI.StopButtonRec.Width, UI.StopButtonRec.Height), new Vector2(AimCircleTexture.Width, AimCircleTexture.Height));
-                        Texture2D temp;
-                        if (UI.ThumbStickPointOffset.LengthSquared() > (UI.StopButtonRec.Width / 2) * (UI.StopButtonRec.Width / 2))
-                        {
-                            temp = AimCircleRedTexture;
-                        }
-                        else
-                        {
-                            temp = AimCircleTexture;
-                        }
-                        _spriteBatch.Draw(temp, Position, null, Color.White, 0.0f, new Vector2(AimCircleTexture.Width / 2, AimCircleTexture.Height / 2), aimScale, SpriteEffects.None, 0);
+                        //Vector2 aimScale = Utilities.GetSpriteScaling(new Vector2(UI.StopButtonRec.Width, UI.StopButtonRec.Height), new Vector2(AimCircleTexture.Width, AimCircleTexture.Height));
+                        //Texture2D temp;
+                        //if (UI.ThumbStickPointOffset.LengthSquared() > (UI.StopButtonRec.Width / 2) * (UI.StopButtonRec.Width / 2))
+                        //{
+                        //    temp = AimCircleRedTexture;
+                        //}
+                        //else
+                        //{
+                        //    temp = AimCircleTexture;
+                        //}
+                        //_spriteBatch.Draw(temp, Position, null, Color.White, 0.0f, new Vector2(AimCircleTexture.Width / 2, AimCircleTexture.Height / 2), aimScale, SpriteEffects.None, 0);
                     }
                     if ((m_PlayerState != PlayerState.Damaged) || (m_PlayerState == PlayerState.Damaged && CanDrawWhenFlashing()))
                     {
@@ -392,10 +392,10 @@ namespace GameName1
 
                         m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
                     }
-                    if (IsStopDown)
-                    {
-                        _spriteBatch.Draw(ReticuleTexture, Position + UI.ThumbStickPointOffset, null, Color.White, 0.0f, new Vector2(7, 7), 1.0f, SpriteEffects.None, 0);
-                    }
+                    //if (IsStopDown)
+                    //{
+                    //    //_spriteBatch.Draw(ReticuleTexture, Position + UI.ThumbStickPointOffset, null, Color.White, 0.0f, new Vector2(7, 7), 1.0f, SpriteEffects.None, 0);
+                    //}
                     break;
                 case PlayerState.Dead:
                     PlayDeathAnimation(_spriteBatch);
