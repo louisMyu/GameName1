@@ -49,7 +49,7 @@ namespace GameName1
 
             m_CurrentShotInfo = new SpriteInfo(playerCenter, playerVelocity, rotationAngle, NumberOfBullets, LeftAngle);
             
-            m_Bullets.RemoveAll(x => x.CanDelete || !x.IsAlive());
+            m_Bullets.RemoveAll(x => x.CanDelete);
             foreach (Bullet b in m_Bullets)
             {
                 b.Update(elapsedTime);
@@ -57,7 +57,7 @@ namespace GameName1
             //firing a shot, save the state
             if (shotFired && CanFire())
             {
-                Bullet temp = new Bullet(TextureBank.GetTexture("RepeaterBullet"), m_CurrentShotInfo, 40);
+                Bullet temp = new Bullet(m_CurrentShotInfo, 40);
                 temp.LoadContent();
                 m_Bullets.Add(temp);
                 m_ElapsedFrames = FireRate;

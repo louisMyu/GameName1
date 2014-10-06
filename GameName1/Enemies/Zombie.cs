@@ -197,7 +197,7 @@ namespace GameName1
         }
         public void DropItem()
         {
-            PowerUp p = new WeaponPowerUp(WeaponPowerUp.WeaponType.Shotgun);
+            PowerUp p = new WeaponPowerUp(WeaponPowerUp.WeaponType.Plasma);
             p.Position = Position;
             p.LoadContent();
             ObjectManager.PowerUpItems.Add(p);

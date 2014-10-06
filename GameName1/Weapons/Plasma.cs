@@ -50,7 +50,7 @@ namespace GameName1
 
             m_CurrentShotInfo = new SpriteInfo(playerCenter, playerVelocity, rotationAngle, NumberOfBullets, LeftAngle);
             
-            m_Bullets.RemoveAll(x => x.CanDelete || !x.IsAlive());
+            m_Bullets.RemoveAll(x => x.CanDelete);
             foreach (Bullet b in m_Bullets)
             {
                 b.Update(elapsedTime);
@@ -58,7 +58,7 @@ namespace GameName1
             //firing a shot, save the state
             if (shotFired && CanFire())
             {
-                Bullet temp = new Bullet(TextureBank.GetTexture("PlasmaBullet"), m_CurrentShotInfo, 20);
+                Bullet temp = new Bullet(m_CurrentShotInfo, 10);
                 temp.LoadContent();
                 m_Bullets.Add(temp);
                 m_ElapsedFrames = FireRate;
@@ -89,7 +89,6 @@ namespace GameName1
                 hit = b.CheckCollision(ob);
                 if (hit)
                 {
-                    b.CanDelete = true;
                     IEnemy enemy;
                     if ((enemy = ob as IEnemy) != null)
                     {
@@ -118,14 +117,6 @@ namespace GameName1
             {
                 b.Draw(_spriteBatch);
             }
-            //if (m_FireAnimation.CanDraw())
-            //{
-            //}
-            //else if (Firing)
-            //{
-            //    Firing = false;
-            //    m_ElapsedFrames = FireRate;
-            //}
         }
         public override void LoadWeapon()
         {
@@ -190,15 +181,37 @@ namespace GameName1
     }
     public class Bullet : GameObject
     {
+        private enum BulletState
+        {
+            Flying,
+            Contact
+        }
+
+        private BulletState m_State;
         public int Velocity { get; set; }
         private Vector2 m_Heading;
-        //time in frames that this bullet will exist
-        private int Life;
+        private Vector2 m_InitialPosition;
         private Vector2 playerVelocity;
 
+        const string m_AnimationName = "PlasmaShotTravelAnimation";
+        AnimationTimer animationTimer;
         string[] textures;
         float[] intervals;
-        public bool canDraw;
+
+        private AnimationTimer PlasmaHitAnimationTimer;
+        private static Random r = new Random();
+        private Texture2D plasmaHitTexture = TextureBank.GetTexture(hitTextures[0]);
+        private const string m_HitAnimation = "PlastShotHitAnimation";
+        private static string[] hitTextures = { "plasmaShot\\plasmaShotHit01", "plasmaShot\\plasmaShotHit02", "plasmaShot\\plasmaShotHit03", "plasmaShot\\plasmaShotHit04", 
+                                                  "plasmaShot\\plasmaShotHit05", "plasmaShot\\plasmaShotHit06", "plasmaShot\\plasmaShotHit07", "plasmaShot\\plasmaShotHit08", 
+                                                  "plasmaShot\\plasmaShotHit09", "plasmaShot\\plasmaShotHit10", "plasmaShot\\plasmaShotHit11", "plasmaShot\\plasmaShotHit12" };
+        private static float[] hitIntervals = { 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
+    
+        private void HandlePlasmaHitAnimation(object o, AnimationTimerEventArgs e)
+        {
+            Texture = TextureBank.GetTexture(hitTextures[e.FrameIndex]);
+        }
+
         private void HandleAnimation(object o, AnimationTimerEventArgs e)
         {
             Texture = TextureBank.GetTexture(textures[e.FrameIndex]);
@@ -207,43 +220,97 @@ namespace GameName1
             Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
         }
 
-        //TODO: a bullet's life should be based on time or distance and not draw calls
-        public Bullet(Texture2D tex, SpriteInfo info, int vel) : base()
+        public Bullet(SpriteInfo info, int vel) : base()
         {
-            Texture = tex;
+            m_State = BulletState.Flying;
             Position = info.Position;
+            m_InitialPosition = Position;
+            //maybe this should just be a random rotation
             RotationAngle = info.Rotation;
             m_Heading = new Vector2((float)Math.Cos(RotationAngle), (float)Math.Sin(RotationAngle));
             Velocity = vel;
             playerVelocity = info.PlayerVelocity;
-            Life = 25;
+            textures = new string[8];
+            intervals = new float[8];
+            textures[0] = "plasmaShot\\plasmaShot1test";
+            textures[1] = "plasmaShot\\plasmaShot2test";
+            textures[2] = "plasmaShot\\plasmaShot3test";
+            textures[3] = "plasmaShot\\plasmaShot4test";
+            textures[4] = "plasmaShot\\plasmaShot5test";
+            textures[5] = "plasmaShot\\plasmaShot4test";
+            textures[6] = "plasmaShot\\plasmaShot3test";
+            textures[7] = "plasmaShot\\plasmaShot2test";
+
+            intervals[0] = 20;
+            intervals[1] = 20;
+            intervals[2] = 20;
+            intervals[3] = 20;
+            intervals[4] = 20;
+            intervals[5] = 20;
+            intervals[6] = 20;
+            intervals[7] = 20;
         }
 
         public override void LoadContent()
         {
+            int currentFrame = r.Next(8);
+            animationTimer = new AnimationTimer(intervals, m_AnimationName, HandleAnimation, true, currentFrame);
+            Texture = TextureBank.GetTexture(textures[currentFrame]);
             base.LoadContent();
         }
         public void Update(TimeSpan elapsedTime)
         {
-            --Life;
-            Move((Velocity * m_Heading)+playerVelocity, elapsedTime);
-            m_Bounds.X = (int)Position.X - Width / 2;
-            m_Bounds.Y = (int)Position.Y - Height / 2;
-        }
-        public bool IsAlive()
-        {
-            return Life > 0;
+            switch (m_State)
+            {
+                case BulletState.Flying:
+                    if (animationTimer != null)
+                    {
+                        animationTimer.Update(elapsedTime);
+                        if (animationTimer.Done)
+                        {
+                            animationTimer.IntervalOcccured -= HandleAnimation;
+                            animationTimer = null;
+                            CanDelete = true;
+                            return;
+                        }
+                    }
+                    float t = Vector2.DistanceSquared(Position, m_InitialPosition);
+                    if (t > 250000)
+                    {
+                        animationTimer.IntervalOcccured -= HandleAnimation;
+                        animationTimer = null;
+                        CanDelete = true;
+                        return;
+                    }
+                    Move((Velocity * m_Heading) + playerVelocity, elapsedTime);
+                    m_Bounds.X = (int)Position.X - Width / 2;
+                    m_Bounds.Y = (int)Position.Y - Height / 2;
+                break;
+            
+            
+                case BulletState.Contact:
+                    PlasmaHitAnimationTimer.Update(elapsedTime);
+                    if (PlasmaHitAnimationTimer.Done)
+                    {
+                        CanDelete = true;
+                    }
+                break;
+            }
         }
         public override void Draw(SpriteBatch _spriteBatch)
         {
             //base.Draw(_spriteBatch);
-            _spriteBatch.Draw(Texture, new Vector2(Bounds.X, Bounds.Y), null, Color.White, RotationAngle, new Vector2(Texture.Width/2, Texture.Height/2), 1.0f, SpriteEffects.None, 0f);
+            _spriteBatch.Draw(Texture, Position, null, Color.White, RotationAngle, Origin, 1.0f, SpriteEffects.None, 0f);
         }
 
         public bool CheckCollision(GameObject ob)
         {
-            if (Bounds.Intersects(ob.Bounds))
+            if (Bounds.Intersects(ob.Bounds) && m_State == BulletState.Flying)
             {
+                PlasmaHitAnimationTimer = new AnimationTimer(hitIntervals, m_HitAnimation, HandlePlasmaHitAnimation, false);
+                Texture = TextureBank.GetTexture(hitTextures[0]);
+                //play the bullet explosion animation here, make sure to remove bounds, it should be fast enough that nothing clips
+                m_State = BulletState.Contact;
                 return true;
             }
             return false;

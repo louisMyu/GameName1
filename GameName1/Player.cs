@@ -26,6 +26,8 @@ namespace GameName1
             Damaged,
             Dead
         }
+        //where the weapon shot originates from, rotates with the player
+        Vector2 m_WeaponShotPoint;
         [IgnoreDataMember]
         public static readonly string playerSaveDir = "playerDir";
         [IgnoreDataMember]
@@ -328,7 +330,7 @@ namespace GameName1
                         {
                             //RotationAngle += UI.RotationDelta;
 
-                                RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
+                               RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
                             
                         }
                     }
@@ -350,7 +352,13 @@ namespace GameName1
                     }
                     ObjectManager.GetCell(Position).Add(this);
                     Vector2 playerVel = m_Moving ? m_MoveToward : new Vector2(0, 0);
-                    m_Weapon.Update(Position, playerVel, RotationAngle, 10, isFireButtonDown, elapsedTime);
+
+
+
+                    Matrix rotMatrix = Matrix.CreateRotationZ(RotationAngle);
+                    Vector2 offsetFromPlayer = new Vector2(Texture.Width/2, 0);
+                    m_WeaponShotPoint = Position + Vector2.Transform(offsetFromPlayer, rotMatrix);
+                    m_Weapon.Update(m_WeaponShotPoint, playerVel, RotationAngle, 10, isFireButtonDown, elapsedTime);
                     break;
                 case PlayerState.Dead:
                     //update animation logic for playing death animation
