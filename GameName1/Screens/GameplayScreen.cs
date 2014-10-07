@@ -262,6 +262,10 @@ namespace GameName1
                 GraphicsDevice device = ScreenManager.GraphicsDevice;
                 device.SetRenderTarget(backgroundTexture);
                 spriteBatch.Begin();
+                if (UserInterface.TimeAlmostOut)
+                {
+                    UserInterface.DrawSkullBackground(spriteBatch);
+                }
                 UserInterface.DrawBakedGibs(spriteBatch);
                 spriteBatch.End();
                 // TODO: this game isn't very fun! You could probably improve

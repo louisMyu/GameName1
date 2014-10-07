@@ -15,7 +15,6 @@ namespace GameName1
         private TimeSpan TimeToDeath;
         private Texture2D m_StatusBackground;
         public static SpriteFont m_SpriteFont;
-        private Texture2D m_FireButton;
 
 
         public static int OFFSET = 175;
@@ -26,7 +25,9 @@ namespace GameName1
         public int PlayfieldBottom;
         private float GameWidth;
         private float GameHeight;
-        
+
+        private Texture2D m_HeartTexture;
+        private Texture2D m_SkullBackground;
 
         //private Vector2 ThumbStickPoint;
         //how much the thumbstick is currently offset from the center in pixels
@@ -48,6 +49,7 @@ namespace GameName1
 
         private List<ExplodedPart> BakedGibs = new List<ExplodedPart>();
         public static List<ExplodedPart> ActiveGibs = new List<ExplodedPart>();
+        public bool TimeAlmostOut;
 
         public UI()
         {
@@ -55,10 +57,10 @@ namespace GameName1
 
         public void LoadContent(ContentManager content, float width, float height)
         {
+            TimeAlmostOut = false;
             m_StatusBackground = content.Load<Texture2D>("Line");
             m_SpriteFont = content.Load<SpriteFont>("Retrofont");
             ColunaFont = content.Load<SpriteFont>("ColunaFont");
-            m_FireButton = content.Load<Texture2D>("FireBtn");
 
             m_StatusBackgroundPosition = new Vector2(0, 0);
             m_StatusBackGroundScale = Utilities.GetSpriteScaling(new Vector2(OFFSET, height), new Vector2(m_StatusBackground.Width, m_StatusBackground.Height));
@@ -81,10 +83,13 @@ namespace GameName1
             CountdownPosition = textPosition;
             CountdownOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
 
+            m_HeartTexture = TextureBank.GetTexture("Heart50x45");
+            m_SkullBackground = TextureBank.GetTexture("isolatedSkullBGtest");
         }
 
         public void Update(TimeSpan elapsedTime)
         {
+            TimeAlmostOut = false;
             m_Period = MAX_PERIOD;
             //if (timeToDeath.Seconds <= OSCILLATE_START)
             //{
@@ -92,11 +97,15 @@ namespace GameName1
             //}
             if (TimeToDeath.TotalSeconds <= OSCILLATE_START)
             {
-                m_Period = MIN_PERIOD;
+                TimeAlmostOut = true;
             }
             if (BackGroundHueCounter >= m_Period + 1)
             {
                 BackGroundHueCounter = 0;
+            }
+            if (TimeAlmostOut)
+            {
+                m_Period = MIN_PERIOD;
             }
             int delta = (int)(Math.Sin(BackGroundHueCounter * 2 * Math.PI / m_Period) * (SCALE / 2) + (SCALE / 2));
             ++BackGroundHueCounter;
@@ -197,7 +206,8 @@ namespace GameName1
 
         public void Draw(SpriteBatch spriteBatch, Player p)
         {
-            //spriteBatch.Draw(m_StatusBackground, m_StatusBackgroundPosition, null, Color.White, 0.0f, new Vector2(0.0f,0.0f), m_StatusBackGroundScale, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(m_HeartTexture, new Vector2(m_HeartTexture.Width / 2, m_HeartTexture.Height / 2), null, Color.White, 0,
+                new Vector2(m_HeartTexture.Width / 2, m_HeartTexture.Height / 2), new Vector2(1,1),SpriteEffects.None, 0f);
             ////TODO CHANGE THE MAGIC NUMBERS HERE                                                          \/\/\/
             //spriteBatch.DrawString(m_SpriteFont, "Life: " + p.LifeTotal, new Vector2(PlayfieldBottom - 50, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
             //spriteBatch.DrawString(m_SpriteFont, "XP: " + p.Score, new Vector2(PlayfieldBottom - 80, GameHeight - 550), Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(0, 0), 1f, SpriteEffects.None, 0.0f);
@@ -206,22 +216,12 @@ namespace GameName1
             
             //spriteBatch.Draw(m_ThumbStickTopTexture, ThumbStickPoint, null, Color.White, 0.0f, new Vector2(0, 0), m_StopButtonScale, SpriteEffects.None, 0);
 
-            //if (p.WeaponSlot1Magic != null)
-            //{
-            //    Texture2D tempTex = p.WeaponSlot1Magic.Texture;
-            //    Vector2 tempScale = Utilities.GetSpriteScaling(new Vector2(WeaponSlotRec.Width, WeaponSlotRec.Height), new Vector2(tempTex.Width, tempTex.Height));
-            //    spriteBatch.Draw(tempTex, WeaponSlotPosition, null, m_Weapon1ButtonColor, Utilities.DegreesToRadians(90.0f), new Vector2(tempTex.Width / 2, tempTex.Height / 2), tempScale, SpriteEffects.None, 0);
-            //}
-            //else
-            //{
-            //    spriteBatch.Draw(m_FireButton, WeaponSlotPosition, null, Color.White, Utilities.DegreesToRadians(90.0f), new Vector2(m_FireButton.Width / 2, m_FireButton.Height / 2), WeaponSlotScale, SpriteEffects.None, 0);
-            //}
+
             if (p.DrawRedFlash)
             {
                 spriteBatch.Draw(p.RedFlashTexture, new Vector2(PlayfieldBottom, 0), null, Color.White, 0, new Vector2(0,0),Utilities.GetSpriteScaling(new Vector2(GameWidth-PlayfieldBottom, GameHeight), new Vector2(p.RedFlashTexture.Width, p.RedFlashTexture.Height)) ,SpriteEffects.None, 0);
             }
-            //spriteBatch.Draw(TurnLeftTex, m_TurnLeftRec, Color.White);
-            //spriteBatch.Draw(TurnRightTex, m_TurnRightRec, Color.Wheat);
+
         }
         public void DrawBackground(SpriteBatch spriteBatch)
         {
@@ -271,6 +271,10 @@ namespace GameName1
         public void DrawMainMenu(SpriteBatch spriteBatch)
         {
             
+        }
+        public void DrawSkullBackground(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(m_SkullBackground, new Vector2(0, 0), null, Color.White, 0.0f, new Vector2(0, 0), new Vector2(1, 1), SpriteEffects.None, 0.0f);
         }
     }
 }

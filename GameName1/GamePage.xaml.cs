@@ -10,7 +10,6 @@ using Microsoft.Phone.Shell;
 using Microsoft.Xna.Framework;
 using MonoGame.Framework.WindowsPhone;
 using GameName1.Resources;
-
 namespace GameName1
 {
     public partial class GamePage : PhoneApplicationPage
@@ -23,7 +22,7 @@ namespace GameName1
             InitializeComponent();
 
             _game = XamlGame<Game1>.Create("", this);
-
+            
             // Sample code to localize the ApplicationBar
             //BuildLocalizedApplicationBar();
         }
