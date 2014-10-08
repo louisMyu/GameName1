@@ -89,6 +89,7 @@ namespace GameName1
 
         public void Update(TimeSpan elapsedTime)
         {
+
             TimeAlmostOut = false;
             m_Period = MAX_PERIOD;
             //if (timeToDeath.Seconds <= OSCILLATE_START)
