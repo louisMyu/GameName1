@@ -262,6 +262,7 @@ namespace GameName1
                 GraphicsDevice device = ScreenManager.GraphicsDevice;
                 device.SetRenderTarget(backgroundTexture);
                 spriteBatch.Begin();
+                UserInterface.DrawBackground(spriteBatch);
                 if (UserInterface.TimeAlmostOut)
                 {
                     UserInterface.DrawSkullBackground(spriteBatch);
