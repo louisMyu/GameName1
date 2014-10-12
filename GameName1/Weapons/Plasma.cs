@@ -150,33 +150,29 @@ namespace GameName1
                 UI.ActiveGibs.Add(gib);
             }
         }
-        private static WeaponStats WeaponStats = new WeaponStats();
-        public override WeaponStats GetWeaponStats()
+        public override void SetWeaponStats(int level)
         {
-            return WeaponStats;
-        }
-        public override void SetWeaponStats()
-        {
-            switch (WeaponStats.WeaponLevel)
+            if (WeaponStatistics == null)
             {
-                case 0:
-                    WeaponStats.WeaponDamage = 10;
-                    WeaponStats.NextUpgradeCost = 100;
-                    break;
+                WeaponStatistics = new WeaponStats();
+            }
+            WeaponStatistics.WeaponLevel = level;
+            switch (level)
+            {
                 case 1:
-                    WeaponStats.WeaponDamage = 15;
-                    WeaponStats.NextUpgradeCost = 200;
+                    WeaponStatistics.WeaponDamage = 5;
                     break;
                 case 2:
-                    WeaponStats.WeaponDamage = 25;
-                    WeaponStats.NextUpgradeCost = 500;
+                    WeaponStatistics.WeaponDamage = 7;
+                    break;
+                case 3:
+                    WeaponStatistics.WeaponDamage = 10;
                     break;
             }
         }
-        public override void UpgradeWeaponStats()
+        public override void UpgradeWeaponLevel()
         {
-            WeaponStats.WeaponLevel++;
-            SetWeaponStats();
+            SetWeaponStats(++WeaponStatistics.WeaponLevel);
         }
     }
     public class Bullet : GameObject

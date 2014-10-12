@@ -64,7 +64,7 @@ namespace GameName1
             {
                 m_BulletLines.Add(new Line());
             }
-            m_ShotgunDamage = WeaponStats.WeaponDamage;
+            m_ShotgunDamage = WeaponStatistics.WeaponDamage;
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
@@ -210,38 +210,36 @@ namespace GameName1
                 UI.ActiveGibs.Add(gib);
             }
         }
+        #region WeaponStat overrides
         public override void ApplyKickback(Player player)
         {
             Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -215;
             player.ApplyLinearForce(temp);
         }
-        private static WeaponStats WeaponStats = new WeaponStats();
-        public override WeaponStats GetWeaponStats()
+        public override void SetWeaponStats(int level)
         {
-            return WeaponStats;
-        }
-        public override void SetWeaponStats()
-        {
-            switch (WeaponStats.WeaponLevel)
+            if (WeaponStatistics == null)
             {
-                case 0:
-                    WeaponStats.WeaponDamage = 5;
-                    WeaponStats.NextUpgradeCost = 100;
-                    break;
+                WeaponStatistics = new WeaponStats();
+            }
+            WeaponStatistics.WeaponLevel = level;
+            switch (level)
+            {
                 case 1:
-                    WeaponStats.WeaponDamage = 10;
-                    WeaponStats.NextUpgradeCost = 200;
+                    WeaponStatistics.WeaponDamage = 10;
                     break;
                 case 2:
-                    WeaponStats.WeaponDamage = 200;
-                    WeaponStats.NextUpgradeCost = 500;
+                    WeaponStatistics.WeaponDamage = 15;
+                    break;
+                case 3:
+                    WeaponStatistics.WeaponDamage = 20;
                     break;
             }
         }
-        public override void UpgradeWeaponStats()
+        public override void UpgradeWeaponLevel()
         {
-            WeaponStats.WeaponLevel++;
-            SetWeaponStats();
+            SetWeaponStats(++WeaponStatistics.WeaponLevel);
         }
+        #endregion
     }
 }

@@ -76,8 +76,6 @@ namespace GameName1
                 // Create a new SpriteBatch, which can be used to draw textures.
                 _spriteBatch = new SpriteBatch(GraphicsDevice);
                 m_ScreenManager.LoadContent(GraphicsDevice, _spriteBatch);
-                
-                UpgradeMenuScreen.LoadUpgradeFields();
             // TODO: use this.Content to load your game content here
         }
 

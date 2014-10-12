@@ -144,6 +144,7 @@ namespace GameName1
                             }
                             m_PowerupPickupSound = ((PowerUp)ob).GetPickupSound();
                             m_PowerupPickupSound.Play();
+                            //cheat powerups will always be instant now
                             if (ob is CheatPowerUp)
                             {
                                 CheatPowerUp temp = ob as CheatPowerUp;

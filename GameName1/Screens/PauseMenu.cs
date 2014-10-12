@@ -52,7 +52,7 @@ namespace GameName1
         /// </summary>
         void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            ScreenManager.AddScreen(new UpgradeMenuScreen(), null);
+            //ScreenManager.AddScreen(new UpgradeMenuScreen(), null);
         }
 
 
