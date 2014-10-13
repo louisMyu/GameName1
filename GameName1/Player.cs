@@ -42,7 +42,7 @@ namespace GameName1
         [DataMember]
         public Vector2 MoveToward { get { return m_MoveToward; } set { m_MoveToward = value; } }
         [IgnoreDataMember]
-        private Weapon m_Weapon {get;set;}
+        private List<Weapon> m_Weapons {get;set;}
         [DataMember]
         public Weapon Weapon { get { return m_Weapon; } set { m_Weapon = value; } }
         [IgnoreDataMember]
