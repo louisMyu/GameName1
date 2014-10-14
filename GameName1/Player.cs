@@ -277,14 +277,17 @@ namespace GameName1
                         if (cheat == null) continue;
                         cheat.Update(this);
                     }
-                    if (!KickedBack && isFireButtonDown && m_Weapon.CanFire())
+                    foreach (Weapon weapon in m_Weapons)
                     {
-                        KickedBack = true;
-                        Weapon.ApplyKickback(this);
-                    }
-                    if (!m_Weapon.Firing && KickedBack)
-                    {
-                        KickedBack = false;
+                        if (!KickedBack && isFireButtonDown && weapon.CanFire())
+                        {
+                            KickedBack = true;
+                            Weapon.ApplyKickback(this);
+                        }
+                        if (!weapon.Firing && KickedBack)
+                        {
+                            KickedBack = false;
+                        }
                     }
                     m_Moving = true;
                     ObjectManager.GetCell(Position).Remove(this);
