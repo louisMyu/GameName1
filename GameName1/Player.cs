@@ -342,7 +342,6 @@ namespace GameName1
                     {
                         m_Moving = false;
                     }
-
                     if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
                     {
                         Move(m_MoveToward, elapsedTime);
