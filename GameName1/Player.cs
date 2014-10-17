@@ -175,20 +175,21 @@ namespace GameName1
         //check if our weapon hit anything
         public void CheckWeaponHits()
         {
-            if (m_Weapon.Firing || m_Weapon.BulletsExist)
-            {
-
-                foreach (GameObject ob in ObjectManager.AllGameObjects)
+            foreach (Weapon w in m_Weapons) {
+                if (w.Firing || w.BulletsExist)
                 {
-                    if (ob is PowerUp)
+                    foreach (GameObject ob in ObjectManager.AllGameObjects)
                     {
-                        continue;
-                    }
-                    //this probably should check for collision only when firing
-                    //that way the bullet lines wont update to the next person while a shot is going off
-                    if (m_Weapon.CheckCollision(ob))
-                    {
-                        ++Score;
+                        if (ob is PowerUp)
+                        {
+                            continue;
+                        }
+                        //this probably should check for collision only when firing
+                        //that way the bullet lines wont update to the next person while a shot is going off
+                        if (w.CheckCollision(ob))
+                        {
+                            ++Score;
+                        }
                     }
                 }
             }
@@ -198,8 +199,10 @@ namespace GameName1
             m_InitialPosition = Position;
             Texture = TextureBank.GetTexture("Player");
             base.LoadContent();
-            m_Weapon.LoadContent();
-
+            foreach (Weapon w in m_Weapons)
+            {
+                w.LoadContent();
+            }
             _circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(Position));
             _circleBody.BodyType = BodyType.Dynamic;
             _circleBody.Mass = 4f;
