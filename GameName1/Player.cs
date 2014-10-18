@@ -211,6 +211,7 @@ namespace GameName1
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
             }
+
             ReticuleTexture = TextureBank.GetTexture("Reticule");
             AimCircleTexture = TextureBank.GetTexture("AimRing");
             AimCircleRedTexture = TextureBank.GetTexture("AimRingRed");
