@@ -36,15 +36,14 @@ namespace GameName1
         //how many frames of invincible to occur when player is damaged
         private const int INVINCIBLE_FRAMES = 100;
         //how many frames to wait until a flash occurs when being hit, done via modulo
+        //this should be based on time, not that bad to change
         private const int INVINCIBLE_FLASH_FRAME = 15;
         [IgnoreDataMember]
         public Vector2 m_MoveToward = new Vector2();
         [DataMember]
         public Vector2 MoveToward { get { return m_MoveToward; } set { m_MoveToward = value; } }
         [IgnoreDataMember]
-        private List<Weapon> m_Weapons {get;set;}
-        [DataMember]
-        public Weapon Weapon { get { return m_Weapon; } set { m_Weapon = value; } }
+        private List<Weapon> m_Weapons;
         [IgnoreDataMember]
         private bool m_Moving = false;
         [DataMember]
@@ -68,9 +67,6 @@ namespace GameName1
         public bool IsStopDown { get; set; }
         public Body _circleBody;
 
-        private Texture2D ReticuleTexture;
-        private Texture2D AimCircleTexture;
-        private Texture2D AimCircleRedTexture;
         public Texture2D RedFlashTexture;
 
         public bool DrawRedFlash;
@@ -82,7 +78,7 @@ namespace GameName1
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Player player)
         {
-            m_Weapon = player.m_Weapon;
+            m_Weapons = player.m_Weapons;
             Position = player.Position;
             isFireButtonDown = player.isFireButtonDown;
             LifeTotal = player.LifeTotal;
@@ -91,7 +87,8 @@ namespace GameName1
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
         {
-            m_Weapon = new Shotgun();
+            m_Weapons = new List<Weapon>();
+            m_Weapons.Add(new Shotgun());
             Position = pos;
             isFireButtonDown = false;
             MaxLife = 100;
@@ -162,9 +159,12 @@ namespace GameName1
                             }
                             if (ob is WeaponPowerUp)
                             {
-                                Weapon weapon = WeaponPowerUp.GetWeaponType((WeaponPowerUp)ob);
-                                weapon.LoadContent();
-                                m_Weapon = weapon;
+                                if (m_Weapons.Count < 4)
+                                {
+                                    Weapon weapon = WeaponPowerUp.GetWeaponType((WeaponPowerUp)ob);
+                                    weapon.LoadContent();
+                                    m_Weapons.Add(weapon);
+                                }
                             }
                             ObjectManager.RemoveObject(ob);
                         }
@@ -211,10 +211,6 @@ namespace GameName1
             {
                 _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
             }
-
-            ReticuleTexture = TextureBank.GetTexture("Reticule");
-            AimCircleTexture = TextureBank.GetTexture("AimRing");
-            AimCircleRedTexture = TextureBank.GetTexture("AimRingRed");
             RedFlashTexture = TextureBank.GetTexture("RED");
         }
 
@@ -286,7 +282,7 @@ namespace GameName1
                         if (!KickedBack && isFireButtonDown && weapon.CanFire())
                         {
                             KickedBack = true;
-                            Weapon.ApplyKickback(this);
+                            weapon.ApplyKickback(this);
                         }
                         if (!weapon.Firing && KickedBack)
                         {
@@ -320,40 +316,40 @@ namespace GameName1
                         {
                             m_MoveToward = new Vector2(MathHelper.Clamp(acceleration.X * 30, -(Math.Abs(acceleration.X) * VELOCITY), Math.Abs(acceleration.X) * VELOCITY),
                                                         -1 * MathHelper.Clamp(acceleration.Y * 30, -(Math.Abs(acceleration.Y) * VELOCITY), Math.Abs(acceleration.Y) * VELOCITY));
-                            if (!m_Weapon.Firing)
-                            {
-                                //dont apply rotation unless tilt amount is greater than a threshold
-                                //if (!IsStopDown)
-                                //{
-                                //    RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
-                                //}
-                                //RotationAngle = UI.ThumbStickAngle;
-                            }
+                            //if (!m_Weapon.Firing)
+                            //{
+                            //    //dont apply rotation unless tilt amount is greater than a threshold
+                            //    //if (!IsStopDown)
+                            //    //{
+                            //    //    RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
+                            //    //}
+                            //    //RotationAngle = UI.ThumbStickAngle;
+                            //}
                         }
                         else
                         {
                             m_MoveToward = new Vector2(0, 0);
                         }
-                        if (!m_Weapon.Firing)
+                        foreach (Weapon w in m_Weapons)
                         {
-                            //RotationAngle += UI.RotationDelta;
+                            if (!w.Firing)
+                            {
+                                //RotationAngle += UI.RotationDelta;
 
-                               RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
-                            
+                                RotationAngle = (float)Math.Atan2(-acceleration.Y, acceleration.X);
+
+                            }
                         }
                     }
                     if (IsStopDown)
                     {
                         m_Moving = false;
                     }
-                    if (m_Moving && m_Weapon.Firing && m_Weapon.CanMoveWhileShooting)
+                    if (m_Moving)
                     {
                         Move(m_MoveToward, elapsedTime);
                     }
-                    else if (m_Moving && !m_Weapon.Firing)
-                    {
-                        Move(m_MoveToward, elapsedTime);
-                    }
+
                     if (!float.IsNaN(this.Position.X) && !float.IsNaN(this.Position.Y))
                     {
                         _circleBody.Position = ConvertUnits.ToSimUnits(this.Position);
@@ -366,7 +362,10 @@ namespace GameName1
                     Matrix rotMatrix = Matrix.CreateRotationZ(RotationAngle);
                     Vector2 offsetFromPlayer = new Vector2(Texture.Width/2, 0);
                     m_WeaponShotPoint = Position + Vector2.Transform(offsetFromPlayer, rotMatrix);
-                    m_Weapon.Update(m_WeaponShotPoint, playerVel, RotationAngle, 10, isFireButtonDown, elapsedTime);
+                    foreach (Weapon w in m_Weapons)
+                    {
+                        w.Update(m_WeaponShotPoint, playerVel, RotationAngle, 10, isFireButtonDown, elapsedTime);
+                    }
                     break;
                 case PlayerState.Dead:
                     //update animation logic for playing death animation
@@ -397,8 +396,10 @@ namespace GameName1
                     if ((m_PlayerState != PlayerState.Damaged) || (m_PlayerState == PlayerState.Damaged && CanDrawWhenFlashing()))
                     {
                         base.Draw(_spriteBatch);
-
-                        m_Weapon.DrawBlast(_spriteBatch, Position, RotationAngle);
+                        foreach (Weapon w in m_Weapons)
+                        {
+                            w.DrawBlast(_spriteBatch, Position, RotationAngle);
+                        }
                     }
                     //if (IsStopDown)
                     //{
@@ -423,7 +424,7 @@ namespace GameName1
             Player p = Storage.Load<Player>(Player.playerSaveDir, "player1");
             if (p != null)
             {
-                p.m_Weapon.LoadWeapon();
+                p.LoadWeapons();
             }
             p._circleBody = BodyFactory.CreateCircle(world, ConvertUnits.ToSimUnits(35 / 2f), 1f, ConvertUnits.ToSimUnits(p.Position));
             p._circleBody.BodyType = BodyType.Dynamic;
@@ -435,12 +436,19 @@ namespace GameName1
             }
             return p;
         }
+        public void LoadWeapons()
+        {
+            foreach (Weapon w in m_Weapons)
+            {
+                w.LoadWeapon();
+            }
+        }
         public static Player Load(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             Player p = Storage.Load<Player>(Player.playerSaveDir, "player1");
             if (p != null)
             {
-                p.m_Weapon.LoadWeapon();
+                p.LoadWeapons();
             }
             return p;
         }

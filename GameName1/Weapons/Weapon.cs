@@ -17,8 +17,6 @@ namespace GameName1
         public string Name;
         protected SoundEffectInstance m_ShotSound;
         [DataMember]
-        public bool CanMoveWhileShooting { get; set; }
-        [DataMember]
         public float Knockback { get; set; }
         [IgnoreDataMember]
         protected int m_SightRange;

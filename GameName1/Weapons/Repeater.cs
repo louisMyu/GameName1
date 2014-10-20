@@ -30,7 +30,6 @@ namespace GameName1
             FireRate = 5;
             m_SightRange = 400;
             Knockback = 250f;
-            CanMoveWhileShooting = true;
             Firing = false;
         }
 

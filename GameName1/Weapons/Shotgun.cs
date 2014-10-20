@@ -53,7 +53,6 @@ namespace GameName1
             blast4String = "Shotgun-Blast-4";
             SightRange = 100;
             Knockback = 1000f;
-            CanMoveWhileShooting = true;
             BulletsExist = false;
         }
 
@@ -64,7 +63,8 @@ namespace GameName1
             {
                 m_BulletLines.Add(new Line());
             }
-            m_ShotgunDamage = WeaponStatistics.WeaponDamage;
+            m_ShotgunDamage = 10;
+            //m_ShotgunDamage = WeaponStatistics.WeaponDamage;
         }
         //foreach line of the shotgun i need to update the lines based on the player center,
         //and rotate it and give it length, then update the graphical lines
@@ -213,7 +213,7 @@ namespace GameName1
         #region WeaponStat overrides
         public override void ApplyKickback(Player player)
         {
-            Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -215;
+            Vector2 temp = new Vector2((float)Math.Cos(player.RotationAngle), (float)Math.Sin(player.RotationAngle)) * -100;
             player.ApplyLinearForce(temp);
         }
         public override void SetWeaponStats(int level)

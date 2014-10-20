@@ -43,7 +43,6 @@ namespace GameName1
             shotString2 = "rifle2";
             m_SightRange = 400;
             Knockback = 250f;
-            CanMoveWhileShooting = false;
             BulletsExist = false;
         }
 
