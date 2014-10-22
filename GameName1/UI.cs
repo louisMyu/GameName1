@@ -84,7 +84,7 @@ namespace GameName1
             CountdownOrigin = new Vector2(textSize.X / 2, textSize.Y / 2);
 
             m_HeartTexture = TextureBank.GetTexture("Heart50x45");
-            m_SkullBackground = TextureBank.GetTexture("isolatedSkullBGtest");
+            m_SkullBackground = TextureBank.GetTexture("isolatedSkullBG01");
         }
 
         public void Update(TimeSpan elapsedTime)

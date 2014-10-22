@@ -357,8 +357,6 @@ namespace GameName1
                     ObjectManager.GetCell(Position).Add(this);
                     Vector2 playerVel = m_Moving ? m_MoveToward : new Vector2(0, 0);
 
-
-
                     Matrix rotMatrix = Matrix.CreateRotationZ(RotationAngle);
                     Vector2 offsetFromPlayer = new Vector2(Texture.Width/2, 0);
                     m_WeaponShotPoint = Position + Vector2.Transform(offsetFromPlayer, rotMatrix);

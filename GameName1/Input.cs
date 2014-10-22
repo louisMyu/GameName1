@@ -16,11 +16,12 @@ namespace GameName1
     {
         public static bool UseAccelerometer = true;
         public static Accelerometer accelerometer;
-        public static float AccelerometerAlpha = 0.45f;
+        public static float AccelerometerAlpha = 0.35f;
+        public static float AccelerometerThreshold = 0.1f;
         public static Vector3 CurrentAccelerometerValues { get; set; }
         public static float Tilt_Threshold = 0.0036f;
         public TouchCollection TouchState;
-
+        private static Queue<Vector3> LastAcceleromeratorValues = new Queue<Vector3>();
         public readonly List<GestureSample> Gestures = new List<GestureSample>();
         static Input()
         {
@@ -41,11 +42,52 @@ namespace GameName1
         private static void ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
             AccelerometerReading reading = e.Reading;
-            Vector3 newAcceration = new Vector3();
-            newAcceration.X = (float)(reading.AccelerationX * AccelerometerAlpha + reading.AccelerationX * (1.0f - AccelerometerAlpha));// +0.20f;
-            newAcceration.Y = (float)(reading.AccelerationY * AccelerometerAlpha + reading.AccelerationY * (1.0f - AccelerometerAlpha));
-            newAcceration.Z = (float)(reading.AccelerationZ * AccelerometerAlpha + reading.AccelerationZ * (1.0f - AccelerometerAlpha));
-            CurrentAccelerometerValues = newAcceration;
+            Vector3 accelerationAverage = new Vector3();
+            //newAcceration.X = (float)(reading.AccelerationX * AccelerometerAlpha + reading.AccelerationX * (1.0f - AccelerometerAlpha));// +0.20f;
+            //newAcceration.Y = (float)(reading.AccelerationY * AccelerometerAlpha + reading.AccelerationY * (1.0f - AccelerometerAlpha));
+            //newAcceration.Z = (float)(reading.AccelerationZ * AccelerometerAlpha + reading.AccelerationZ * (1.0f - AccelerometerAlpha));
+            if (LastAcceleromeratorValues.Count == 5)
+            {
+                LastAcceleromeratorValues.Dequeue();
+            }
+            LastAcceleromeratorValues.Enqueue(new Vector3((float)reading.AccelerationX, (float)reading.AccelerationY, (float)reading.AccelerationZ));
+            foreach (Vector3 val in LastAcceleromeratorValues.ToList())
+            {
+                accelerationAverage.X += val.X;
+                accelerationAverage.Y += val.Y;
+                accelerationAverage.Z += val.Z;
+            }
+            accelerationAverage.X /= 5;
+            accelerationAverage.Y /= 5;
+            accelerationAverage.Z /= 5;
+
+            Vector3 newAcceleration = new Vector3();
+            if (accelerationAverage.X > AccelerometerThreshold)
+            {
+                newAcceleration.X = (float)(CurrentAccelerometerValues.X + AccelerometerAlpha * (reading.AccelerationX - CurrentAccelerometerValues.X));
+            }
+            else
+            {
+                newAcceleration.X = accelerationAverage.X;
+            }
+            if (accelerationAverage.Y > AccelerometerThreshold)
+            {
+                newAcceleration.Y = (float)(CurrentAccelerometerValues.Y + AccelerometerAlpha * (reading.AccelerationY - CurrentAccelerometerValues.Y));
+            }
+            else
+            {
+                newAcceleration.Y = accelerationAverage.Y;
+            }
+            if (newAcceleration.Z > AccelerometerThreshold)
+            {
+                newAcceleration.Z = (float)(CurrentAccelerometerValues.Z + AccelerometerAlpha * (reading.AccelerationZ - CurrentAccelerometerValues.Z));
+            }
+            else
+            {
+                newAcceleration.Z = accelerationAverage.Z;
+            }
+
+            CurrentAccelerometerValues = newAcceleration;
         }
 
         /// <summary>

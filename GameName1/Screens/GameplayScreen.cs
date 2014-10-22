@@ -262,11 +262,6 @@ namespace GameName1
                 GraphicsDevice device = ScreenManager.GraphicsDevice;
                 device.SetRenderTarget(backgroundTexture);
                 spriteBatch.Begin();
-                UserInterface.DrawBackground(spriteBatch);
-                if (UserInterface.TimeAlmostOut)
-                {
-                    UserInterface.DrawSkullBackground(spriteBatch);
-                }
                 UserInterface.DrawBakedGibs(spriteBatch);
                 spriteBatch.End();
                 // TODO: this game isn't very fun! You could probably improve
@@ -318,6 +313,10 @@ namespace GameName1
                 case GameState.Playing:
                     _spriteBatch.Begin();
                     _spriteBatch.Draw(backgroundTexture, new Vector2(0, 0), UserInterface.BackGroundHueColor);
+                    if (UserInterface.TimeAlmostOut)
+                    {
+                        UserInterface.DrawSkullBackground(_spriteBatch);
+                    }
                     UserInterface.DrawDeathTimer(_spriteBatch);
                     GlobalObjectManager.DrawSlimeTrails(_spriteBatch);
                     GlobalObjectManager.DrawPowerUps(_spriteBatch);
