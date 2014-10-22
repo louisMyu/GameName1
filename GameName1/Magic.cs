@@ -25,7 +25,7 @@ namespace GameName1
     //instant effect that occurs when player hits the powerup
     public interface IInstant
     {
-        void GetInstantEffect();
+        void GetInstantEffect(Player p);
     }
     [DataContract]
     public class WrathEffect : Cheat
@@ -54,7 +54,7 @@ namespace GameName1
     {
         public override void StartEffect(Player p)
         {
-            ObjectManager.m_Player.LifeTotal = ObjectManager.m_Player.MaxLife;
+            ObjectManager.m_Player.TimeToDeath = ObjectManager.m_Player.StartingTime;
         }
         public override void EndEffect(Player p)
         {
@@ -68,7 +68,7 @@ namespace GameName1
     {
         public override void StartEffect(Player p)
         {
-            ObjectManager.m_Player.LifeTotal += 10;
+            ObjectManager.m_Player.TimeToDeath += TimeSpan.FromSeconds(30);
         }
         public override void EndEffect(Player p)
         {
@@ -140,18 +140,18 @@ namespace GameName1
     {
         public override void StartEffect(Player p)
         {
-            GameplayScreen.TimeToDeath += TimeSpan.FromSeconds(60);
+            p.TimeToDeath += TimeSpan.FromSeconds(60);
         }
         public override void EndEffect(Player p)
         {
         }
-        public void AddTime(int seconds)
+        public void AddTime(Player p, int seconds)
         {
-            GameplayScreen.TimeToDeath += TimeSpan.FromSeconds(seconds);
+            p.TimeToDeath += TimeSpan.FromSeconds(seconds);
         }
-        public void GetInstantEffect()
+        public void GetInstantEffect(Player p)
         {
-            AddTime(60);
+            AddTime(p, 60);
         }
         public override void Update(Player p)
         {

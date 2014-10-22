@@ -17,7 +17,7 @@ namespace GameName1
     [DataContract]
     public class Slime : GameObject, IEnemy
     {
-        private const int DAMAGE_AMOUNT = 5;
+        private TimeSpan DAMAGE_AMOUNT = TimeSpan.FromSeconds(5);
         private static Random SlimeRandom = new Random();
         //number of frames to skip between adding a slime piece
         private const int SLIME_TRAIL_SKIP_TIME = 5;
@@ -225,13 +225,12 @@ namespace GameName1
         {
             return LifeTotal;
         }
-        public int GetDamageAmount()
+        public TimeSpan GetDamageAmount()
         {
             return DAMAGE_AMOUNT;
         }
         public void DoCollision(Player player)
         {
-            player.LifeTotal -= GetDamageAmount();
             ObjectManager.RemoveObject(this);
         }
         public void DropItem()

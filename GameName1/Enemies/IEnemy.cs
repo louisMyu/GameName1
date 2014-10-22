@@ -14,8 +14,9 @@ namespace GameName1
         void AddToHealth(int amount);
         void ApplyLinearForce(Vector2 angle, float amount);
         void CleanBody();
-        int GetDamageAmount();
+        TimeSpan GetDamageAmount();
         List<Texture2D> GetExplodedParts();
+        //take care of any collision logic that the enemy needs to do, like exploding
         void DoCollision(Player p);
         //this should create and add the item to the object manager
         void DropItem(); 

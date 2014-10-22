@@ -207,9 +207,9 @@ namespace GameName1
         {
             return LifeTotal;
         }
-        public int GetDamageAmount()
+        public TimeSpan GetDamageAmount()
         {
-            return 15;
+            return TimeSpan.FromSeconds(10);
         }
         protected override void LoadExplodedParts()
         {
@@ -224,7 +224,6 @@ namespace GameName1
                 Vector2 dirOfPlayer = new Vector2(player.Position.X - Position.X, player.Position.Y - Position.Y);
                 dirOfPlayer *= 700f;
                 player.ApplyLinearForce(dirOfPlayer);
-                player.LifeTotal -= GetDamageAmount();   
             }
         }
         #endregion

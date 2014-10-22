@@ -21,7 +21,7 @@ namespace GameName1
 
         double pufftime;
         double currentPuffTime;
-        private const int DAMAGE_AMOUNT = 5;
+        private TimeSpan DAMAGE_AMOUNT = TimeSpan.FromSeconds(5);
         public enum MotionState
         {
             Wandering,
@@ -224,13 +224,12 @@ namespace GameName1
         {
             return LifeTotal;
         }
-        public int GetDamageAmount()
+        public TimeSpan GetDamageAmount()
         {
             return DAMAGE_AMOUNT;
         }
         public void DoCollision(Player player)
         {
-            player.LifeTotal -= GetDamageAmount();
             ObjectManager.RemoveObject(this);
         }
         #endregion

@@ -49,8 +49,8 @@ namespace GameName1
         [DataMember]
         public bool Moving { get { return m_Moving; } set { m_Moving = value; } }
         [DataMember]
-        public int LifeTotal { get; set; }
-        public int MaxLife { get; set; }
+        public TimeSpan TimeToDeath { get; set; }
+        public TimeSpan StartingTime { get; set; }
         [DataMember]
         public CheatPowerUp WeaponSlot1Magic { get; set; }
         private List<Cheat> m_ActiveEffects = new List<Cheat>();
@@ -81,8 +81,8 @@ namespace GameName1
             m_Weapons = player.m_Weapons;
             Position = player.Position;
             isFireButtonDown = player.isFireButtonDown;
-            LifeTotal = player.LifeTotal;
-            MaxLife = player.MaxLife;
+            TimeToDeath = player.TimeToDeath;
+            StartingTime = player.StartingTime;
             IsStopDown = false;
         }
         public void Init(Microsoft.Xna.Framework.Content.ContentManager content, Vector2 pos)
@@ -91,17 +91,16 @@ namespace GameName1
             m_Weapons.Add(new Shotgun());
             Position = pos;
             isFireButtonDown = false;
-            MaxLife = 100;
-            LifeTotal = MaxLife;
+            StartingTime = TimeSpan.FromMinutes(1);
+            TimeToDeath = StartingTime;
             IsStopDown = false;
             DrawRedFlash = false;
         }
         //check collisions with things
-        public void CheckCollisions(out bool isDead, World _world)
+        public void CheckCollisions(World _world)
         {
             //float nearestLength = float.MaxValue;
             DrawRedFlash = false;
-            isDead = false;
             List<List<GameObject>> objectsToCheck = ObjectManager.GetCellsOfRectangle(Bounds);
             foreach (List<GameObject> gameObjectList in objectsToCheck)
             {
@@ -119,12 +118,12 @@ namespace GameName1
                         if (ob is IEnemy && m_PlayerState != PlayerState.Damaged)
                         {
                             IEnemy enemy = ob as IEnemy;
+                            //get the amount of time that should be removed from the enemy and remove it from the player
+                            TimeToDeath -= enemy.GetDamageAmount();
                             //do collision should take care of removing the enemy
                             enemy.DoCollision(this);
-                            if (LifeTotal <= 0)
+                            if (TimeToDeath.TotalSeconds <= 0)
                             {
-                                isDead = true;
-                                //LifeTotal = 100;
                                 m_PlayerState = PlayerState.Dead;
                                 return;
                             }
@@ -148,7 +147,7 @@ namespace GameName1
                                 if (temp.CheatEffect is IInstant)
                                 {
                                     IInstant instantEffect = temp.CheatEffect as IInstant;
-                                    instantEffect.GetInstantEffect();
+                                    instantEffect.GetInstantEffect(this);
                                     WeaponSlot1Magic = null;
                                 }
                                 else
@@ -497,6 +496,7 @@ namespace GameName1
         //i should use this to reset the player during a game reset
         public void ResetPlayer()
         {
+            TimeToDeath = StartingTime;
             isDead = false;
             m_CurrentDeathFrame = 0;
             Position = m_InitialPosition;

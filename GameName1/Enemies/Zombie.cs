@@ -18,7 +18,7 @@ namespace GameName1
     [DataContract]
     public class Zombie : GameObject, IEnemy
     {
-        private const int DAMAGE_AMOUNT = 5;
+        private TimeSpan DAMAGE_AMOUNT = TimeSpan.FromSeconds(5);
 
         public enum MotionState
         {
@@ -171,7 +171,7 @@ namespace GameName1
         {
             return LifeTotal;
         }
-        public int GetDamageAmount()
+        public TimeSpan GetDamageAmount()
         {
             return DAMAGE_AMOUNT;
         }
@@ -192,7 +192,6 @@ namespace GameName1
         }
         public void DoCollision(Player player)
         {
-            player.LifeTotal -= GetDamageAmount();
             ObjectManager.RemoveObject(this);
         }
         public void DropItem()

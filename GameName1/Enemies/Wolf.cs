@@ -14,7 +14,7 @@ namespace GameName1
 {
     public class Wolf : GameObject, IEnemy
     {
-        private const int DAMAGE_AMOUNT = 5;
+        private TimeSpan DAMAGE_AMOUNT = TimeSpan.FromSeconds(5);
         public enum MotionState
         {
             Wandering,
@@ -202,13 +202,12 @@ namespace GameName1
         {
             return LifeTotal;
         }
-        public int GetDamageAmount()
+        public TimeSpan GetDamageAmount()
         {
             return DAMAGE_AMOUNT;
         }
         public void DoCollision(Player player)
         {
-            player.LifeTotal -= GetDamageAmount();
             ObjectManager.RemoveObject(this);
         }
         public void DropItem()
@@ -239,6 +238,7 @@ namespace GameName1
         #endregion
         class WolfHand : GameObject, IEnemy
         {
+            private TimeSpan DAMAGE_AMOUNT = TimeSpan.FromSeconds(5);
             [DataMember]
             public int LifeTotal { get; set; }
             public enum LeftOrRightHand
@@ -303,7 +303,7 @@ namespace GameName1
                 throw new NotImplementedException();
             }
 
-            public int GetDamageAmount()
+            public TimeSpan GetDamageAmount()
             {
                 return DAMAGE_AMOUNT;
             }
@@ -315,7 +315,6 @@ namespace GameName1
 
             public void DoCollision(Player p)
             {
-                p.LifeTotal -= GetDamageAmount();
                 ObjectManager.RemoveObject(this);
             }
             public void DropItem()
